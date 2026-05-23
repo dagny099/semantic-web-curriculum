@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sensemaking Semantic Web · A self-directed curriculum, worked in public</title>
+<meta name="description" content="A 12-week self-directed curriculum through RDF, OWL, SPARQL, and modern knowledge graphs. Published openly under Sensemaking AI by Barbara Hidalgo-Sotelo.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --paper: #FAF6EE;
+  --paper-warm: #F5EFE2;
+  --ink: #1C1A17;
+  --ink-soft: #3D3A35;
+  --warm-gray: #6E6862;
+  --warm-gray-light: #9B9489;
+  --amber: #B9722A;
+  --amber-soft: #E8A85C;
+  --amber-tint: #F5E3C8;
+  --teal: #2C7A7A;
+  --teal-soft: #5BA8A8;
+  --line: rgba(28, 26, 23, 0.1);
+  --line-soft: rgba(28, 26, 23, 0.05);
+
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+
+  --unit: 4px;
+  --reading-width: 38rem;
+  --content-width: 62rem;
+  --wide-width: 76rem;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--paper);
+  font-feature-settings: "ss01", "cv01";
+}
+
+/* ─── Typography ─── */
+
+h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 400; line-height: 1.1; color: var(--ink); }
+h1 { font-size: clamp(2.75rem, 6vw, 4.75rem); letter-spacing: -0.015em; }
+h2 { font-size: clamp(2rem, 4vw, 2.875rem); letter-spacing: -0.01em; margin-bottom: 1rem; }
+h3 { font-size: 1.5rem; letter-spacing: -0.005em; margin-bottom: 0.75rem; }
+h4 { font-size: 1.125rem; font-family: var(--font-sans); font-weight: 500; letter-spacing: 0.01em; }
+
+em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
+
+p { margin-bottom: 1.25rem; max-width: var(--reading-width); color: var(--ink-soft); }
+p.lead { font-size: 1.25rem; line-height: 1.5; color: var(--ink); max-width: 40rem; }
+
+a { color: var(--amber); text-decoration: none; border-bottom: 1px solid rgba(185, 114, 42, 0.3); transition: border-color 0.2s, color 0.2s; }
+a:hover { border-color: var(--amber); }
+
+code, .mono { font-family: var(--font-mono); font-size: 0.9em; background: var(--paper-warm); padding: 0.1em 0.35em; border-radius: 3px; border: 1px solid var(--line-soft); }
+
+/* ─── Layout ─── */
+
+.page { max-width: var(--wide-width); margin: 0 auto; padding: 0 2rem; }
+
+section { padding: 5rem 0; border-top: 1px solid var(--line-soft); position: relative; }
+section:first-of-type { border-top: none; }
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--amber); }
+
+.section-inner { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+.section-inner.two-col { grid-template-columns: 1fr 2fr; gap: 4rem; align-items: start; }
+
+@media (max-width: 768px) {
+  .section-inner.two-col { grid-template-columns: 1fr; gap: 1.5rem; }
+  section { padding: 3.5rem 0; }
+  .page { padding: 0 1.25rem; }
+}
+
+/* ─── Header ─── */
+
+.site-header {
+  padding: 2rem 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.brand-mark {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--amber);
+  border-radius: 50%;
+  display: inline-block;
+}
+.site-header nav {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.875rem;
+}
+.site-header nav a {
+  color: var(--warm-gray);
+  border-bottom: none;
+  font-weight: 400;
+}
+.site-header nav a:hover { color: var(--ink); }
+
+@media (max-width: 640px) { .site-header nav { display: none; } }
+
+/* ─── Hero ─── */
+
+.hero { padding: 5rem 0 4rem; border-top: none; }
+.hero h1 { max-width: 18ch; margin-bottom: 1.5rem; }
+.hero h1 em { color: var(--amber); }
+.hero .lead { font-size: 1.375rem; line-height: 1.4; margin-bottom: 2.5rem; color: var(--ink-soft); }
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.875rem;
+  color: var(--warm-gray);
+}
+.hero-meta dt { font-weight: 500; color: var(--ink-soft); letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 0.25rem; }
+.hero-meta dd { font-family: var(--font-serif); font-size: 1.125rem; color: var(--ink); }
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  background: var(--amber-tint);
+  color: var(--amber);
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin-bottom: 2rem;
+}
+.status-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--amber);
+  border-radius: 50%;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ─── Premise section ─── */
+
+.premise-three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin-top: 3rem; }
+.premise-three .card { padding: 0; }
+.premise-three .num {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-style: italic;
+  color: var(--amber);
+  line-height: 1;
+  margin-bottom: 1rem;
+  display: block;
+}
+.premise-three h4 { margin-bottom: 0.75rem; }
+.premise-three p { font-size: 0.95rem; color: var(--warm-gray); }
+
+@media (max-width: 768px) { .premise-three { grid-template-columns: 1fr; gap: 1.75rem; } }
+
+/* ─── Diagram blocks ─── */
+
+.diagram-block {
+  background: var(--paper-warm);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  margin: 2.5rem 0;
+  border: 1px solid var(--line-soft);
+}
+.diagram-block svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.diagram-caption {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--warm-gray);
+  text-align: center;
+  margin-top: 1.5rem;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── Module cards (for the arc) ─── */
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+.module-card {
+  padding: 1.75rem 1.5rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  position: relative;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.module-card:hover { border-color: var(--amber-soft); transform: translateY(-2px); }
+.module-card .num {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--amber);
+}
+.module-card h4 { margin: 0.5rem 0 0.75rem; font-family: var(--font-serif); font-weight: 400; font-size: 1.25rem; }
+.module-card p { font-size: 0.875rem; color: var(--warm-gray); margin: 0; }
+.module-card .weeks {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--warm-gray-light);
+  margin-top: 1rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--line-soft);
+}
+.module-card.hard::after {
+  content: "★";
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: var(--amber);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 900px) { .modules-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .modules-grid { grid-template-columns: 1fr; } }
+
+/* ─── Projects section ─── */
+
+.projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.5rem; }
+.project-card {
+  padding: 2rem;
+  background: var(--paper-warm);
+  border-radius: 8px;
+  border: 1px solid var(--line-soft);
+  display: flex;
+  flex-direction: column;
+}
+.project-card .tag {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 0.25rem 0.625rem;
+  border-radius: 100px;
+  align-self: flex-start;
+  margin-bottom: 1rem;
+}
+.project-card.primary .tag { background: var(--amber); color: var(--paper); }
+.project-card.secondary .tag { background: var(--teal); color: var(--paper); }
+.project-card h3 { font-style: italic; margin-bottom: 0.75rem; }
+.project-card p { font-size: 0.95rem; flex: 1; }
+.project-card .stats {
+  display: flex;
+  gap: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line-soft);
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  color: var(--warm-gray);
+}
+.project-card .stats strong { color: var(--ink); font-weight: 500; }
+
+@media (max-width: 768px) { .projects-grid { grid-template-columns: 1fr; } }
+
+/* ─── Repo navigation ─── */
+
+.repo-tree {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2rem;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.8;
+  overflow-x: auto;
+  margin-top: 1.5rem;
+}
+.repo-tree .comment { color: var(--warm-gray-light); }
+.repo-tree .dir { color: var(--amber-soft); }
+.repo-tree .file { color: var(--paper); }
+.repo-tree .file.active { color: var(--amber-soft); font-weight: 500; }
+
+/* ─── Tomorrow checklist ─── */
+
+.checklist {
+  background: var(--paper-warm);
+  border-radius: 8px;
+  padding: 2.5rem;
+  margin-top: 2rem;
+  border: 1px solid var(--line-soft);
+}
+.checklist h3 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.75rem;
+}
+.checklist h3 .time {
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--amber);
+  margin-left: 0.75rem;
+  vertical-align: middle;
+}
+.checklist + .checklist { margin-top: 1.5rem; }
+.checklist ul { list-style: none; }
+.checklist li {
+  padding: 0.625rem 0;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--warm-gray-light);
+  border-radius: 3px;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.checklist li strong { color: var(--ink); font-weight: 500; }
+
+/* ─── Publishing flow / How to follow ─── */
+
+.platforms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 2rem; }
+.platform {
+  padding: 1.5rem 1.75rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.platform .name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.platform .role {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  font-weight: 500;
+  margin-bottom: 0.875rem;
+}
+.platform .desc { font-size: 0.875rem; color: var(--warm-gray); margin: 0; }
+
+@media (max-width: 640px) { .platforms { grid-template-columns: 1fr; } }
+
+/* ─── Future content placeholders ─── */
+
+.future-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 2rem; }
+.future-card {
+  padding: 1.5rem;
+  background: var(--paper);
+  border: 1px dashed var(--warm-gray-light);
+  border-radius: 8px;
+  position: relative;
+}
+.future-card .label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+.future-card h4 { font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 1.125rem; margin-bottom: 0.5rem; }
+.future-card p { font-size: 0.85rem; color: var(--warm-gray); margin: 0; }
+
+@media (max-width: 900px) { .future-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .future-grid { grid-template-columns: 1fr; } }
+
+/* ─── Resources ─── */
+
+.resources-list { margin-top: 2rem; }
+.resource-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1.5rem;
+  align-items: baseline;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.resource-item .num {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--warm-gray-light);
+  font-size: 1.125rem;
+  min-width: 2rem;
+}
+.resource-item .title { font-family: var(--font-serif); font-style: italic; font-size: 1.125rem; color: var(--ink); display: block; }
+.resource-item .meta { font-size: 0.8125rem; color: var(--warm-gray); margin-top: 0.25rem; }
+.resource-item .tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.625rem;
+  border-radius: 100px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.resource-item .tag.free { background: var(--amber-tint); color: var(--amber); }
+.resource-item .tag.book { background: var(--paper-warm); color: var(--ink-soft); border: 1px solid var(--line); }
+.resource-item .tag.spec { background: var(--paper-warm); color: var(--teal); border: 1px solid var(--teal-soft); }
+
+@media (max-width: 640px) {
+  .resource-item { grid-template-columns: auto 1fr; }
+  .resource-item .tag { grid-column: 2; justify-self: start; margin-top: 0.5rem; }
+}
+
+/* ─── About / footer ─── */
+
+.about-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 4rem; align-items: start; }
+.about-grid .pull {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--ink);
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--amber);
+}
+@media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; gap: 2rem; } }
+
+footer {
+  padding: 3rem 0;
+  margin-top: 2rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.875rem;
+  color: var(--warm-gray);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}
+footer .links { display: flex; gap: 1.5rem; }
+footer a { color: var(--warm-gray); border-bottom: none; }
+footer a:hover { color: var(--ink); }
+
+/* ─── Scroll reveals ─── */
+
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ─── SVG diagram styling ─── */
+
+.svg-text { font-family: var(--font-sans); fill: var(--ink); }
+.svg-text-soft { font-family: var(--font-sans); fill: var(--warm-gray); }
+.svg-text-serif { font-family: var(--font-serif); fill: var(--ink); font-style: italic; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<header class="site-header">
+  <a href="#top" class="brand-mark"><span class="brand-dot"></span> Sensemaking AI</a>
+  <nav>
+    <a href="#arc">The arc</a>
+    <a href="#projects">Projects</a>
+    <a href="#tomorrow">Get started</a>
+    <a href="#resources">Resources</a>
+  </nav>
+</header>
+
+<main id="top">
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="status-pill">Pre-launch · Module 1 begins soon</div>
+  <h1>A 12-week semantic web curriculum, <em>worked in public</em>.</h1>
+  <p class="lead">RDF, OWL, SPARQL, and modern knowledge graphs &mdash; from first principles to a deployed hybrid LLM + knowledge graph application. Every artifact, note, and stumbling point published openly.</p>
+  <dl class="hero-meta">
+    <div>
+      <dt>Duration</dt>
+      <dd>12 weeks · 4 modules</dd>
+    </div>
+    <div>
+      <dt>Effort</dt>
+      <dd>~5&ndash;7 hours / week</dd>
+    </div>
+    <div>
+      <dt>Author</dt>
+      <dd>Barbara Hidalgo-Sotelo</dd>
+    </div>
+    <div>
+      <dt>Brand</dt>
+      <dd>Sensemaking AI</dd>
+    </div>
+  </dl>
+</section>
+
+<!-- ═══════════════ PREMISE ═══════════════ -->
+<section id="premise">
+  <div class="section-inner two-col">
+    <div>
+      <div class="eyebrow">The premise</div>
+      <h2><em>Why publish</em><br>learning openly?</h2>
+    </div>
+    <div>
+      <p class="lead">Most learning artifacts you find online describe finished states. This one shows the process &mdash; including the redos, the failed exercises, and the wrong turns.</p>
+      <div class="premise-three">
+        <div class="card">
+          <span class="num">i.</span>
+          <h4>Forcing function</h4>
+          <p>Public commitments stall less. Knowing the work is visible turns &ldquo;I should write notes&rdquo; into &ldquo;I have to ship notes.&rdquo;</p>
+        </div>
+        <div class="card">
+          <span class="num">ii.</span>
+          <h4>Compounding portfolio</h4>
+          <p>Each module produces real artifacts: published ontologies, evaluation notebooks, deployed demos. The curriculum <em>is</em> the portfolio.</p>
+        </div>
+        <div class="card">
+          <span class="num">iii.</span>
+          <h4>Showing the work</h4>
+          <p>The wrong turns, the redos, the &ldquo;I was wrong about that&rdquo; reflections &mdash; these are part of the published value, not embarrassments to hide.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ THE ARC ═══════════════ -->
+<section id="arc">
+  <div class="eyebrow">The arc</div>
+  <h2>Four modules across twelve weeks.</h2>
+  <p>The curriculum builds from foundations (reading and writing the basic data model) to deployment (shipping a system that combines vector and graph retrieval). Module 3 is genuinely the hardest segment &mdash; planning slower pacing there matters.</p>
+
+  <div class="diagram-block">
+    <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arc-title arc-desc">
+      <title id="arc-title">The 12-week curriculum arc</title>
+      <desc id="arc-desc">Four modules arranged left to right: Foundations, Modeling, Reasoning, and Shipping. Each shows weeks and key concepts.</desc>
+
+      <!-- Journey line -->
+      <path d="M 80 200 Q 280 180, 460 200 T 820 200" stroke="#B9722A" stroke-width="1.5" fill="none" stroke-dasharray="4 6" opacity="0.5"/>
+
+      <!-- Module 1 -->
+      <circle cx="120" cy="200" r="6" fill="#B9722A"/>
+      <text x="120" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">i.</text>
+      <text x="120" y="240" text-anchor="middle" class="svg-text" font-size="14" font-weight="500" fill="#1C1A17">Foundations</text>
+      <text x="120" y="260" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#6E6862">Weeks 1&ndash;3</text>
+      <text x="120" y="290" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#9B9489">RDF · Turtle · SPARQL</text>
+
+      <!-- Module 2 -->
+      <circle cx="380" cy="190" r="6" fill="#B9722A"/>
+      <text x="380" y="160" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">ii.</text>
+      <text x="380" y="230" text-anchor="middle" class="svg-text" font-size="14" font-weight="500" fill="#1C1A17">Modeling</text>
+      <text x="380" y="250" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#6E6862">Weeks 4&ndash;6</text>
+      <text x="380" y="280" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#9B9489">RDFS · OWL · design judgment</text>
+
+      <!-- Module 3 (the hard one) -->
+      <circle cx="620" cy="195" r="8" fill="#B9722A" stroke="#B9722A" stroke-width="2" fill-opacity="0.3"/>
+      <circle cx="620" cy="195" r="4" fill="#B9722A"/>
+      <text x="620" y="165" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">iii. ★</text>
+      <text x="620" y="235" text-anchor="middle" class="svg-text" font-size="14" font-weight="500" fill="#1C1A17">Reasoning</text>
+      <text x="620" y="255" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#6E6862">Weeks 7&ndash;9</text>
+      <text x="620" y="285" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#9B9489">Inference · reification · SHACL</text>
+
+      <!-- Module 4 -->
+      <circle cx="820" cy="200" r="6" fill="#B9722A"/>
+      <text x="820" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">iv.</text>
+      <text x="820" y="240" text-anchor="middle" class="svg-text" font-size="14" font-weight="500" fill="#1C1A17">Shipping</text>
+      <text x="820" y="260" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#6E6862">Weeks 10&ndash;12</text>
+      <text x="820" y="290" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#9B9489">SPARQL UPDATE · LLM + KG</text>
+
+      <!-- Top label -->
+      <text x="450" y="50" text-anchor="middle" class="svg-text-serif" font-size="20" font-style="italic" fill="#1C1A17">From first principles → deployed system</text>
+      <line x1="380" y1="65" x2="520" y2="65" stroke="#B9722A" stroke-width="0.5" opacity="0.4"/>
+
+      <!-- New ground indicator -->
+      <text x="120" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">LIGHT</text>
+      <text x="380" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">MEDIUM</text>
+      <text x="620" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#B9722A" letter-spacing="1">HEAVY</text>
+      <text x="820" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">MIXED</text>
+      <text x="50" y="115" text-anchor="start" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">NEW GROUND</text>
+    </svg>
+    <p class="diagram-caption">The arc is shaped like a marathon block: base, build, peak, taper-and-race. Module 3 is the segment where most of the material is genuinely new ground.</p>
+  </div>
+
+  <div class="modules-grid">
+    <div class="module-card">
+      <span class="num">i.</span>
+      <h4>Foundations</h4>
+      <p>RDF, Turtle, basic SPARQL. The conceptual core: knowledge as triples with global identifiers.</p>
+      <div class="weeks">Weeks 1&ndash;3</div>
+    </div>
+    <div class="module-card">
+      <span class="num">ii.</span>
+      <h4>Modeling</h4>
+      <p>OWL ontology design. The shift from RDF as data format to ontology as design discipline.</p>
+      <div class="weeks">Weeks 4&ndash;6</div>
+    </div>
+    <div class="module-card hard">
+      <span class="num">iii.</span>
+      <h4>Reasoning</h4>
+      <p>Inference, reification, vocabulary alignment, SHACL validation. The conceptually hardest segment.</p>
+      <div class="weeks">Weeks 7&ndash;9</div>
+    </div>
+    <div class="module-card">
+      <span class="num">iv.</span>
+      <h4>Shipping</h4>
+      <p>SPARQL UPDATE, deployment, hybrid LLM + knowledge graph capstone.</p>
+      <div class="weeks">Weeks 10&ndash;12</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ THE STACK ═══════════════ -->
+<section id="stack">
+  <div class="section-inner two-col">
+    <div>
+      <div class="eyebrow">What you&rsquo;ll learn</div>
+      <h2>The semantic web stack, <em>layered</em>.</h2>
+      <p>Each layer builds on the one below it. The curriculum walks up the stack in order: triples first, schemas next, ontologies and reasoning after that. SPARQL is the query language that runs across all layers.</p>
+    </div>
+    <div>
+      <div class="diagram-block">
+        <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="stack-title stack-desc">
+          <title id="stack-title">The semantic web stack</title>
+          <desc id="stack-desc">Layered diagram showing RDF at the bottom, then RDFS, OWL, SHACL, and Applications at the top, with SPARQL running vertically through all layers.</desc>
+
+          <!-- Layers, bottom up -->
+          <rect x="60" y="290" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
+          <text x="100" y="320" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">RDF</text>
+          <text x="370" y="320" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">triples · URIs · the graph</text>
+
+          <rect x="60" y="232" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5" opacity="0.85"/>
+          <text x="100" y="262" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">RDFS</text>
+          <text x="370" y="262" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">classes · subclasses · domain/range</text>
+
+          <rect x="60" y="174" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5" opacity="0.7"/>
+          <text x="100" y="204" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">OWL</text>
+          <text x="370" y="204" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">restrictions · equivalence · reasoning</text>
+
+          <rect x="60" y="116" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5" opacity="0.55"/>
+          <text x="100" y="146" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">SHACL</text>
+          <text x="370" y="146" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">constraints · validation · shapes</text>
+
+          <rect x="60" y="58" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5" opacity="0.4"/>
+          <text x="100" y="88" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">Applications</text>
+          <text x="370" y="88" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">hybrid retrieval · KG explorer</text>
+
+          <!-- SPARQL bar running vertically -->
+          <rect x="395" y="58" width="50" height="282" rx="4" fill="#2C7A7A" fill-opacity="0.12" stroke="#2C7A7A" stroke-width="0.5"/>
+          <text x="420" y="200" text-anchor="middle" class="svg-text" font-size="13" font-weight="500" fill="#2C7A7A" transform="rotate(-90 420 200)">SPARQL — queries through all layers</text>
+
+          <!-- Top label -->
+          <text x="220" y="30" text-anchor="middle" class="svg-text-serif" font-size="16" font-style="italic" fill="#1C1A17">Built bottom up</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ANCHORING PROJECTS ═══════════════ -->
+<section id="projects">
+  <div class="eyebrow">The anchoring projects</div>
+  <h2>Two existing projects as <em>canvases</em>.</h2>
+  <p>The curriculum doesn&rsquo;t use toy examples. It uses two real projects that already have substantial work behind them. Each anchors specific parts of the curriculum where the technology shines for it.</p>
+
+  <div class="projects-grid">
+    <div class="project-card primary">
+      <span class="tag">Primary canvas</span>
+      <h3>Naruto Network Graph</h3>
+      <p>A character network from anime subtitle data &mdash; 87 characters across three story arcs, with hand-coded canonical relationships layered over co-appearance edges. The rich categorical structure of the Naruto universe (ninja ranks, villages, jutsu, contested fan canon) makes it an unusually good semantic-web testbed. Pop-culture domains are standard in ontology pedagogy: the Pizza ontology is the canonical Prot&eacute;g&eacute; tutorial for the same reason.</p>
+      <div class="stats">
+        <span><strong>87</strong> characters</span>
+        <span><strong>3</strong> arcs</span>
+        <span><strong>36</strong> canonical relationships</span>
+      </div>
+    </div>
+
+    <div class="project-card secondary">
+      <span class="tag">Module 1 anchor</span>
+      <h3>Resume Graph Explorer</h3>
+      <p>A career graph with ESCO/SKOS integration &mdash; existing Neo4j implementation with skill taxonomy linked to the European Skills, Competences, Qualifications and Occupations vocabulary. The reason it anchors Module 1: ESCO is already a SKOS vocabulary, which means the case for RDF over a labeled property graph is exceptionally sharp here. Returns in Module 3 as a venue for skill inference work.</p>
+      <div class="stats">
+        <span><strong>Neo4j</strong> + Cypher</span>
+        <span><strong>SKOS</strong> + ESCO</span>
+        <span><strong>Module 1 + 3</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="diagram-block">
+    <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="eco-title eco-desc">
+      <title id="eco-title">Project ecosystem</title>
+      <desc id="eco-desc">The curriculum repo at the center, with three projects orbiting: Naruto Network Graph as primary canvas, Resume Graph Explorer as Module 1 anchor, and TwinKit as the capstone framework.</desc>
+
+      <!-- Center node -->
+      <circle cx="400" cy="160" r="58" fill="#FAF6EE" stroke="#B9722A" stroke-width="1.5"/>
+      <text x="400" y="155" text-anchor="middle" class="svg-text-serif" font-size="14" font-style="italic" fill="#1C1A17">Sensemaking</text>
+      <text x="400" y="175" text-anchor="middle" class="svg-text-serif" font-size="14" font-style="italic" fill="#1C1A17">Semantic Web</text>
+
+      <!-- Connections -->
+      <line x1="354" y1="125" x2="180" y2="80" stroke="#B9722A" stroke-width="1" stroke-dasharray="3 4" opacity="0.6"/>
+      <line x1="354" y1="195" x2="180" y2="240" stroke="#2C7A7A" stroke-width="1" stroke-dasharray="3 4" opacity="0.6"/>
+      <line x1="446" y1="160" x2="620" y2="160" stroke="#B9722A" stroke-width="1" stroke-dasharray="3 4" opacity="0.6"/>
+
+      <!-- Naruto node -->
+      <rect x="60" y="40" width="170" height="80" rx="8" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
+      <text x="145" y="68" text-anchor="middle" class="svg-text" font-size="13" font-weight="500" fill="#854F0B">Naruto Network Graph</text>
+      <text x="145" y="88" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#854F0B">Primary canvas</text>
+      <text x="145" y="105" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#854F0B" opacity="0.8">Modules 2, 3, 4</text>
+
+      <!-- Resume Graph node -->
+      <rect x="60" y="200" width="170" height="80" rx="8" fill="#FAF6EE" stroke="#2C7A7A" stroke-width="0.5"/>
+      <text x="145" y="228" text-anchor="middle" class="svg-text" font-size="13" font-weight="500" fill="#1C5959">Resume Graph Explorer</text>
+      <text x="145" y="248" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#1C5959">ESCO/SKOS anchor</text>
+      <text x="145" y="265" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#1C5959" opacity="0.8">Modules 1, 3</text>
+
+      <!-- TwinKit node -->
+      <rect x="620" y="120" width="160" height="80" rx="8" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
+      <text x="700" y="148" text-anchor="middle" class="svg-text" font-size="13" font-weight="500" fill="#854F0B">TwinKit</text>
+      <text x="700" y="168" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#854F0B">Capstone framework</text>
+      <text x="700" y="185" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#854F0B" opacity="0.8">Module 4</text>
+    </svg>
+    <p class="diagram-caption">Each project enters where it adds the most learning value. Resume Graph for the LPG-vs-RDF case where ESCO makes RDF shine. Naruto for the rich modeling and reasoning work. TwinKit as the capstone framework where everything composes.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ THE REPO ═══════════════ -->
+<section id="repo">
+  <div class="eyebrow">The repository</div>
+  <h2>Everything lives <em>here</em>.</h2>
+  <p>The GitHub repository is the canonical record. Syllabus, weekly progress, exercises, ontologies, notes, and published artifacts all live in one place. Visitors land on the README; followers track <code>PROGRESS.md</code> for weekly updates.</p>
+
+  <div class="repo-tree">
+<span class="comment">// sensemaking-ai/semantic-web-curriculum</span>
+.
+├── <span class="file">README.md</span>           <span class="comment">// repo front door</span>
+├── <span class="file">SYLLABUS.md</span>         <span class="comment">// full 12-week curriculum</span>
+├── <span class="file active">PROGRESS.md</span>         <span class="comment">// live weekly tracker ← updated 2x/week</span>
+├── <span class="file">CLAUDE.md</span>           <span class="comment">// AI-assistant conventions</span>
+├── <span class="file">REFLECTIONS.md</span>      <span class="comment">// cross-module learnings</span>
+├── <span class="dir">modules/</span>
+│   ├── <span class="dir">01-foundations/</span>
+│   ├── <span class="dir">02-modeling/</span>
+│   ├── <span class="dir">03-reasoning/</span>
+│   └── <span class="dir">04-shipping/</span>
+└── <span class="dir">resources/</span>
+    ├── <span class="file">reading-list.md</span>
+    ├── <span class="file">tools.md</span>
+    └── <span class="file">public-kgs.md</span>
+  </div>
+</section>
+
+<!-- ═══════════════ PUBLISHING IN PUBLIC ═══════════════ -->
+<section id="publishing">
+  <div class="eyebrow">Publishing in public</div>
+  <h2>Four platforms, <em>distinct roles</em>.</h2>
+  <p>The work lives across multiple surfaces. Each has a different role and a different voice. GitHub is the canonical record. LinkedIn broadcasts progress. The two blogs handle longer-form thinking that doesn&rsquo;t belong in either.</p>
+
+  <div class="platforms">
+    <div class="platform">
+      <div class="role">Canonical record</div>
+      <div class="name">GitHub repo</div>
+      <p class="desc">The official version. All commits dated. Watch the repo for new artifacts as they land.</p>
+    </div>
+    <div class="platform">
+      <div class="role">Broadcast · 2&times;/week</div>
+      <div class="name">LinkedIn</div>
+      <p class="desc">Monday progress + one weekly insight. Friday artifact or open question. Hooks first, white space heavy.</p>
+    </div>
+    <div class="platform">
+      <div class="role">Deep analysis · end of module</div>
+      <div class="name">sensemaking-ai.com</div>
+      <p class="desc">Long-form essays on the design decisions, the &ldquo;what I changed my mind about,&rdquo; the cog-sci-flavored reflections.</p>
+    </div>
+    <div class="platform">
+      <div class="role">Musings · occasional</div>
+      <div class="name">barbhs.com</div>
+      <p class="desc">The most personal layer. Working-notebook explorations that don&rsquo;t fit anywhere else.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TOMORROW ═══════════════ -->
+<section id="tomorrow">
+  <div class="eyebrow">When you get started</div>
+  <h2>Tomorrow: <em>pre-week setup</em>.</h2>
+  <p>The pre-week is roughly 2&ndash;3 hours of setup work spread across morning and afternoon. Front-loading these means Module 1&rsquo;s first day isn&rsquo;t lost to environment-fighting.</p>
+
+  <div class="checklist">
+    <h3>Morning <span class="time">~1.5 hours</span></h3>
+    <ul>
+      <li><strong>Push the initial repo files to GitHub.</strong> README, SYLLABUS, PROGRESS, CLAUDE.md, Module 1 README. The repo should look maintained from day one.</li>
+      <li><strong>Install Apache Jena + Fuseki locally.</strong> Verify it runs on <code>localhost:3030</code> and you can create a new dataset.</li>
+      <li><strong>Install Prot&eacute;g&eacute;</strong> and open it once. Don&rsquo;t do anything with it yet.</li>
+      <li><strong>Bookmark the W3C primer set.</strong> RDF 1.1, Turtle, SPARQL 1.1 Query &mdash; these are your spec references.</li>
+    </ul>
+  </div>
+
+  <div class="checklist">
+    <h3>Afternoon <span class="time">~1 hour</span></h3>
+    <ul>
+      <li><strong>Pick the LinkedIn launch post variant</strong> and schedule for Tuesday or Wednesday mid-morning Central time. Repo link goes in the first comment, not the post body.</li>
+      <li><strong>Block 12 Tuesday lunch slots</strong> as &ldquo;synthesis writing&rdquo; (30 minutes each). That single ritual carries the curriculum forward.</li>
+      <li><strong>Order or borrow Allemang, Hendler &amp; Gandon</strong> (3rd ed., 2020) if not already on the shelf.</li>
+      <li><strong>Skim Hogan et al. introduction</strong> (kgbook.org sections 1&ndash;2). Vocabulary calibration only &mdash; don&rsquo;t try to read the whole thing.</li>
+    </ul>
+  </div>
+
+  <div class="checklist">
+    <h3>This week (Module 1 begins) <span class="time">~6 hours</span></h3>
+    <ul>
+      <li><strong>Read Allemang chapters 1&ndash;3</strong> (RDF foundations, RDFS).</li>
+      <li><strong>Exercise 1.1: Wikidata orientation.</strong> Three queries through query.wikidata.org. Notes go in <code>modules/01-foundations/notes/week-01.md</code>.</li>
+      <li><strong>Exercise 1.2: Hand-write a FOAF graph</strong> of yourself and three projects.</li>
+      <li><strong>Begin Exercise 1.3: Resume Graph RDF slice.</strong> The Module 1 primary project.</li>
+      <li><strong>Write Week 1 synthesis notes.</strong> One paragraph in your own words on what landed.</li>
+      <li><strong>Post first Monday LinkedIn update.</strong> &ldquo;Week 1 of 12&rdquo; momentum check.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ FUTURE CONTENT ═══════════════ -->
+<section id="future">
+  <div class="eyebrow">Coming as the work progresses</div>
+  <h2>Placeholders for <em>richer content</em>.</h2>
+  <p>These slots will fill in as each module produces its artifacts. Listed here so the structure is visible from day one and the work has clear targets.</p>
+
+  <div class="future-grid">
+    <div class="future-card">
+      <div class="label">Interactive · Module 1</div>
+      <h4>SPARQL playground for ESCO queries</h4>
+      <p>Embedded query editor with sample queries from the Resume Graph Explorer comparison. Run live against a public endpoint.</p>
+    </div>
+    <div class="future-card">
+      <div class="label">Visualization · Module 2</div>
+      <h4>Naruto ontology in WebVOWL</h4>
+      <p>Interactive class hierarchy explorer rendered from the published Turtle. Click any node to see properties and instances.</p>
+    </div>
+    <div class="future-card">
+      <div class="label">Video · End of Module 2</div>
+      <h4>Designing an ontology in 3 hours</h4>
+      <p>Time-lapse screen recording of the actual modeling work. The wrong turns visible. Less polish than tutorial videos; more honesty.</p>
+    </div>
+    <div class="future-card">
+      <div class="label">Interactive · Module 3</div>
+      <h4>Reification approaches, compared</h4>
+      <p>Side-by-side: same fact expressed in classical RDF reification, n-ary, named graphs, RDF-star. Toggle between styles.</p>
+    </div>
+    <div class="future-card">
+      <div class="label">Deployed demo · Module 4</div>
+      <h4>Naruto Knowledge Graph Explorer</h4>
+      <p>Public web app. Ask natural-language questions, see generated SPARQL, explore character networks with ontology overlay.</p>
+    </div>
+    <div class="future-card">
+      <div class="label">Dashboard · ongoing</div>
+      <h4>Live progress dashboard</h4>
+      <p>Auto-generated from PROGRESS.md commit history. Modules completed, artifacts shipped, current focus. Embedded on homepage.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ RESOURCES ═══════════════ -->
+<section id="resources">
+  <div class="eyebrow">Required reading</div>
+  <h2>The canonical references.</h2>
+  <p>None of the conceptual content in the curriculum is original; the contribution is the path through it. These are the books and specs the curriculum points to repeatedly. The full bookmark set lives in <code>resources/reading-list.md</code>.</p>
+
+  <div class="resources-list">
+    <div class="resource-item">
+      <span class="num">01</span>
+      <div>
+        <span class="title">Semantic Web for the Working Ontologist</span>
+        <div class="meta">Allemang, Hendler &amp; Gandon · 3rd edition · ACM Books 2020 · <a href="https://workingontologist.org/" target="_blank" rel="noopener">workingontologist.org</a></div>
+      </div>
+      <span class="tag book">Book</span>
+    </div>
+    <div class="resource-item">
+      <span class="num">02</span>
+      <div>
+        <span class="title">Learning SPARQL</span>
+        <div class="meta">Bob DuCharme · 2nd edition · O&rsquo;Reilly 2013 · <a href="https://www.learningsparql.com/" target="_blank" rel="noopener">learningsparql.com</a></div>
+      </div>
+      <span class="tag book">Book</span>
+    </div>
+    <div class="resource-item">
+      <span class="num">03</span>
+      <div>
+        <span class="title">Knowledge Graphs</span>
+        <div class="meta">Hogan, Blomqvist, Cochez, et al. · Synthesis Lectures · 2021 · <a href="https://kgbook.org/" target="_blank" rel="noopener">kgbook.org</a></div>
+      </div>
+      <span class="tag free">Open Access</span>
+    </div>
+    <div class="resource-item">
+      <span class="num">04</span>
+      <div>
+        <span class="title">Linked Data: Evolving the Web into a Global Data Space</span>
+        <div class="meta">Heath &amp; Bizer · <a href="http://linkeddatabook.com/editions/1.0/" target="_blank" rel="noopener">linkeddatabook.com</a></div>
+      </div>
+      <span class="tag free">Open Access</span>
+    </div>
+    <div class="resource-item">
+      <span class="num">05</span>
+      <div>
+        <span class="title">W3C Specifications</span>
+        <div class="meta">RDF 1.1 Primer · Turtle · SPARQL 1.1 · OWL 2 Primer · SHACL · SKOS · <a href="https://www.w3.org/TR/" target="_blank" rel="noopener">w3.org/TR</a></div>
+      </div>
+      <span class="tag spec">Primary source</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<section id="about">
+  <div class="eyebrow">About the project</div>
+  <h2>One practitioner, <em>working openly</em>.</h2>
+  <div class="about-grid">
+    <div>
+      <p>This curriculum is published under <strong>Sensemaking AI</strong>, an independent AI and machine learning consulting practice. It&rsquo;s run solo by Barbara Hidalgo-Sotelo &mdash; cognitive scientist, AI/ML consultant, Toastmaster, marathon runner, beekeeper, and longtime builder of quirky-but-rigorous data projects.</p>
+      <p>The curriculum is her work, published transparently under her consulting brand. No fake team, no corporate scaffolding. The brand framing is honest positioning, not corporate cosplay.</p>
+      <p>The project sits at an unusual intersection: cognitive science meets formal knowledge representation meets practical AI engineering. Most cog sci PhDs who build production systems don&rsquo;t know formal semantics. Most semantic web practitioners don&rsquo;t have a cog sci background. The Venn intersection is small, valuable, and aligned with what Sensemaking AI advises clients on.</p>
+      <p>Questions, corrections, and discussion welcome via the repository&rsquo;s issues. Pull requests on the curriculum itself aren&rsquo;t accepted &mdash; this is a personal learning project &mdash; but disagreements about design choices are always interesting.</p>
+    </div>
+    <div>
+      <p class="pull">Exploring messy data, intelligent systems, and what it means to make meaning &mdash; through the lens of a cognitive scientist who builds things people actually use.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div>
+    <span style="font-family: var(--font-serif); font-style: italic; color: var(--ink);">Sensemaking AI</span>
+    &nbsp;·&nbsp; Austin, TX
+    &nbsp;·&nbsp; Code MIT &nbsp;·&nbsp; Content CC BY 4.0
+  </div>
+  <div class="links">
+    <a href="https://www.linkedin.com/in/dagny/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://sensemaking-ai.com" target="_blank" rel="noopener">sensemaking-ai.com</a>
+    <a href="https://barbhs.com" target="_blank" rel="noopener">barbhs.com</a>
+    <a href="https://docs.barbhs.com/naruto-network-graph/" target="_blank" rel="noopener">Naruto Graph</a>
+  </div>
+</footer>
+
+</div>
+
+<script>
+// Scroll reveals — gentle, respect reduced-motion
+(() => {
+  const reveals = document.querySelectorAll('section, .module-card, .project-card, .platform, .future-card, .resource-item');
+  reveals.forEach(el => el.classList.add('reveal'));
+
+  if (!('IntersectionObserver' in window)) {
+    reveals.forEach(el => el.classList.add('visible'));
+    return;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '-50px', threshold: 0.05 });
+
+  reveals.forEach(el => observer.observe(el));
+})();
+</script>
+
+</body>
+</html>
