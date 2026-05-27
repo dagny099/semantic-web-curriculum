@@ -31,7 +31,7 @@
   --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
 
   --unit: 4px;
-  --reading-width: 38rem;
+  --reading-width: 50rem;
   --content-width: 62rem;
   --wide-width: 76rem;
 }
@@ -60,7 +60,7 @@ h4 { font-size: 1.125rem; font-family: var(--font-sans); font-weight: 500; lette
 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
 
 p { margin-bottom: 1.25rem; max-width: var(--reading-width); color: var(--ink-soft); }
-p.lead { font-size: 1.25rem; line-height: 1.5; color: var(--ink); max-width: 40rem; }
+p.lead { font-size: 1.25rem; line-height: 1.5; color: var(--ink); max-width: 52rem; }
 
 a { color: var(--amber); text-decoration: none; border-bottom: 1px solid rgba(185, 114, 42, 0.3); transition: border-color 0.2s, color 0.2s; }
 a:hover { border-color: var(--amber); }
@@ -289,7 +289,7 @@ section:first-of-type { border-top: none; }
 }
 .project-card.primary .tag { background: var(--amber); color: var(--paper); }
 .project-card.secondary .tag { background: var(--teal); color: var(--paper); }
-.project-card h3 { font-style: italic; margin-bottom: 0.75rem; }
+.project-card h3 { margin-bottom: 0.75rem; }
 .project-card p { font-size: 0.95rem; flex: 1; }
 .project-card .stats {
   display: flex;
@@ -309,13 +309,14 @@ section:first-of-type { border-top: none; }
 .repo-tree {
   background: var(--ink);
   color: var(--paper);
-  padding: 2rem;
+  /* padding: 2rem; */
   border-radius: 8px;
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.8;
   overflow-x: auto;
-  margin-top: 1.5rem;
+  /* margin-top: 1.5rem;*/
+  white-space: pre;
 }
 .repo-tree .comment { color: var(--warm-gray-light); }
 .repo-tree .dir { color: var(--amber-soft); }
@@ -374,6 +375,23 @@ section:first-of-type { border-top: none; }
 }
 .checklist li strong { color: var(--ink); font-weight: 500; }
 
+.checklist li.done::before {
+  background: var(--amber);
+  border-color: var(--amber);
+  /* checkmark drawn with a tiny inline SVG */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8L7 11.5L13 5' stroke='%23FAF6EE' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.checklist li.done {
+  opacity: 0.55;
+}
+.checklist li.done strong {
+  text-decoration: line-through;
+  text-decoration-color: rgba(110, 104, 98, 0.4);
+}
+
 /* ─── Publishing flow / How to follow ─── */
 
 .platforms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 2rem; }
@@ -386,7 +404,6 @@ section:first-of-type { border-top: none; }
 .platform .name {
   font-family: var(--font-serif);
   font-size: 1.25rem;
-  font-style: italic;
   color: var(--ink);
   margin-bottom: 0.5rem;
 }
@@ -399,6 +416,22 @@ section:first-of-type { border-top: none; }
   margin-bottom: 0.875rem;
 }
 .platform .desc { font-size: 0.875rem; color: var(--warm-gray); margin: 0; }
+
+.platform {
+  padding: 1.5rem 1.75rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  text-decoration: none;       /* removes underline from the link */
+  color: inherit;              /* keeps the text colors as designed */
+  display: block;              /* makes the whole card the click target */
+  border-bottom: 1px solid var(--line);  /* override the universal `a` rule */
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.platform:hover {
+  border-color: var(--amber-soft);
+  transform: translateY(-2px);
+}
 
 @media (max-width: 640px) { .platforms { grid-template-columns: 1fr; } }
 
@@ -420,7 +453,7 @@ section:first-of-type { border-top: none; }
   font-weight: 500;
   margin-bottom: 0.75rem;
 }
-.future-card h4 { font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 1.125rem; margin-bottom: 0.5rem; }
+.future-card h4 { font-family: var(--font-serif); font-weight: 400; font-size: 1.125rem; margin-bottom: 0.5rem; }
 .future-card p { font-size: 0.85rem; color: var(--warm-gray); margin: 0; }
 
 @media (max-width: 900px) { .future-grid { grid-template-columns: 1fr 1fr; } }
@@ -444,7 +477,7 @@ section:first-of-type { border-top: none; }
   font-size: 1.125rem;
   min-width: 2rem;
 }
-.resource-item .title { font-family: var(--font-serif); font-style: italic; font-size: 1.125rem; color: var(--ink); display: block; }
+.resource-item .title { font-family: var(--font-serif); font-size: 1.125rem; color: var(--ink); display: block; }
 .resource-item .meta { font-size: 0.8125rem; color: var(--warm-gray); margin-top: 0.25rem; }
 .resource-item .tag {
   font-size: 0.7rem;
@@ -529,7 +562,7 @@ footer a:hover { color: var(--ink); }
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <section class="hero">
-  <div class="status-pill">Pre-launch · Module 1 begins soon</div>
+  <div class="status-pill">Pre-launch · Module 1 begins soon</div> <!-- next: Module 1 · Week 1-->
   <h1>A 12-week semantic web curriculum, <em>worked in public</em>.</h1>
   <p class="lead">RDF, OWL, SPARQL, and modern knowledge graphs &mdash; from first principles to a deployed hybrid LLM + knowledge graph application. Every artifact, note, and stumbling point published openly.</p>
   <dl class="hero-meta">
@@ -557,10 +590,10 @@ footer a:hover { color: var(--ink); }
   <div class="section-inner two-col">
     <div>
       <div class="eyebrow">The premise</div>
-      <h2><em>Why publish</em><br>learning openly?</h2>
+      <h2>Why publish<br>learning openly?</h2>
     </div>
     <div>
-      <p class="lead">Most learning artifacts you find online describe finished states. This one shows the process &mdash; including the redos, the failed exercises, and the wrong turns.</p>
+      <p class="lead">Most learning artifacts describe finished states. This one shows the process. The redos, the failed exercises, and the wrong turns are part of the published value, not embarrassments to hide.</p>
       <div class="premise-three">
         <div class="card">
           <span class="num">i.</span>
@@ -570,12 +603,12 @@ footer a:hover { color: var(--ink); }
         <div class="card">
           <span class="num">ii.</span>
           <h4>Compounding portfolio</h4>
-          <p>Each module produces real artifacts: published ontologies, evaluation notebooks, deployed demos. The curriculum <em>is</em> the portfolio.</p>
+          <p>Each module produces real artifacts: published ontologies, evaluation notebooks, deployed demos. The curriculum is the portfolio.</p>
         </div>
         <div class="card">
           <span class="num">iii.</span>
-          <h4>Showing the work</h4>
-          <p>The wrong turns, the redos, the &ldquo;I was wrong about that&rdquo; reflections &mdash; these are part of the published value, not embarrassments to hide.</p>
+          <h4>Honest signal</h4>
+          <p>A real evaluation, including where graph augmentation hurts retrieval, is more useful than a polished case study that only shows the wins.</p>
         </div>
       </div>
     </div>
@@ -634,9 +667,8 @@ footer a:hover { color: var(--ink); }
       <text x="380" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">MEDIUM</text>
       <text x="620" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#B9722A" letter-spacing="1">HEAVY</text>
       <text x="820" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">MIXED</text>
-      <text x="50" y="115" text-anchor="start" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">NEW GROUND</text>
     </svg>
-    <p class="diagram-caption">The arc is shaped like a marathon block: base, build, peak, taper-and-race. Module 3 is the segment where most of the material is genuinely new ground.</p>
+    <p class="diagram-caption">The arc is reminiscent of marathon prep: base, build, peak, taper-and-race. Module 3 is the segment where most of the material is genuinely new ground for me, personally.</p>
   </div>
 
   <div class="modules-grid">
@@ -671,8 +703,8 @@ footer a:hover { color: var(--ink); }
 <section id="stack">
   <div class="section-inner two-col">
     <div>
-      <div class="eyebrow">What you&rsquo;ll learn</div>
-      <h2>The semantic web stack, <em>layered</em>.</h2>
+      <div class="eyebrow">What I&rsquo;ll learn</div>
+      <h2>The semantic web stack, layered.</h2>
       <p>Each layer builds on the one below it. The curriculum walks up the stack in order: triples first, schemas next, ontologies and reasoning after that. SPARQL is the query language that runs across all layers.</p>
     </div>
     <div>
@@ -717,7 +749,7 @@ footer a:hover { color: var(--ink); }
 <!-- ═══════════════ ANCHORING PROJECTS ═══════════════ -->
 <section id="projects">
   <div class="eyebrow">The anchoring projects</div>
-  <h2>Two existing projects as <em>canvases</em>.</h2>
+  <h2>Two existing projects as canvases.</h2>
   <p>The curriculum doesn&rsquo;t use toy examples. It uses two real projects that already have substantial work behind them. Each anchors specific parts of the curriculum where the technology shines for it.</p>
 
   <div class="projects-grid">
@@ -784,72 +816,70 @@ footer a:hover { color: var(--ink); }
 <!-- ═══════════════ THE REPO ═══════════════ -->
 <section id="repo">
   <div class="eyebrow">The repository</div>
-  <h2>Everything lives <em>here</em>.</h2>
+  <h2>Everything lives here.</h2>
   <p>The GitHub repository is the canonical record. Syllabus, weekly progress, exercises, ontologies, notes, and published artifacts all live in one place. Visitors land on the README; followers track <code>PROGRESS.md</code> for weekly updates.</p>
 
   <div class="repo-tree">
-<span class="comment">// sensemaking-ai/semantic-web-curriculum</span>
-.
-├── <span class="file">README.md</span>           <span class="comment">// repo front door</span>
-├── <span class="file">SYLLABUS.md</span>         <span class="comment">// full 12-week curriculum</span>
-├── <span class="file active">PROGRESS.md</span>         <span class="comment">// live weekly tracker ← updated 2x/week</span>
-├── <span class="file">CLAUDE.md</span>           <span class="comment">// AI-assistant conventions</span>
-├── <span class="file">REFLECTIONS.md</span>      <span class="comment">// cross-module learnings</span>
-├── <span class="dir">modules/</span>
-│   ├── <span class="dir">01-foundations/</span>
-│   ├── <span class="dir">02-modeling/</span>
-│   ├── <span class="dir">03-reasoning/</span>
-│   └── <span class="dir">04-shipping/</span>
-└── <span class="dir">resources/</span>
-    ├── <span class="file">reading-list.md</span>
-    ├── <span class="file">tools.md</span>
-    └── <span class="file">public-kgs.md</span>
+    <span class="comment">// dagny099/semantic-web-curriculum</span>
+    ├── <span class="file">README.md</span>           <span class="comment">// repo front door</span>
+    ├── <span class="file">SYLLABUS.md</span>         <span class="comment">// full 12-week curriculum</span>
+    ├── <span class="file active">PROGRESS.md</span>         <span class="comment">// live weekly tracker ← updated 2x/week</span>
+    ├── <span class="file">REFLECTIONS.md</span>      <span class="comment">// cross-module learnings</span>
+    ├── <span class="dir">modules/</span>
+    │   ├── <span class="dir">01-foundations/</span>
+    │   ├── <span class="dir">02-modeling/</span>
+    │   ├── <span class="dir">03-reasoning/</span>
+    │   └── <span class="dir">04-shipping/</span>
+    └── <span class="dir">resources/</span>
+        ├── <span class="file">reading-list.md</span>
+        ├── <span class="file">tools.md</span>
+        └── <span class="file">public-kgs.md</span>
   </div>
 </section>
 
 <!-- ═══════════════ PUBLISHING IN PUBLIC ═══════════════ -->
 <section id="publishing">
   <div class="eyebrow">Publishing in public</div>
-  <h2>Four platforms, <em>distinct roles</em>.</h2>
+  <h2>Four platforms, distinct roles.</h2>
   <p>The work lives across multiple surfaces. Each has a different role and a different voice. GitHub is the canonical record. LinkedIn broadcasts progress. The two blogs handle longer-form thinking that doesn&rsquo;t belong in either.</p>
 
   <div class="platforms">
-    <div class="platform">
+    <a class="platform" href="https://github.com/dagny099/semantic-web-curriculum" target="_blank" rel="noopener">
       <div class="role">Canonical record</div>
       <div class="name">GitHub repo</div>
       <p class="desc">The official version. All commits dated. Watch the repo for new artifacts as they land.</p>
-    </div>
-    <div class="platform">
+    </a>
+    <a class="platform" href="https://www.linkedin.com/in/barbara-hidalgo-sotelo/" target="_blank" rel="noopener">
       <div class="role">Broadcast · 2&times;/week</div>
       <div class="name">LinkedIn</div>
       <p class="desc">Monday progress + one weekly insight. Friday artifact or open question. Hooks first, white space heavy.</p>
-    </div>
-    <div class="platform">
+    </a>
+    <a class="platform" href="https://sensemaking-ai.com" target="_blank" rel="noopener">
       <div class="role">Deep analysis · end of module</div>
       <div class="name">sensemaking-ai.com</div>
       <p class="desc">Long-form essays on the design decisions, the &ldquo;what I changed my mind about,&rdquo; the cog-sci-flavored reflections.</p>
-    </div>
-    <div class="platform">
+    </a>
+    <a class="platform" href="https://barbhs.com" target="_blank" rel="noopener">
       <div class="role">Musings · occasional</div>
       <div class="name">barbhs.com</div>
       <p class="desc">The most personal layer. Working-notebook explorations that don&rsquo;t fit anywhere else.</p>
-    </div>
+    </a>
   </div>
 </section>
 
-<!-- ═══════════════ TOMORROW ═══════════════ -->
+<!-- ═══════════════ NEXT TO LAST WEEKEND IN MAY ═══════════════ -->
 <section id="tomorrow">
-  <div class="eyebrow">When you get started</div>
-  <h2>Tomorrow: <em>pre-week setup</em>.</h2>
+  <div class="eyebrow">When I get started</div>
+  <h2>This weekend: pre-week setup.</h2>
   <p>The pre-week is roughly 2&ndash;3 hours of setup work spread across morning and afternoon. Front-loading these means Module 1&rsquo;s first day isn&rsquo;t lost to environment-fighting.</p>
 
   <div class="checklist">
     <h3>Morning <span class="time">~1.5 hours</span></h3>
     <ul>
-      <li><strong>Push the initial repo files to GitHub.</strong> README, SYLLABUS, PROGRESS, CLAUDE.md, Module 1 README. The repo should look maintained from day one.</li>
-      <li><strong>Install Apache Jena + Fuseki locally.</strong> Verify it runs on <code>localhost:3030</code> and you can create a new dataset.</li>
+      <li class="done"><strong>Push the initial repo files to GitHub.</strong> README, SYLLABUS, PROGRESS, CLAUDE.md, Module 1 README. The repo should look maintained from day one.</li>
+      <li><strong>Install Apache Jena + Fuseki locally.</strong> Verify it runs on <code>localhost:3030</code> and I can create a new dataset.</li>
       <li><strong>Install Prot&eacute;g&eacute;</strong> and open it once. Don&rsquo;t do anything with it yet.</li>
-      <li><strong>Bookmark the W3C primer set.</strong> RDF 1.1, Turtle, SPARQL 1.1 Query &mdash; these are your spec references.</li>
+      <li><strong>Bookmark the W3C primer set.</strong> RDF 1.1, Turtle, SPARQL 1.1 Query &mdash; these are my spec references.</li>
     </ul>
   </div>
 
@@ -868,9 +898,9 @@ footer a:hover { color: var(--ink); }
     <ul>
       <li><strong>Read Allemang chapters 1&ndash;3</strong> (RDF foundations, RDFS).</li>
       <li><strong>Exercise 1.1: Wikidata orientation.</strong> Three queries through query.wikidata.org. Notes go in <code>modules/01-foundations/notes/week-01.md</code>.</li>
-      <li><strong>Exercise 1.2: Hand-write a FOAF graph</strong> of yourself and three projects.</li>
+      <li><strong>Exercise 1.2: Hand-write a FOAF graph</strong> of myself and three of my projects.</li>
       <li><strong>Begin Exercise 1.3: Resume Graph RDF slice.</strong> The Module 1 primary project.</li>
-      <li><strong>Write Week 1 synthesis notes.</strong> One paragraph in your own words on what landed.</li>
+      <li><strong>Write Week 1 synthesis notes.</strong> One paragraph, in my own words, on what it felt like to cover the material.</li>
       <li><strong>Post first Monday LinkedIn update.</strong> &ldquo;Week 1 of 12&rdquo; momentum check.</li>
     </ul>
   </div>
@@ -879,7 +909,7 @@ footer a:hover { color: var(--ink); }
 <!-- ═══════════════ FUTURE CONTENT ═══════════════ -->
 <section id="future">
   <div class="eyebrow">Coming as the work progresses</div>
-  <h2>Placeholders for <em>richer content</em>.</h2>
+  <h2>Placeholders for richer content.</h2>
   <p>These slots will fill in as each module produces its artifacts. Listed here so the structure is visible from day one and the work has clear targets.</p>
 
   <div class="future-grid">
@@ -969,12 +999,12 @@ footer a:hover { color: var(--ink); }
 <!-- ═══════════════ ABOUT ═══════════════ -->
 <section id="about">
   <div class="eyebrow">About the project</div>
-  <h2>One practitioner, <em>working openly</em>.</h2>
+  <h2>One practitioner, working openly.</h2>
   <div class="about-grid">
     <div>
-      <p>This curriculum is published under <strong>Sensemaking AI</strong>, an independent AI and machine learning consulting practice. It&rsquo;s run solo by Barbara Hidalgo-Sotelo &mdash; cognitive scientist, AI/ML consultant, Toastmaster, marathon runner, beekeeper, and longtime builder of quirky-but-rigorous data projects.</p>
-      <p>The curriculum is her work, published transparently under her consulting brand. No fake team, no corporate scaffolding. The brand framing is honest positioning, not corporate cosplay.</p>
-      <p>The project sits at an unusual intersection: cognitive science meets formal knowledge representation meets practical AI engineering. Most cog sci PhDs who build production systems don&rsquo;t know formal semantics. Most semantic web practitioners don&rsquo;t have a cog sci background. The Venn intersection is small, valuable, and aligned with what Sensemaking AI advises clients on.</p>
+      <p>This curriculum is published under Sensemaking AI, an independent AI and machine learning consulting practice. It&rsquo;s run solo by Barbara Hidalgo-Sotelo &mdash; cognitive scientist, AI/ML consultant, Toastmaster, marathon runner, beekeeper, and longtime builder of quirky-but-rigorous data projects.</p>
+      <p>Two web homes, two different jobs. <a href="https://barbhs.com" target="_blank" rel="noopener">barbhs.com</a> is the technical portfolio &mdash; projects, experiments, the body of work. <a href="https://sensemaking-ai.com" target="_blank" rel="noopener">sensemaking-ai.com</a> is the practice &mdash; applied AI work for people and organizations who want to think clearly with AI, not just move faster because of it.</p>
+      <p>The curriculum sits between them. It&rsquo;s how the technical body of work gets developed in the open, and where the practice&rsquo;s intellectual commitments get tested against real material.</p>
       <p>Questions, corrections, and discussion welcome via the repository&rsquo;s issues. Pull requests on the curriculum itself aren&rsquo;t accepted &mdash; this is a personal learning project &mdash; but disagreements about design choices are always interesting.</p>
     </div>
     <div>
@@ -987,16 +1017,17 @@ footer a:hover { color: var(--ink); }
 
 <footer>
   <div>
-    <span style="font-family: var(--font-serif); font-style: italic; color: var(--ink);">Sensemaking AI</span>
+    <span style="font-family: var(--font-serif); color: var(--ink);">Sensemaking AI</span>
     &nbsp;·&nbsp; Austin, TX
     &nbsp;·&nbsp; Code MIT &nbsp;·&nbsp; Content CC BY 4.0
   </div>
   <div class="links">
-    <a href="https://www.linkedin.com/in/dagny/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://www.linkedin.com/in/barbara-hidalgo-sotelo/" target="_blank" rel="noopener">LinkedIn</a>
     <a href="https://sensemaking-ai.com" target="_blank" rel="noopener">sensemaking-ai.com</a>
     <a href="https://barbhs.com" target="_blank" rel="noopener">barbhs.com</a>
     <a href="https://docs.barbhs.com/naruto-network-graph/" target="_blank" rel="noopener">Naruto Graph</a>
   </div>
+  © 2026 Barbara Hidalgo-Sotelo. All rights reserved.
 </footer>
 
 </div>
