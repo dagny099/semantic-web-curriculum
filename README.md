@@ -39,6 +39,59 @@ Full details in **[SYLLABUS.md](./SYLLABUS.md)**. Live progress in **[PROGRESS.m
 
 ---
 
+## How to use this site
+
+The curriculum has three kinds of readers and three matching paths through the material. Pick the one that fits.
+
+**New readers** start at this README, read the SYLLABUS for the arc, then enter Module 1. The Module READMEs are the operational layer — they orchestrate three weeks of reading, exercises, and a project. Submodule HTML pages, linked from each Module README, are the synthesis essays: short reads that explain the conceptual moves in my voice rather than restating the canonical references. Exercises and notes produce the artifacts that prove the work happened.
+
+**Drive-by readers** typically arrive from LinkedIn at a single submodule page. That's by design — each submodule is meant to stand alone as a synthesis essay. If something there is worth more time, the "what to do next" section on each submodule is the bridge back into the broader curriculum.
+
+Practitioner lookups come for the reference layer: cheatsheets (back-pocket syntax), the glossary (term definitions), and the resources sidebar (annotated reading list, tools, public KGs). These are designed to be useful without context. If you've already worked through the curriculum and you're back for a refresh, this is your entry point.
+
+```mermaid
+---
+title: How to use this site — three readers, three paths
+---
+flowchart TD
+    classDef entry fill:#0B4F4A,stroke:#0B4F4A,color:#FAF7F2,font-weight:bold
+    classDef curriculum fill:#C6E2DD,stroke:#1E8076,color:#0B4F4A
+    classDef converge fill:#FAEAE2,stroke:#D85A30,color:#1F2A2E,font-weight:bold,stroke-width:3px
+    classDef reference fill:#F2EDE3,stroke:#5A6671,color:#1F2A2E
+    classDef invisible fill:none,stroke:none,color:#5A6671,font-style:italic
+
+    E1([New reader]):::entry
+    E2([Drive-by reader<br/>from LinkedIn]):::entry
+    E3([Practitioner lookup]):::entry
+
+    A1[Repo README]:::curriculum
+    A2[SYLLABUS]:::curriculum
+    A3[Module README]:::curriculum
+    A4[Canonical reading<br/>Allemang · DuCharme · Hogan]:::curriculum
+    A5[Exercises]:::curriculum
+    A6[Notes &amp; artifacts<br/>.ttl · .rq · week-NN.md]:::curriculum
+
+    S[Submodule HTML pages<br/>the synthesis layer]:::converge
+
+    R1[Cheatsheets]:::reference
+    R2[Glossary]:::reference
+    R3[Reading list · Tools · Public KGs]:::reference
+
+    E1 --> A1 --> A2 --> A3 --> A4 --> S
+    S --> A5 --> A6
+
+    E2 --> S
+    S -. if hooked .-> A1
+
+    E3 --> R1
+    E3 --> R2
+    E3 --> R3
+
+    N1[Solid line: primary path<br/>Dashed line: optional crossover]:::invisible
+```
+
+---
+
 ## Repository structure
 
 ```

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 1 cheat sheet — Sensemaking Semantic Web</title>
+<meta name="description" content="Quick reference for RDF, Turtle, SPARQL, and the reusable vocabularies that show up across the Sensemaking Semantic Web curriculum.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-deep: #0B4F4A;
+    --teal-mid: #1E8076;
+    --teal-light: #C6E2DD;
+    --coral: #D85A30;
+    --coral-tint: #FAEAE2;
+    --charcoal: #1F2A2E;
+    --slate: #5A6671;
+    --slate-light: #8A929A;
+    --cream: #FAF7F2;
+    --white: #FFFFFF;
+    --rule: #D8D2C6;
+    --code-bg: #F2EDE3;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    color: var(--charcoal);
+    background: var(--cream);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Header band ---------- */
+  .masthead {
+    background: var(--teal-deep);
+    color: var(--white);
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+  }
+  .masthead::after {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    background: var(--coral);
+    margin-top: 1.5rem;
+  }
+  .masthead-inner {
+    max-width: 68rem;
+    margin: 0 auto;
+  }
+  .brand {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--teal-light);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  h1 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 3rem;
+    line-height: 1.1;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.015em;
+  }
+  .subtitle {
+    font-size: 1.05rem;
+    color: var(--teal-light);
+    letter-spacing: 0.02em;
+    max-width: 36rem;
+  }
+
+  /* ---------- Container ---------- */
+  .container {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 1rem;
+  }
+
+  /* ---------- Quick nav ---------- */
+  nav.quick-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 3rem;
+    font-size: 0.78rem;
+  }
+  nav.quick-nav a {
+    color: var(--slate);
+    text-decoration: none;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+  nav.quick-nav a:hover { color: var(--coral); }
+
+  /* ---------- Sections ---------- */
+  section {
+    margin-bottom: 4rem;
+    scroll-margin-top: 1.5rem;
+  }
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    color: var(--coral);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+  h2 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 2.15rem;
+    color: var(--charcoal);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  .section-intro {
+    color: var(--slate);
+    margin: 0.5rem 0 2rem;
+    max-width: 44rem;
+    font-size: 0.98rem;
+  }
+
+  h3 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin: 1.75rem 0 0.6rem;
+    letter-spacing: 0.005em;
+  }
+  h3:first-child { margin-top: 0; }
+  h3 .muted { color: var(--slate-light); font-weight: 400; font-size: 0.85em; }
+
+  /* ---------- Grids ---------- */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 2.5rem;
+  }
+  .grid-2-wide {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 0.5rem 2rem;
+    align-items: start;
+  }
+  @media (max-width: 760px) {
+    .grid-2, .grid-2-wide { grid-template-columns: 1fr; gap: 0.5rem; }
+  }
+
+  /* ---------- Code ---------- */
+  pre, code {
+    font-family: 'IBM Plex Mono', Consolas, monospace;
+    font-size: 0.815rem;
+  }
+  pre {
+    background: var(--code-bg);
+    padding: 0.85rem 1rem;
+    border-radius: 3px;
+    overflow-x: auto;
+    margin: 0.4rem 0 1.1rem;
+    line-height: 1.65;
+    color: var(--charcoal);
+    border-left: 3px solid var(--teal-mid);
+  }
+  pre.compact {
+    margin-bottom: 0.6rem;
+  }
+  p { margin: 0.4rem 0 0.9rem; font-size: 0.95rem; }
+  p.tight { margin: 0.2rem 0 0.6rem; font-size: 0.88rem; color: var(--slate); }
+  p code, li code, td code, h3 code {
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.88em;
+    color: var(--charcoal);
+  }
+  .comment { color: var(--slate-light); }
+  .kw { color: var(--teal-deep); font-weight: 500; }
+
+  /* ---------- Tip / callout ---------- */
+  .tip {
+    background: var(--coral-tint);
+    border-left: 3px solid var(--coral);
+    padding: 0.75rem 1rem 0.85rem;
+    margin: 1rem 0 1.25rem;
+    font-size: 0.9rem;
+    color: var(--charcoal);
+  }
+  .tip-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--coral);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+  .tip p { margin: 0; }
+
+  /* ---------- Tables ---------- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0 1.5rem;
+    font-size: 0.9rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.55rem 0.9rem 0.55rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate);
+    border-bottom: 2px solid var(--rule);
+    padding-top: 0.4rem;
+    padding-bottom: 0.5rem;
+  }
+  td.code-cell {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.83rem;
+    color: var(--teal-deep);
+    white-space: nowrap;
+  }
+
+  /* ---------- Lists ---------- */
+  ul.spaced { padding-left: 1.1rem; margin: 0.4rem 0 1rem; }
+  ul.spaced li { margin: 0.3rem 0; font-size: 0.92rem; }
+
+  /* ---------- Two-up annotation ---------- */
+  .annot-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+    align-items: start;
+  }
+  .annot-row pre { margin: 0; }
+  .annot-text {
+    font-size: 0.88rem;
+    color: var(--slate);
+    padding-top: 0.3rem;
+  }
+  .annot-text strong { color: var(--charcoal); font-weight: 600; }
+  @media (max-width: 760px) {
+    .annot-row { grid-template-columns: 1fr; gap: 0.5rem; }
+    .annot-text { padding-top: 0; }
+  }
+
+  /* ---------- Inline links ---------- */
+  a.inline {
+    color: var(--teal-mid);
+    text-decoration: underline;
+    text-decoration-color: var(--teal-light);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+  }
+  a.inline:hover { color: var(--coral); text-decoration-color: var(--coral); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2rem 0 3rem;
+    margin-top: 3rem;
+    color: var(--slate);
+    font-size: 0.85rem;
+  }
+  footer p { margin: 0.4rem 0; }
+  footer a { color: var(--teal-mid); }
+
+  /* ---------- Section divider ---------- */
+  .section-rule {
+    border: none;
+    height: 1px;
+    background: var(--rule);
+    margin: 0 0 3.5rem 0;
+  }
+
+  /* ---------- Print ---------- */
+  @media print {
+    body { background: white; color: black; font-size: 9.5pt; line-height: 1.4; }
+    .masthead {
+      background: white;
+      color: black;
+      border-bottom: 2px solid black;
+      padding: 0.5rem 0 0.75rem;
+    }
+    .masthead::after { display: none; }
+    .masthead h1 { color: black; font-size: 22pt; }
+    .brand, .subtitle { color: #444; }
+    .container { padding: 0.5rem 0; max-width: none; }
+    nav.quick-nav { display: none; }
+    h2 { font-size: 14pt; page-break-after: avoid; }
+    h3 { font-size: 10pt; page-break-after: avoid; }
+    .section-label { color: #666; }
+    pre {
+      background: #f5f5f5 !important;
+      color: black;
+      page-break-inside: avoid;
+      font-size: 7.5pt;
+      padding: 0.4rem 0.6rem;
+      border-left: 2px solid #888;
+    }
+    .tip {
+      background: #f5f5f5 !important;
+      border-left: 2px solid #888;
+      page-break-inside: avoid;
+      color: black;
+    }
+    .tip-label { color: #666; }
+    section { page-break-inside: avoid; margin-bottom: 1rem; }
+    a { color: black !important; text-decoration: none; }
+    table { font-size: 8.5pt; }
+    .kw { color: #333; }
+    .comment { color: #777; }
+    .section-rule { margin: 1rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== Masthead ===================== -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Module 1 cheat sheet</div>
+    <h1>RDF, Turtle, SPARQL</h1>
+    <div class="subtitle">A working reference for the foundations module — the back-pocket page for when you forget how to write a property path or which prefix `schema:` resolves to.</div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ===================== Quick nav ===================== -->
+<nav class="quick-nav" aria-label="Section navigation">
+  <a href="#prefixes">Prefixes</a>
+  <a href="#turtle">Turtle</a>
+  <a href="#xsd">XSD types</a>
+  <a href="#sparql">SPARQL</a>
+  <a href="#wikidata">Wikidata</a>
+  <a href="#vocabs">Vocabularies</a>
+  <a href="#pitfalls">Pitfalls</a>
+  <a href="#tools">Tools</a>
+</nav>
+
+<!-- ===================== Standard prefix block ===================== -->
+<section id="prefixes">
+  <div class="section-label">01 · Prefixes</div>
+  <h2>The standard prefix block</h2>
+  <p class="section-intro">Paste this at the top of every Turtle file and SPARQL query. The first eight are the curriculum default; PROV-O and OWL-Time get added when reification or temporal modeling shows up.</p>
+<pre><span class="kw">@prefix</span> rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+<span class="kw">@prefix</span> rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+<span class="kw">@prefix</span> owl:     &lt;http://www.w3.org/2002/07/owl#&gt; .
+<span class="kw">@prefix</span> xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+<span class="kw">@prefix</span> dcterms: &lt;http://purl.org/dc/terms/&gt; .
+<span class="kw">@prefix</span> foaf:    &lt;http://xmlns.com/foaf/0.1/&gt; .
+<span class="kw">@prefix</span> schema:  &lt;https://schema.org/&gt; .
+<span class="kw">@prefix</span> skos:    &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+<span class="comment"># Add when needed:</span>
+<span class="kw">@prefix</span> prov:    &lt;http://www.w3.org/ns/prov#&gt; .
+<span class="kw">@prefix</span> time:    &lt;http://www.w3.org/2006/time#&gt; .</pre>
+
+  <div class="tip">
+    <span class="tip-label">Note</span>
+    <p><code>schema:</code> resolves to <code>https://schema.org/</code> with the trailing slash. Older tutorials use <code>http://</code>; both work but the spec is now https.</p>
+  </div>
+
+  <h3>SPARQL equivalent (no @, no period)</h3>
+<pre><span class="kw">PREFIX</span> rdf:    &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+<span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> skos:   &lt;http://www.w3.org/2004/02/skos/core#&gt;</pre>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== Turtle ===================== -->
+<section id="turtle">
+  <div class="section-label">02 · Turtle</div>
+  <h2>Turtle syntax, the essentials</h2>
+  <p class="section-intro">Every Turtle file is a set of triples (subject, predicate, object) ending in a period. The shorthand is what makes it readable at scale.</p>
+
+  <div class="annot-row">
+<pre class="compact">:Naruto schema:memberOf :Konoha .</pre>
+    <div class="annot-text"><strong>The basic triple.</strong> Subject, predicate, object, period. Every statement ends in a period.</div>
+  </div>
+
+  <div class="annot-row">
+<pre class="compact">:Naruto a schema:Person ;
+        schema:memberOf :Konoha ;
+        schema:name "Naruto Uzumaki" .</pre>
+    <div class="annot-text"><strong>Semicolon</strong> reuses the same subject for the next predicate-object pair. The final period closes the whole block.</div>
+  </div>
+
+  <div class="annot-row">
+<pre class="compact">:Naruto naruto:hasJutsu :ShadowClone ,
+                        :Rasengan ,
+                        :SageMode .</pre>
+    <div class="annot-text"><strong>Comma</strong> reuses the same subject AND predicate for multiple objects.</div>
+  </div>
+
+  <div class="annot-row">
+<pre class="compact">:Naruto a schema:Person .
+<span class="comment"># is the same as:</span>
+:Naruto rdf:type schema:Person .</pre>
+    <div class="annot-text"><strong>The <code>a</code> keyword</strong> is shorthand for <code>rdf:type</code>. Use it.</div>
+  </div>
+
+  <h3>Literals</h3>
+  <div class="annot-row">
+<pre class="compact">"Naruto Uzumaki"                <span class="comment"># plain string</span>
+"Naruto Uzumaki"@en             <span class="comment"># language-tagged</span>
+"うずまきナルト"@ja               <span class="comment"># Japanese</span>
+"1999-09-21"^^xsd:date          <span class="comment"># typed</span>
+42                              <span class="comment"># integer (sugar for "42"^^xsd:integer)</span>
+3.14                            <span class="comment"># decimal</span>
+true                            <span class="comment"># boolean</span></pre>
+    <div class="annot-text"><strong>Five forms.</strong> Plain strings are valid but lose information; prefer language tags for human-readable text and typed literals for everything else.</div>
+  </div>
+
+  <h3>Long strings, blank nodes, lists</h3>
+  <div class="annot-row">
+<pre class="compact">:Itachi schema:description """
+Member of the Uchiha clan
+who joined Akatsuki after
+the Uchiha massacre.
+""" .</pre>
+    <div class="annot-text"><strong>Triple-quoted strings</strong> preserve line breaks. Useful for descriptions and prose.</div>
+  </div>
+
+  <div class="annot-row">
+<pre class="compact">:Naruto schema:address [
+  schema:streetAddress "Konoha Village" ;
+  schema:postalCode    "00001"
+] .</pre>
+    <div class="annot-text"><strong>Anonymous blank node</strong> in square brackets. Useful for grouped properties you'll never need to reference elsewhere.</div>
+  </div>
+
+  <div class="annot-row">
+<pre class="compact">:ChuninExams naruto:teams
+  ( :Team7 :Team8 :Team10 ) .</pre>
+    <div class="annot-text"><strong>Ordered list</strong> in parentheses. Use sparingly — RDF lists are awkward to query.</div>
+  </div>
+
+  <div class="tip">
+    <span class="tip-label">Pitfall</span>
+    <p>Blank nodes are <em>local</em>. Two blank nodes from different files cannot be assumed identical even if they have identical properties. If you'll need to reference it from outside, use a real URI.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== XSD ===================== -->
+<section id="xsd">
+  <div class="section-label">03 · XSD types</div>
+  <h2>XSD datatypes you'll actually use</h2>
+  <p class="section-intro">There are dozens. These are the ones that come up in real ontology work.</p>
+
+  <table>
+    <thead><tr><th>Datatype</th><th>What for</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td class="code-cell">xsd:string</td><td>text, when language doesn't matter</td><td><code>"Konoha"^^xsd:string</code></td></tr>
+      <tr><td class="code-cell">xsd:integer</td><td>whole numbers</td><td><code>"42"^^xsd:integer</code> or just <code>42</code></td></tr>
+      <tr><td class="code-cell">xsd:decimal</td><td>exact decimals (money, ratios)</td><td><code>"3.14"^^xsd:decimal</code></td></tr>
+      <tr><td class="code-cell">xsd:double</td><td>floating point (scientific)</td><td><code>"6.022e23"^^xsd:double</code></td></tr>
+      <tr><td class="code-cell">xsd:boolean</td><td>true/false</td><td><code>true</code></td></tr>
+      <tr><td class="code-cell">xsd:date</td><td>calendar date (no time)</td><td><code>"2026-05-26"^^xsd:date</code></td></tr>
+      <tr><td class="code-cell">xsd:dateTime</td><td>date plus time, ISO 8601</td><td><code>"2026-05-26T14:30:00Z"^^xsd:dateTime</code></td></tr>
+      <tr><td class="code-cell">xsd:gYear</td><td>year only</td><td><code>"1999"^^xsd:gYear</code></td></tr>
+      <tr><td class="code-cell">xsd:anyURI</td><td>URI as a literal (not a node)</td><td><code>"https://barbhs.com"^^xsd:anyURI</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== SPARQL ===================== -->
+<section id="sparql">
+  <div class="section-label">04 · SPARQL</div>
+  <h2>SPARQL essentials</h2>
+  <p class="section-intro">SPARQL is graph-pattern matching. You describe a shape; the engine finds every binding of variables that fits the shape. The mental shift from SQL is real — but the syntax is small.</p>
+
+  <h3>The four query forms</h3>
+  <table>
+    <tbody>
+      <tr><td class="code-cell">SELECT</td><td>Return a table of variable bindings. The default.</td></tr>
+      <tr><td class="code-cell">ASK</td><td>Return true/false — does at least one match exist?</td></tr>
+      <tr><td class="code-cell">CONSTRUCT</td><td>Return a new RDF graph built from the matches. Used to materialize inferences.</td></tr>
+      <tr><td class="code-cell">DESCRIBE</td><td>Return everything the endpoint knows about a resource.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>SELECT skeleton</h3>
+<pre><span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+
+<span class="kw">SELECT</span> ?person ?name
+<span class="kw">WHERE</span> {
+  ?person a schema:Person ;
+          schema:name ?name .
+}
+<span class="kw">ORDER BY</span> ?name
+<span class="kw">LIMIT</span> 25</pre>
+
+  <h3>Triple patterns</h3>
+  <p class="tight">Variables start with <code>?</code>. Each triple pattern ends in a period (or chains with <code>;</code> / <code>,</code> like Turtle).</p>
+<pre>?s rdf:type ?type .              <span class="comment"># what types is ?s?</span>
+?s ?p ?o .                       <span class="comment"># everything about ?s</span>
+?ninja schema:memberOf :Konoha . <span class="comment"># everyone from Konoha</span></pre>
+
+  <h3>FILTER — narrow existing bindings</h3>
+<pre>?character schema:birthDate ?date .
+<span class="kw">FILTER</span> (?date &lt; "1990-01-01"^^xsd:date)
+
+?character schema:name ?name .
+<span class="kw">FILTER</span> (<span class="kw">REGEX</span>(?name, "Uchiha", "i"))   <span class="comment"># case-insensitive</span>
+
+<span class="kw">FILTER</span> <span class="kw">EXISTS</span> { ?character naruto:hasJutsu :Sharingan }
+<span class="kw">FILTER</span> <span class="kw">NOT EXISTS</span> { ?character naruto:rivalOf :Naruto }</pre>
+
+  <h3>OPTIONAL — left-outer join</h3>
+<pre>?person schema:name ?name .
+<span class="kw">OPTIONAL</span> { ?person schema:email ?email }
+<span class="kw">OPTIONAL</span> { ?person schema:birthDate ?dob }</pre>
+  <p class="tight">If the optional pattern matches, the variable is bound. If not, the row still returns with that variable unbound.</p>
+
+  <h3>UNION — either pattern</h3>
+<pre>{ ?person schema:name ?name }
+<span class="kw">UNION</span>
+{ ?person foaf:name ?name }</pre>
+
+  <h3>Aggregation</h3>
+<pre><span class="kw">SELECT</span> ?village (<span class="kw">COUNT</span>(?ninja) <span class="kw">AS</span> ?count)
+<span class="kw">WHERE</span> {
+  ?ninja schema:memberOf ?village .
+}
+<span class="kw">GROUP BY</span> ?village
+<span class="kw">HAVING</span> (?count &gt; 5)
+<span class="kw">ORDER BY</span> <span class="kw">DESC</span>(?count)</pre>
+  <p class="tight">Other aggregates: <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>, <code>GROUP_CONCAT</code>, <code>SAMPLE</code>.</p>
+
+  <h3>Property paths <span class="muted">— SPARQL 1.1</span></h3>
+<pre>?p foaf:knows+ :Naruto .          <span class="comment"># 1 or more hops</span>
+?p foaf:knows* :Naruto .          <span class="comment"># 0 or more (includes self)</span>
+?p foaf:knows? :Naruto .          <span class="comment"># 0 or 1 (optional)</span>
+?p (foaf:knows|schema:colleague) :Naruto .       <span class="comment"># alternation</span>
+?p schema:parent/schema:name ?gpName .           <span class="comment"># sequence: grandparent's name</span>
+?p ^schema:parent ?child .                       <span class="comment"># inverse: ?p is ?child's parent</span></pre>
+
+  <h3>CONSTRUCT — materialize a new graph</h3>
+<pre><span class="kw">CONSTRUCT</span> {
+  ?person naruto:hasCompetency ?skill .
+}
+<span class="kw">WHERE</span> {
+  ?person naruto:heldRole ?role .
+  ?role schema:duration ?d .
+  ?role naruto:relatedSkill ?skill .
+  <span class="kw">FILTER</span> (?d &gt; "P2Y"^^xsd:duration)
+}</pre>
+  <p class="tight">Returns RDF, not a table. The workhorse of inference materialization in Module 3.</p>
+
+  <div class="tip">
+    <span class="tip-label">Mental shift</span>
+    <p>A query that returns zero results doesn't mean your data is wrong. The open-world model treats absence of evidence as just absence, not falsehood. Check the pattern first — variable names that don't match, wrong predicate, missing prefix declaration.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== Wikidata ===================== -->
+<section id="wikidata">
+  <div class="section-label">05 · Wikidata</div>
+  <h2>Wikidata query patterns</h2>
+  <p class="section-intro">Wikidata uses Q-numbers for entities and P-numbers for properties. The query service at <a class="inline" href="https://query.wikidata.org/">query.wikidata.org</a> has a forgiving UI — find Q/P numbers via the search box, then modify example queries before writing from scratch.</p>
+
+  <h3>The minimum useful query</h3>
+<pre><span class="kw">PREFIX</span> wd:  &lt;http://www.wikidata.org/entity/&gt;
+<span class="kw">PREFIX</span> wdt: &lt;http://www.wikidata.org/prop/direct/&gt;
+
+<span class="comment"># Books by Adrian Tchaikovsky (Q14010003)</span>
+<span class="kw">SELECT</span> ?book ?title
+<span class="kw">WHERE</span> {
+  ?book wdt:P50  wd:Q14010003 ;   <span class="comment"># P50 = author</span>
+        wdt:P31  wd:Q571 ;        <span class="comment"># P31 = instance of, Q571 = book</span>
+        rdfs:label ?title .
+  <span class="kw">FILTER</span>(<span class="kw">LANG</span>(?title) = "en")
+}</pre>
+
+  <h3>The label service — always add this</h3>
+<pre><span class="kw">SELECT</span> ?person ?personLabel
+<span class="kw">WHERE</span> {
+  ?person wdt:P69 wd:Q49108 .   <span class="comment"># educated at MIT</span>
+  <span class="kw">SERVICE</span> wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+  }
+}</pre>
+  <p class="tight">Any variable ending in <code>Label</code> gets auto-resolved to a readable name.</p>
+
+  <h3>Common Q/P numbers worth memorizing</h3>
+  <table>
+    <tbody>
+      <tr><td class="code-cell">wdt:P31</td><td>instance of</td></tr>
+      <tr><td class="code-cell">wdt:P279</td><td>subclass of</td></tr>
+      <tr><td class="code-cell">wdt:P50</td><td>author</td></tr>
+      <tr><td class="code-cell">wdt:P69</td><td>educated at</td></tr>
+      <tr><td class="code-cell">wdt:P106</td><td>occupation</td></tr>
+      <tr><td class="code-cell">wdt:P569</td><td>date of birth</td></tr>
+      <tr><td class="code-cell">wd:Q5</td><td>human</td></tr>
+      <tr><td class="code-cell">wd:Q571</td><td>book</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip">
+    <span class="tip-label">Speed</span>
+    <p>Wikidata times out on complex queries. Start narrow (constrain to one entity type first), then expand. Use <code>LIMIT 100</code> while iterating.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== Vocabularies ===================== -->
+<section id="vocabs">
+  <div class="section-label">06 · Vocabularies</div>
+  <h2>Reusable vocabularies — when to reach for what</h2>
+  <p class="section-intro">Reuse before defining. Every custom term is future maintenance burden and lost interoperability. The order below is the order to check.</p>
+
+  <table>
+    <thead><tr><th style="width:14%">Prefix</th><th style="width:38%">Reach for it when…</th><th>Examples</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="code-cell">rdfs:</td>
+        <td>You need labels, comments, or class/subclass hierarchy</td>
+        <td><code>rdfs:label</code>, <code>rdfs:comment</code>, <code>rdfs:subClassOf</code></td>
+      </tr>
+      <tr>
+        <td class="code-cell">schema:</td>
+        <td>Modeling people, organizations, events, places, books, articles — almost everything mainstream</td>
+        <td><code>schema:Person</code>, <code>schema:Organization</code>, <code>schema:Book</code>, <code>schema:TVEpisode</code></td>
+      </tr>
+      <tr>
+        <td class="code-cell">foaf:</td>
+        <td>People and social relations, when schema.org doesn't fit</td>
+        <td><code>foaf:Person</code>, <code>foaf:knows</code>, <code>foaf:homepage</code></td>
+      </tr>
+      <tr>
+        <td class="code-cell">skos:</td>
+        <td>Concept schemes, taxonomies, controlled vocabularies (ESCO, MeSH, AAT)</td>
+        <td><code>skos:Concept</code>, <code>skos:broader</code>, <code>skos:exactMatch</code></td>
+      </tr>
+      <tr>
+        <td class="code-cell">dcterms:</td>
+        <td>Bibliographic metadata about resources — source, date, creator, license</td>
+        <td><code>dcterms:source</code>, <code>dcterms:created</code>, <code>dcterms:creator</code></td>
+      </tr>
+      <tr>
+        <td class="code-cell">prov:</td>
+        <td>Who said what, when, derived from where</td>
+        <td><code>prov:wasAttributedTo</code>, <code>prov:wasGeneratedBy</code>, <code>prov:Activity</code></td>
+      </tr>
+      <tr>
+        <td class="code-cell">time:</td>
+        <td>Time intervals, durations, before/after relations</td>
+        <td><code>time:Interval</code>, <code>time:hasBeginning</code>, <code>time:before</code></td>
+      </tr>
+      <tr>
+        <td class="code-cell">owl:</td>
+        <td>Class equivalence, property characteristics, restrictions — Module 2+</td>
+        <td><code>owl:Class</code>, <code>owl:sameAs</code>, <code>owl:equivalentClass</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>The decision flow</h3>
+  <ul class="spaced">
+    <li>Check rdfs/owl built-ins first (label, comment, subClassOf are universal)</li>
+    <li>Then schema.org — broadest coverage, best tooling, alive and maintained</li>
+    <li>Then domain-specific established vocabularies: FOAF (people), SKOS (taxonomies), Dublin Core (bibliographic), PROV-O (provenance), OWL-Time (temporal)</li>
+    <li>Then domain-of-practice vocabularies if applicable: ESCO (occupations), FIBO (finance), UMLS (medical)</li>
+    <li>Only then mint terms in your custom namespace — and document the reasoning in a <code>REUSE.md</code></li>
+  </ul>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== Pitfalls ===================== -->
+<section id="pitfalls">
+  <div class="section-label">07 · Pitfalls</div>
+  <h2>Common errors and where they bite</h2>
+  <p class="section-intro">The errors you'll hit in the first month. Each one looks cryptic the first time.</p>
+
+  <div class="grid-2">
+    <div>
+      <h3>Missing terminator</h3>
+      <p class="tight">A Turtle statement that ends without <code>.</code>, or a continuation that ends with a dangling <code>;</code> or <code>,</code>, fails to parse. Always check the line above the parse error too — Turtle errors often surface one line late.</p>
+
+      <h3>Wrong scheme on <code>schema:</code></h3>
+      <p class="tight">The canonical prefix is <code>https://schema.org/</code>, not <code>http://schema.org/</code>. Both resolve over the web, but mixing them within a single graph creates two distinct URIs that look identical to you and different to the engine.</p>
+
+      <h3>Blank nodes across files</h3>
+      <p class="tight">A blank node in file A is not the same as a blank node in file B even if every property matches. If a thing needs to be referenced from outside its file, give it a real URI.</p>
+
+      <h3>FILTER can't bind</h3>
+      <p class="tight"><code>FILTER</code> only constrains already-bound variables. It cannot introduce a variable. If your query says <code>FILTER(?x = "y")</code> but nothing else binds <code>?x</code>, the filter operates on unbound and produces nothing.</p>
+    </div>
+
+    <div>
+      <h3><code>owl:sameAs</code> is a hammer</h3>
+      <p class="tight">Asserting <code>:A owl:sameAs :B</code> tells the reasoner to merge every property of both URIs. Use <code>skos:exactMatch</code> when you mean "same referent, keep attributes separate."</p>
+
+      <h3>Open-world surprise</h3>
+      <p class="tight">"Person X has no listed children" does not mean "Person X has zero children." SPARQL queries that look for absence return empty, and OWL reasoners refuse to infer falsehood from missing data. Layer SHACL when you need closed-world for application logic.</p>
+
+      <h3>Capitalization matters</h3>
+      <p class="tight">URIs are case-sensitive. <code>:Naruto</code> and <code>:naruto</code> are different nodes. Pick a convention (capitalize classes and instances, lowercase properties) and enforce it.</p>
+
+      <h3>Empty result means re-check the pattern</h3>
+      <p class="tight">When a SPARQL query returns nothing, the first instinct is to blame the data. Usually it's the pattern — a typo in a prefix, a missing predicate, a triple that lives in a named graph the query didn't include. Verify with a broader pattern first.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== Tools ===================== -->
+<section id="tools">
+  <div class="section-label">08 · Tools</div>
+  <h2>Endpoints and sandboxes</h2>
+
+  <table>
+    <thead><tr><th style="width:30%">Tool</th><th>What it's for</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><a class="inline" href="http://localhost:3030">Local Apache Jena Fuseki</a></td>
+        <td>Your default development triplestore. Runs on <code>localhost:3030</code> after install.</td>
+      </tr>
+      <tr>
+        <td><a class="inline" href="https://query.wikidata.org/">Wikidata Query Service</a></td>
+        <td>The largest public SPARQL endpoint. Helper UI is forgiving; modify example queries.</td>
+      </tr>
+      <tr>
+        <td><a class="inline" href="https://dbpedia.org/sparql">DBpedia SPARQL</a></td>
+        <td>Wikipedia-derived structured data. Older than Wikidata, sometimes faster.</td>
+      </tr>
+      <tr>
+        <td><a class="inline" href="http://rdfplayground.dcc.uchile.cl/">RDF Playground</a></td>
+        <td>In-browser sandbox. Write Turtle on the left, visualize as a graph, run SPARQL or SHACL. Best teaching tool for newcomers.</td>
+      </tr>
+      <tr>
+        <td><a class="inline" href="http://vowl.visualdataweb.org/webvowl.html">WebVOWL</a></td>
+        <td>Drag-and-drop ontology visualization. Generate publication-ready screenshots without installing anything.</td>
+      </tr>
+      <tr>
+        <td><a class="inline" href="https://protege.stanford.edu/">Protégé</a></td>
+        <td>Desktop ontology editor. The de facto standard for OWL design work. Save in Turtle, not RDF/XML.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <p>Module 1 cheat sheet · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Licensed CC BY 4.0. Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+</div>
+
+</body>
+</html>

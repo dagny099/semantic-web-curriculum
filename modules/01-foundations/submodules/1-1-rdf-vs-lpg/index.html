@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RDF vs LPG, side by side · Sensemaking Semantic Web</title>
+  <meta name="description" content="A standalone teaching essay comparing RDF and labeled property graphs through one resume graph, side-by-side code, and the ESCO/SKOS interoperability story." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --teal-deep: #0B4F4A;
+      --teal-mid: #1E8076;
+      --teal-light: #C6E2DD;
+      --coral: #D85A30;
+      --coral-tint: #FAEAE2;
+      --charcoal: #1F2A2E;
+      --slate: #5A6671;
+      --cream: #FAF7F2;
+      --code-bg: #F2EDE3;
+      --rule: #D8D2C6;
+      --white: #FFFFFF;
+      --max: 68rem;
+      --reading: 44rem;
+      --font-serif: 'EB Garamond', Georgia, serif;
+      --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--charcoal);
+      font-family: var(--font-sans);
+      font-size: 17px;
+      line-height: 1.68;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: var(--teal-mid); text-decoration: none; border-bottom: 1px solid rgba(30,128,118,.35); }
+    a:hover { border-bottom-color: var(--teal-mid); }
+    .masthead {
+      background: var(--teal-deep);
+      color: var(--white);
+      padding: 3.2rem 1.25rem 3.6rem;
+      border-bottom: 6px solid var(--coral);
+    }
+    .masthead-inner { max-width: var(--max); margin: 0 auto; }
+    .brand {
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--teal-light);
+      margin-bottom: 2rem;
+    }
+    .kicker {
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: .74rem;
+      font-weight: 600;
+      color: var(--teal-light);
+      margin-bottom: .7rem;
+    }
+    h1, h2, h3 {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      line-height: 1.05;
+      margin: 0;
+      color: var(--charcoal);
+    }
+    h1 {
+      color: var(--white);
+      font-size: clamp(3rem, 7vw, 5.9rem);
+      max-width: 11ch;
+      letter-spacing: -.03em;
+    }
+    .subtitle {
+      max-width: 45rem;
+      margin: 1.4rem 0 0;
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+      color: var(--teal-light);
+      line-height: 1.55;
+    }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem 1.2rem;
+      margin-top: 2.2rem;
+      color: var(--teal-light);
+      font-size: .9rem;
+    }
+    .meta-row span { border: 1px solid rgba(198,226,221,.35); border-radius: 999px; padding: .32rem .72rem; }
+
+    .quick-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(250,247,242,.97);
+      border-bottom: 1px solid var(--rule);
+      box-shadow: 0 1px 0 rgba(31,42,46,.03);
+    }
+    .quick-nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: .8rem 1.25rem;
+      display: flex;
+      gap: .55rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .quick-nav a {
+      flex: 0 0 auto;
+      color: var(--charcoal);
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      padding: .35rem .72rem;
+      font-size: .78rem;
+      line-height: 1.2;
+      white-space: nowrap;
+      background: rgba(255,255,255,.35);
+    }
+    .quick-nav a:hover { border-color: var(--teal-mid); color: var(--teal-deep); }
+
+    main { max-width: var(--max); margin: 0 auto; padding: 0 1.25rem 4rem; }
+    section {
+      padding: 4.25rem 0;
+      border-bottom: 1px solid var(--rule);
+      scroll-margin-top: 4rem;
+    }
+    .section-label {
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      color: var(--coral);
+      font-size: .76rem;
+      font-weight: 600;
+      margin-bottom: .9rem;
+    }
+    h2 { font-size: clamp(2.1rem, 5vw, 3.6rem); margin-bottom: 1.1rem; }
+    h3 { font-size: clamp(1.45rem, 3vw, 2.1rem); margin: 2.25rem 0 .8rem; }
+    p, ul, ol { max-width: var(--reading); margin: 0 0 1.15rem; }
+    p.lead { font-size: 1.18rem; line-height: 1.58; color: var(--charcoal); }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: .4rem; }
+    code {
+      font-family: var(--font-mono);
+      font-size: .88em;
+      background: var(--code-bg);
+      padding: .1em .3em;
+      border-radius: .22rem;
+    }
+    .note, .pitfall, .mental-shift {
+      max-width: var(--reading);
+      margin: 1.6rem 0;
+      padding: 1rem 1.1rem 1rem 1.25rem;
+      background: var(--coral-tint);
+      border-left: 4px solid var(--coral);
+      color: var(--charcoal);
+    }
+    .note-title {
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--coral);
+      margin-bottom: .3rem;
+    }
+
+    .compare-grid, .code-pair, .decision-grid, .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin: 1.4rem 0 1.8rem;
+    }
+    .resource-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
+    .panel, .decision-card, .resource-card {
+      background: rgba(255,255,255,.42);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      padding: 1.15rem;
+    }
+    .panel h3, .decision-card h3, .resource-card h3 { margin-top: 0; }
+    .panel-label, .winner {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .68rem;
+      font-weight: 600;
+      color: var(--coral);
+      margin-bottom: .7rem;
+    }
+    .winner { color: var(--teal-mid); margin-top: .6rem; }
+
+    pre {
+      margin: 0 0 1.2rem;
+      background: var(--code-bg);
+      border-left: 4px solid var(--teal-mid);
+      border-radius: 0 10px 10px 0;
+      padding: 1rem 1.05rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      line-height: 1.55;
+      color: var(--charcoal);
+      tab-size: 2;
+    }
+    pre code { padding: 0; background: transparent; border-radius: 0; font-size: inherit; }
+    .code-caption {
+      font-size: .82rem;
+      color: var(--slate);
+      margin-top: -.55rem;
+      margin-bottom: 1rem;
+    }
+
+    .diagram {
+      margin: 2rem 0 2.2rem;
+      background: rgba(255,255,255,.42);
+      border: 1px solid var(--rule);
+      border-radius: 16px;
+      padding: 1.1rem;
+      max-width: 100%;
+    }
+    .diagram svg { display: block; width: 100%; height: auto; }
+    .caption { max-width: 54rem; font-size: .88rem; color: var(--slate); margin: .8rem 0 0; }
+    .svg-title { font: 600 15px var(--font-sans); fill: var(--charcoal); }
+    .svg-small { font: 500 12px var(--font-sans); fill: var(--slate); }
+    .svg-code { font: 500 12px var(--font-mono); fill: var(--charcoal); }
+    .svg-serif { font: italic 500 19px var(--font-serif); fill: var(--charcoal); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: .95rem;
+    }
+    th, td { border-bottom: 1px solid var(--rule); padding: .8rem .7rem; vertical-align: top; text-align: left; }
+    th { color: var(--coral); text-transform: uppercase; letter-spacing: .1em; font-size: .72rem; }
+    td code { white-space: nowrap; }
+
+    footer {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 2.2rem 1.25rem 3rem;
+      color: var(--slate);
+      font-size: .88rem;
+    }
+    footer p { max-width: none; margin-bottom: .5rem; }
+
+    @media (max-width: 900px) {
+      .resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      body { font-size: 16px; }
+      .masthead { padding: 2.25rem 1rem 2.8rem; }
+      main { padding-left: 1rem; padding-right: 1rem; }
+      section { padding: 3.2rem 0; }
+      .compare-grid, .code-pair, .decision-grid, .resource-grid { grid-template-columns: 1fr; }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { position: absolute; left: -9999px; }
+      tr { border: 1px solid var(--rule); border-radius: 12px; margin-bottom: .9rem; padding: .4rem .65rem; background: rgba(255,255,255,.35); }
+      td { border-bottom: 1px solid rgba(216,210,198,.65); padding: .6rem 0; }
+      td:last-child { border-bottom: 0; }
+      td::before { content: attr(data-label); display: block; color: var(--coral); text-transform: uppercase; letter-spacing: .1em; font-size: .68rem; font-weight: 600; margin-bottom: .2rem; }
+    }
+
+    @media print {
+      @page { margin: .65in; }
+      html { scroll-behavior: auto; }
+      body { background: #fff; color: #111; font-size: 11pt; line-height: 1.42; }
+      .masthead { background: #fff; color: #111; border-bottom: 2px solid #111; padding: 0 0 .35in; }
+      .brand, .kicker, .subtitle, .meta-row { color: #333; }
+      h1 { color: #111; font-size: 30pt; max-width: none; }
+      .quick-nav { display: none; }
+      main, footer, .masthead-inner { max-width: none; padding-left: 0; padding-right: 0; }
+      section { padding: .32in 0; border-bottom: 1px solid #bbb; page-break-inside: avoid; }
+      h2 { font-size: 22pt; }
+      h3 { font-size: 15pt; }
+      p, ul, ol { max-width: none; }
+      a { color: #111; border-bottom: none; text-decoration: underline; }
+      .note, .pitfall, .mental-shift { background: #fff; border-left: 3px solid #555; max-width: none; }
+      pre { white-space: pre-wrap; background: #f7f7f7; border-left: 3px solid #555; font-size: 7.5pt; page-break-inside: avoid; }
+      .diagram { background: #fff; page-break-inside: avoid; }
+      .quick-nav, .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="brand">Sensemaking AI · Sensemaking Semantic Web</div>
+      <div class="kicker">Module 1.1 · Foundations</div>
+      <h1>RDF vs LPG, side by side</h1>
+      <p class="subtitle">A pragmatic comparison of RDF and labeled property graphs through one resume graph, three queries, and the moment where ESCO/SKOS makes the interoperability story concrete.</p>
+      <div class="meta-row" aria-label="Page metadata">
+        <span>Standalone synthesis page</span>
+        <span>Approx. 12-minute read</span>
+        <span>RDF · LPG · Cypher · SPARQL</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="quick-nav" aria-label="Quick navigation">
+    <div class="quick-nav-inner">
+      <a href="#why">01 · Why it matters</a>
+      <a href="#models">02 · Data models</a>
+      <a href="#resume">03 · Same resume</a>
+      <a href="#queries">04 · Three queries</a>
+      <a href="#tax">05 · URI tax</a>
+      <a href="#choice">06 · Choice</a>
+      <a href="#next">07 · Next</a>
+      <a href="#resources">08 · Resources</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="why">
+      <div class="section-label">01 · Why this comparison matters</div>
+      <h2>Which one should I be using?</h2>
+      <p class="lead">Anyone arriving at RDF from Neo4j, or arriving at Neo4j from RDF, asks some version of the same question: what is the actual difference, and which one should I choose?</p>
+      <p>Most public answers are not neutral. Vendor pieces tend to make property graphs feel practical and RDF feel ceremonial. Semantic-web defenders tend to make RDF feel principled and property graphs feel local. Both framings contain truth, and both hide the part where real system design happens.</p>
+      <p>The honest answer is less slogan-shaped. RDF and labeled property graphs model many of the same facts, but they start from different primitives. Once you choose the primitives, the consequences cascade: syntax, query shape, metadata, reasoning, reuse, integration, tooling, and team skill. Its important to understand when to use both. The Resume Graph Explorer runs on Neo4j; its ESCO skill links are RDF, and the combination is what this comparison is really about. This page is not trying to crown a winner. It's trying to make the choice hard in the right way.</p>
+    </section>
+
+    <section id="models">
+      <div class="section-label">02 · The two data models, side by side</div>
+      <h2>Same fact, different primitives.</h2>
+      <p>RDF starts with the triple: subject, predicate, object. Subjects and predicates are IRIs. Objects can be IRIs, literals, blank nodes, and in RDF 1.2, triple terms. Classes, vocabularies, entailment, and ontology design sit on top of that basic move.</p>
+      <p>A labeled property graph starts with nodes and relationships. Nodes carry labels and properties. Relationships carry types and properties. The graph feels closer to how many developers already think about objects and links between objects: this person worked at this company, and the relationship itself has dates and a title.</p>
+
+      <div class="diagram" role="img" aria-labelledby="diagram-one-title">
+        <svg viewBox="0 0 980 360" xmlns="http://www.w3.org/2000/svg">
+          <title id="diagram-one-title">RDF and LPG representations of Alice knows Bob since 2020</title>
+          <rect x="24" y="28" width="440" height="304" rx="18" fill="#FAF7F2" stroke="#D8D2C6"/>
+          <rect x="516" y="28" width="440" height="304" rx="18" fill="#FAF7F2" stroke="#D8D2C6"/>
+
+          <text x="52" y="68" class="svg-serif">RDF: triples first</text>
+          <text x="544" y="68" class="svg-serif">LPG: edge properties first</text>
+
+          <circle cx="112" cy="165" r="38" fill="#C6E2DD" stroke="#1E8076"/>
+          <circle cx="360" cy="165" r="38" fill="#C6E2DD" stroke="#1E8076"/>
+          <text x="112" y="169" text-anchor="middle" class="svg-code">:Alice</text>
+          <text x="360" y="169" text-anchor="middle" class="svg-code">:Bob</text>
+          <path d="M151 165 C205 118, 269 118, 321 165" fill="none" stroke="#0B4F4A" stroke-width="2.2" marker-end="url(#arrow)"/>
+          <text x="236" y="112" text-anchor="middle" class="svg-code">foaf:knows</text>
+
+          <rect x="176" y="224" width="138" height="46" rx="8" fill="#FAEAE2" stroke="#D85A30"/>
+          <text x="245" y="243" text-anchor="middle" class="svg-small">metadata needs</text>
+          <text x="245" y="259" text-anchor="middle" class="svg-small">a modeling choice</text>
+          <path d="M245 222 C245 201, 245 183, 245 153" stroke="#D85A30" stroke-dasharray="4 5" fill="none"/>
+          <text x="52" y="306" class="svg-code">:Alice foaf:knows :Bob .</text>
+
+          <circle cx="615" cy="165" r="42" fill="#C6E2DD" stroke="#1E8076"/>
+          <circle cx="858" cy="165" r="42" fill="#C6E2DD" stroke="#1E8076"/>
+          <text x="615" y="160" text-anchor="middle" class="svg-code">alice</text>
+          <text x="615" y="178" text-anchor="middle" class="svg-small">:Person</text>
+          <text x="858" y="160" text-anchor="middle" class="svg-code">bob</text>
+          <text x="858" y="178" text-anchor="middle" class="svg-small">:Person</text>
+          <path d="M658 165 C711 116, 766 116, 815 165" fill="none" stroke="#0B4F4A" stroke-width="2.2" marker-end="url(#arrow)"/>
+          <rect x="690" y="88" width="94" height="52" rx="10" fill="#FAEAE2" stroke="#D85A30"/>
+          <text x="737" y="109" text-anchor="middle" class="svg-code">:KNOWS</text>
+          <text x="737" y="126" text-anchor="middle" class="svg-code">since: 2020</text>
+          <text x="552" y="306" class="svg-code">(alice)-[:KNOWS {since: 2020}]-&gt;(bob)</text>
+
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#0B4F4A" />
+            </marker>
+          </defs>
+        </svg>
+        <p class="caption">The first divergence is not whether Alice can know Bob. Both models can say that easily. The divergence starts when you want to say something about the relationship itself.</p>
+      </div>
+
+      <div class="code-pair">
+        <div>
+          <div class="panel-label">Turtle</div>
+<pre><code>:Alice a foaf:Person .
+:Bob   a foaf:Person .
+:Alice foaf:knows :Bob .
+
+# But where does "since 2020" go?
+# Event? RDF-star? classical reification?</code></pre>
+        </div>
+        <div>
+          <div class="panel-label">Cypher</div>
+<pre><code>CREATE (alice:Person {name: 'Alice'}),
+       (bob:Person {name: 'Bob'}),
+       (alice)-[:KNOWS {since: 2020}]-&gt;(bob);</code></pre>
+        </div>
+      </div>
+      <p>That little “since 2020” is not a footnote. It is the first hint of the whole tradeoff. LPG gives the relationship a property and moves on. RDF asks you to decide whether that relationship is itself a thing worth naming. Annoying? Sometimes. Clarifying? Also sometimes.</p>
+      <div class="note"><span class="note-title">RDF 1.2 note</span>Quoted triples (also called RDF-star) reduce some historical friction around statement-level metadata. You'll meet RDF-star properly in Module 3, alongside the other three reification approaches. For this first module, the event-class pattern teaches the modeling question better: when does a relationship deserve to become a first-class thing?</div>
+    </section>
+
+    <section id="resume">
+      <div class="section-label">03 · The same resume in both stacks</div>
+      <h2>A small career graph, twice.</h2>
+      <p>The resume example is where the comparison stops being philosophical. Imagine one person with two jobs, one degree, and three skills linked to ESCO-style skill concepts. The names are generic; the structure mirrors the Resume Graph Explorer slice that anchors Module 1.</p>
+
+      <div class="code-pair">
+        <div>
+          <div class="panel-label">Cypher create statements</div>
+<pre><code>CREATE
+  (p:Person {
+    id: 'person-001',
+    name: 'Alex Morgan',
+    email: 'alex@example.org'
+  }),
+  (a:Company {id: 'acme', name: 'Acme Analytics'}),
+  (b:Company {id: 'northstar', name: 'Northstar Labs'}),
+  (mit:School {id: 'mit', name: 'MIT'}),
+  (kg:Skill {
+    id: 'skill-kg', label: 'knowledge graphs',
+    escoIri: 'http://data.europa.eu/esco/skill/illustrative-kg'
+  }),
+  (ml:Skill {
+    id: 'skill-ml', label: 'machine learning',
+    escoIri: 'http://data.europa.eu/esco/skill/illustrative-ml'
+  }),
+  (gov:Skill {
+    id: 'skill-gov', label: 'data governance',
+    escoIri: 'http://data.europa.eu/esco/skill/illustrative-gov'
+  }),
+  (p)-[:WORKED_AT {role: 'Data Scientist',
+       startDate: date('2021-03-01'), endDate: date('2023-02-28')}]-&gt;(a),
+  (p)-[:WORKED_AT {role: 'AI Consultant',
+       startDate: date('2023-03-01'), endDate: date('2025-12-31')}]-&gt;(b),
+  (p)-[:STUDIED_AT {degree: 'PhD Cognitive Science',
+       endDate: date('2016-05-20')}]-&gt;(mit),
+  (p)-[:HAS_SKILL {level: 'advanced'}]-&gt;(kg),
+  (p)-[:HAS_SKILL {level: 'advanced'}]-&gt;(ml),
+  (p)-[:HAS_SKILL {level: 'working'}]-&gt;(gov);</code></pre>
+        </div>
+        <div>
+          <div class="panel-label">Turtle equivalent</div>
+<pre><code>@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+@prefix schema: &lt;https://schema.org/&gt; .
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix sensemaking: &lt;https://sensemaking-ai.com/ns/resume#&gt; .
+@prefix : &lt;https://sensemaking-ai.com/id/resume/example/&gt; .
+
+:alex a foaf:Person ;
+  foaf:name "Alex Morgan" ;
+  schema:email "alex@example.org" ;
+  sensemaking:held :employment-acme, :employment-northstar ;
+  sensemaking:completed :education-mit ;
+  sensemaking:hasSkill :skill-kg, :skill-ml, :skill-gov .
+
+:acme a schema:Organization ; schema:name "Acme Analytics" .
+:northstar a schema:Organization ; schema:name "Northstar Labs" .
+:mit a schema:CollegeOrUniversity ; schema:name "MIT" .
+
+:employment-acme a sensemaking:Employment ;
+  sensemaking:employer :acme ; sensemaking:role "Data Scientist" ;
+  sensemaking:startDate "2021-03-01"^^xsd:date ;
+  sensemaking:endDate "2023-02-28"^^xsd:date .
+
+:employment-northstar a sensemaking:Employment ;
+  sensemaking:employer :northstar ; sensemaking:role "AI Consultant" ;
+  sensemaking:startDate "2023-03-01"^^xsd:date ;
+  sensemaking:endDate "2025-12-31"^^xsd:date .
+
+:education-mit a sensemaking:Education ;
+  sensemaking:school :mit ; sensemaking:degree "PhD Cognitive Science" ;
+  sensemaking:endDate "2016-05-20"^^xsd:date .
+
+:skill-kg a skos:Concept ; skos:prefLabel "knowledge graphs" ;
+  skos:exactMatch &lt;http://data.europa.eu/esco/skill/illustrative-kg&gt; .
+:skill-ml a skos:Concept ; skos:prefLabel "machine learning" ;
+  skos:exactMatch &lt;http://data.europa.eu/esco/skill/illustrative-ml&gt; .
+:skill-gov a skos:Concept ; skos:prefLabel "data governance" ;
+  skos:exactMatch &lt;http://data.europa.eu/esco/skill/illustrative-gov&gt; .</code></pre>
+        </div>
+      </div>
+
+      <p class="code-caption">The ESCO IRIs in this example are illustrative placeholders, not claimed real ESCO concept identifiers.</p>
+      <p>Cypher keeps the employment dates directly on the relationship. That is the ergonomic win. Turtle turns employment into a named event-like node. That is the modeling cost, and also the modeling opening. Once employment is a thing, it can have sources, confidence, salary ranges, locations, supervisors, inferred competencies, and later provenance. RDF makes you pay earlier so later reuse has somewhere to attach.</p>
+      <p>The Turtle is longer. That is not a failure of concision. It is the URI tax arriving on the page. The next section is where that tax starts buying something.</p>
+    </section>
+
+    <section id="queries">
+      <div class="section-label">04 · Three queries, three answers</div>
+      <h2>Ergonomics moves around.</h2>
+      <p>The same data now gets three questions. No toy <code>MATCH (n)</code>. The point is to notice where each stack feels native, where it feels heavy, and where the difference is more about habit than capability.</p>
+
+      <h3>Query 1: all jobs in chronological order</h3>
+      <div class="code-pair">
+        <div>
+          <div class="panel-label">Cypher</div>
+<pre><code>MATCH (p:Person {id: 'person-001'})-[r:WORKED_AT]-&gt;(c:Company)
+RETURN r.role AS role, c.name AS employer,
+       r.startDate AS start, r.endDate AS end
+ORDER BY r.startDate;</code></pre>
+          <div class="winner">Ergonomic edge: LPG</div>
+        </div>
+        <div>
+          <div class="panel-label">SPARQL</div>
+<pre><code>PREFIX sensemaking: &lt;https://sensemaking-ai.com/ns/resume#&gt;
+PREFIX schema: &lt;https://schema.org/&gt;
+PREFIX : &lt;https://sensemaking-ai.com/id/resume/example/&gt;
+
+SELECT ?role ?employerName ?start ?end WHERE {
+  :alex sensemaking:held ?employment .
+  ?employment sensemaking:role ?role ;
+              sensemaking:employer ?employer ;
+              sensemaking:startDate ?start ;
+              sensemaking:endDate ?end .
+  ?employer schema:name ?employerName .
+}
+ORDER BY ?start</code></pre>
+        </div>
+      </div>
+      <p>Cypher wins this one cleanly. Neo4j was built for path traversal through local graph structure. The relationship properties are right where the query wants them.</p>
+
+      <h3>Query 2: skills with ESCO codes and broader categories</h3>
+      <div class="diagram" role="img" aria-labelledby="diagram-two-title">
+        <svg viewBox="0 0 980 320" xmlns="http://www.w3.org/2000/svg">
+          <title id="diagram-two-title">The ESCO interoperability unlock</title>
+          <rect x="30" y="34" width="410" height="250" rx="18" fill="#FAF7F2" stroke="#D8D2C6"/>
+          <rect x="540" y="34" width="410" height="250" rx="18" fill="#FAF7F2" stroke="#D8D2C6"/>
+          <text x="60" y="70" class="svg-serif">Cypher: materialize first</text>
+          <text x="570" y="70" class="svg-serif">SPARQL: follow the graph</text>
+
+          <circle cx="105" cy="158" r="32" fill="#C6E2DD" stroke="#1E8076"/>
+          <text x="105" y="162" text-anchor="middle" class="svg-code">Person</text>
+          <circle cx="225" cy="158" r="32" fill="#C6E2DD" stroke="#1E8076"/>
+          <text x="225" y="162" text-anchor="middle" class="svg-code">Skill</text>
+          <circle cx="350" cy="158" r="32" fill="#FAEAE2" stroke="#D85A30"/>
+          <text x="350" y="154" text-anchor="middle" class="svg-code">ESCO</text>
+          <text x="350" y="171" text-anchor="middle" class="svg-small">copy</text>
+          <path d="M137 158 L190 158" stroke="#0B4F4A" stroke-width="2" marker-end="url(#arrow2)"/>
+          <path d="M257 158 L315 158" stroke="#D85A30" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrow2)"/>
+          <text x="224" y="233" text-anchor="middle" class="svg-small">load ESCO into Neo4j, or leave the database</text>
+
+          <circle cx="620" cy="158" r="32" fill="#C6E2DD" stroke="#1E8076"/>
+          <text x="620" y="162" text-anchor="middle" class="svg-code">:alex</text>
+          <circle cx="735" cy="158" r="32" fill="#C6E2DD" stroke="#1E8076"/>
+          <text x="735" y="162" text-anchor="middle" class="svg-code">skill</text>
+          <circle cx="865" cy="110" r="31" fill="#FAEAE2" stroke="#D85A30"/>
+          <text x="865" y="106" text-anchor="middle" class="svg-code">broader</text>
+          <text x="865" y="123" text-anchor="middle" class="svg-small">ESCO</text>
+          <circle cx="865" cy="210" r="31" fill="#FAEAE2" stroke="#D85A30"/>
+          <text x="865" y="206" text-anchor="middle" class="svg-code">related</text>
+          <text x="865" y="223" text-anchor="middle" class="svg-small">ESCO</text>
+          <path d="M652 158 L700 158" stroke="#0B4F4A" stroke-width="2" marker-end="url(#arrow2)"/>
+          <path d="M767 151 C801 130, 819 119, 834 113" stroke="#0B4F4A" stroke-width="2" marker-end="url(#arrow2)"/>
+          <path d="M767 166 C801 187, 819 200, 834 207" stroke="#0B4F4A" stroke-width="2" marker-end="url(#arrow2)"/>
+          <text x="738" y="260" text-anchor="middle" class="svg-small">SKOS is already RDF, so ESCO is not an afterthought</text>
+          <defs>
+            <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#0B4F4A" />
+            </marker>
+          </defs>
+        </svg>
+        <p class="caption">This is the punchline. With RDF, the ESCO concepts can sit in the same graph-shaped universe as the resume data. With LPG, you usually load ESCO into Neo4j or treat it as an external lookup.</p>
+      </div>
+      <div class="code-pair">
+        <div>
+          <div class="panel-label">Cypher</div>
+<pre><code>// Works if ESCO has been materialized into Neo4j.
+MATCH (p:Person {id: 'person-001'})-[r:HAS_SKILL]-&gt;(s:Skill)
+OPTIONAL MATCH (s)-[:EXACT_MATCH]-&gt;(esco:ESCOConcept)
+OPTIONAL MATCH (esco)-[:BROADER]-&gt;(broader:ESCOConcept)
+RETURN s.label AS skill, r.level AS level,
+       esco.iri AS escoIri, broader.label AS broaderCategory
+ORDER BY skill;</code></pre>
+        </div>
+        <div>
+          <div class="panel-label">SPARQL</div>
+<pre><code>PREFIX sensemaking: &lt;https://sensemaking-ai.com/ns/resume#&gt;
+PREFIX skos: &lt;http://www.w3.org/2004/02/skos/core#&gt;
+PREFIX : &lt;https://sensemaking-ai.com/id/resume/example/&gt;
+
+SELECT ?skillLabel ?esco ?broaderLabel ?relatedLabel WHERE {
+  :alex sensemaking:hasSkill ?skill .
+  ?skill skos:prefLabel ?skillLabel ;
+         skos:exactMatch ?esco .
+
+  OPTIONAL { ?esco skos:broader/skos:prefLabel ?broaderLabel . }
+  OPTIONAL { ?esco skos:related/skos:prefLabel ?relatedLabel . }
+}
+ORDER BY ?skillLabel</code></pre>
+          <div class="winner">Interop edge: RDF</div>
+        </div>
+      </div>
+      <p>The first time I followed `skos:broader` from a resume skill into ESCO's hierarchy without writing one line of integration code, the comparison stopped being theoretical. This is where RDF earns its keep. SKOS is already RDF. ESCO is published using RDF, OWL, and SKOS. The SPARQL query isn't "integrating" in the glue-code sense; it's following predicates the external vocabulary already understands.
+
+</p>
+
+      <h3>Query 3: consecutive job transitions</h3>
+      <div class="code-pair">
+        <div>
+          <div class="panel-label">Cypher</div>
+<pre><code>MATCH (p:Person {id: 'person-001'})-[r1:WORKED_AT]-&gt;(c1:Company)
+MATCH (p)-[r2:WORKED_AT]-&gt;(c2:Company)
+WHERE r1.endDate &lt;= r2.startDate AND r1 &lt;&gt; r2
+WITH r1, c1, r2, c2
+ORDER BY r1.startDate, r2.startDate
+RETURN r1.role AS fromRole, c1.name AS fromEmployer,
+       r2.role AS toRole, c2.name AS toEmployer
+LIMIT 1;</code></pre>
+        </div>
+        <div>
+          <div class="panel-label">SPARQL</div>
+<pre><code>PREFIX sensemaking: &lt;https://sensemaking-ai.com/ns/resume#&gt;
+PREFIX schema: &lt;https://schema.org/&gt;
+PREFIX : &lt;https://sensemaking-ai.com/id/resume/example/&gt;
+
+SELECT ?fromRole ?fromEmployer ?toRole ?toEmployer WHERE {
+  :alex sensemaking:held ?from, ?to .
+  ?from sensemaking:role ?fromRole ;
+        sensemaking:employer/schema:name ?fromEmployer ;
+        sensemaking:endDate ?fromEnd .
+  ?to sensemaking:role ?toRole ;
+      sensemaking:employer/schema:name ?toEmployer ;
+      sensemaking:startDate ?toStart .
+  FILTER (?fromEnd &lt;= ?toStart && ?from != ?to)
+}
+ORDER BY ?fromEnd ?toStart
+LIMIT 1</code></pre>
+          <div class="winner">Practical result: draw</div>
+        </div>
+      </div>
+      <p>The transition query is a wash. Cypher feels familiar if your mental model is path-first. SPARQL is perfectly fine once employment has become a node. That is useful to notice: not every comparison has a dramatic winner.</p>
+    </section>
+
+    <section id="tax">
+      <div class="section-label">05 · The URI tax</div>
+      <h2>The verbosity is real.</h2>
+      <p>RDF is more verbose because every important term can be globally identifiable. The same fact takes more characters in Turtle than in Cypher. The file has more prefixes. The query has more declarations. Diffs get longer. Beginners feel as if the syntax is asking them to write the whole internet before breakfast.</p>
+      <p>The question is not whether the verbosity is a cost. It is. The question is what the cost buys.</p>
+      <p>For an isolated application, the URI tax can be pure overhead. If one team owns the data, one database serves the application, and the main job is fast traversal through local relationships, LPG is usually the humane choice. You get productive syntax, relationship properties, graph algorithms, and a developer experience that feels direct.</p>
+      <p>For a graph that needs to participate in a broader ecosystem, the tax becomes infrastructure. ESCO, FIBO, schema.org, Wikidata, Dublin Core, SKOS, PROV-O: these are not just labels. They are shared commitments about what terms mean and how other systems can meet your data halfway. The cost arrives early. The value compounds later.</p>
+      <div class="mental-shift"><span class="note-title">Mental shift</span>RDF does not win because it is cleaner to type. RDF wins when the future integration surface matters more than the immediate typing experience.</div>
+      <p>In the work I do — building hybrid LLM and knowledge-graph systems like the Digital Twin — the future integration surface isn't theoretical. It's where the next twelve months of any serious project lives. Vector similarity gets you retrieval; graph traversal gets you reasoning. Choosing the wrong primitives early is expensive in a way that becomes obvious only after the integration would have helped.</p>
+    </section>
+
+    <section id="choice">
+      <div class="section-label">06 · The choice in practice</div>
+      <h2>Heuristics, not slogans.</h2>
+      <p>I have applications where both stacks make sense. This section is also the answer to Module 1's 30-second test: explain to a working engineer, without slogans, why someone would choose RDF over a labeled property graph or vice versa. The heuristics below are how I actually answer that question when it comes up.</p>
+
+      <div class="decision-grid">
+        <div class="decision-card">
+          <div class="panel-label">Choose LPG when</div>
+          <ul>
+            <li>The system is path-heavy and contained.</li>
+            <li>Relationship metadata is central and local.</li>
+            <li>Your team already ships comfortably in Neo4j.</li>
+            <li>The graph serves one application more than many ecosystems.</li>
+          </ul>
+        </div>
+        <div class="decision-card">
+          <div class="panel-label">Choose RDF when</div>
+          <ul>
+            <li>The data is vocabulary-driven or integration-heavy.</li>
+            <li>External graphs already speak your terms.</li>
+            <li>Reasoning, equivalence, or subsumption matter.</li>
+            <li>Long-term portability matters more than short-term terseness.</li>
+          </ul>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Pressure</th><th>Usually favors</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td data-label="Pressure">Path traversal inside one product</td><td data-label="Usually favors">LPG</td><td data-label="Why">Traversal ergonomics and edge properties earn their keep.</td></tr>
+          <tr><td data-label="Pressure">Vocabulary reuse across systems</td><td data-label="Usually favors">RDF</td><td data-label="Why">Global IRIs and shared vocabularies are the point.</td></tr>
+          <tr><td data-label="Pressure">Formal reasoning</td><td data-label="Usually favors">RDF</td><td data-label="Why">RDF/RDFS/OWL have formal semantics; LPG semantics are application-defined.</td></tr>
+          <tr><td data-label="Pressure">Provenance-heavy assertions</td><td data-label="Usually favors">Depends</td><td data-label="Why">LPG edge properties are easy; RDF reification patterns are more portable but more expensive.</td></tr>
+          <tr><td data-label="Pressure">Fast team ramp-up</td><td data-label="Usually favors">The stack the team already understands</td><td data-label="Why">A correct LPG model beats a confused RDF model, and the reverse is also true.</td></tr>
+        </tbody>
+      </table>
+
+      <p>That last row is not a caveat. It is part of the model. Technical fit and team fit are not separate decisions. A graph nobody can maintain is not a good graph.</p>
+    </section>
+
+    <section id="next">
+      <div class="section-label">07 · What to do next</div>
+      <h2>Make the comparison operational.</h2>
+      <p>For curriculum readers: continue the Module 1 reading, especially Allemang chapters 1–3 if they are not done yet. Then do Exercise 1.3, the Resume Graph Explorer RDF slice. Write the same three queries in Cypher and SPARQL before reading more takes over. The feeling of the comparison is the learning.</p>
+      <p>For drive-by readers: Sensemaking Semantic Web is a 12-week self-directed curriculum through RDF, OWL, SPARQL, and modern knowledge graphs. The broader arc lives in the <a href="../modules/01-foundations/">Module 1 README</a>, and the <a href="../reference/cheatsheets/module-1-cheatsheet.html">Module 1 cheat sheet</a> is the back-pocket syntax reference. A glossary page is planned at <a href="../reference/glossary.html">the curriculum glossary</a>.</p>
+    </section>
+
+    <section id="resources">
+      <div class="section-label">08 · Curated resources</div>
+      <h2>Five good next reads.</h2>
+      <p>These are not equal-purpose links. Read them for different kinds of evidence.</p>
+
+      <div class="resource-grid">
+        <article class="resource-card">
+          <div class="panel-label">Foundation</div>
+          <h3><a href="https://workingontologist.org/">Semantic Web for the Working Ontologist</a></h3>
+          <p>Allemang, Hendler, and Gandon give the conceptual foundation. The useful part is the book's unusual honesty about where RDF hurts.</p>
+        </article>
+        <article class="resource-card">
+          <div class="panel-label">Balanced frame</div>
+          <h3><a href="https://kgbook.org/">Knowledge Graphs, section 3</a></h3>
+          <p>Hogan et al. place RDF and property graphs in the same landscape. Dense, but excellent for shared vocabulary across camps.</p>
+        </article>
+        <article class="resource-card">
+          <div class="panel-label">Empirical anchor</div>
+          <h3><a href="https://arxiv.org/abs/2204.06277">Edge-labelled vs property graphs</a></h3>
+          <p>Warren and Mulholland compare user modeling behavior instead of arguing from taste. Skim the findings when debates get too confident.</p>
+        </article>
+        <article class="resource-card">
+          <div class="panel-label">Practitioner take</div>
+          <h3><a href="https://www.bobdc.com/blog/">Bob DuCharme's blog</a></h3>
+          <p>Author of Learning SPARQL. Ongoing posts on SPARQL patterns and the LLM + KG intersection. The companion to anyone working through this material in practice.</p>
+        </article>
+        <article class="resource-card">
+          <div class="panel-label">Curriculum context</div>
+          <h3><a href="../modules/01-foundations/">Module 1 README</a></h3>
+          <p>Use this to see where the side-by-side page fits in the broader foundations module, especially Exercise 1.3.</p>
+        </article>
+        <article class="resource-card">
+        <div class="panel-label">Hands-on starting point</div>
+        <h3><a href="https://query.wikidata.org/">Wikidata Query Service</a></h3>
+        <p>The largest public SPARQL endpoint. The fastest way to feel SPARQL on real data — modify example queries before writing from scratch.</p>
+      </article>
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Written by Barbara Hidalgo-Sotelo for Sensemaking AI.</p>
+    <p><a href="https://sensemaking-ai.com/">sensemaking-ai.com</a> · Sensemaking Semantic Web · CC BY 4.0 for written content unless otherwise noted.</p>
+  </footer>
+</body>
+</html>
