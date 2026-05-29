@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDF vs LPG, side by side — Sub-module 1.1 · Sensemaking Semantic Web</title>
+<meta name="description" content="The same resume in Turtle and Cypher, three queries in both languages, and where the choice between RDF and a labeled property graph actually matters.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-deep: #0B4F4A;
+    --teal-mid: #1E8076;
+    --teal-light: #C6E2DD;
+    --coral: #D85A30;
+    --coral-tint: #FAEAE2;
+    --charcoal: #1F2A2E;
+    --slate: #5A6671;
+    --slate-light: #8A929A;
+    --cream: #FAF7F2;
+    --white: #FFFFFF;
+    --rule: #D8D2C6;
+    --code-bg: #F2EDE3;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    color: var(--charcoal);
+    background: var(--cream);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Header band ---------- */
+  .masthead {
+    background: var(--teal-deep);
+    color: var(--white);
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+  }
+  .masthead::after {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    background: var(--coral);
+    margin-top: 1.5rem;
+  }
+  .masthead-inner {
+    max-width: 68rem;
+    margin: 0 auto;
+  }
+  .brand {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--teal-light);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  h1 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 3rem;
+    line-height: 1.1;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.015em;
+  }
+  .subtitle {
+    font-size: 1.05rem;
+    color: var(--teal-light);
+    letter-spacing: 0.02em;
+    max-width: 42rem;
+  }
+
+  /* ---------- Container ---------- */
+  .container {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 1rem;
+  }
+
+  /* ---------- Quick nav ---------- */
+  nav.quick-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 3rem;
+    font-size: 0.78rem;
+  }
+  nav.quick-nav a {
+    color: var(--slate);
+    text-decoration: none;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+  nav.quick-nav a:hover { color: var(--coral); }
+
+  /* ---------- Sections ---------- */
+  section {
+    margin-bottom: 4rem;
+    scroll-margin-top: 1.5rem;
+  }
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    color: var(--coral);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+  h2 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 2.15rem;
+    color: var(--charcoal);
+    margin: 0 0 1rem;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+  h3 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin: 1.75rem 0 0.6rem;
+    letter-spacing: 0.005em;
+  }
+  h3:first-of-type { margin-top: 0.5rem; }
+
+  /* ---------- Body text ---------- */
+  p {
+    margin: 0.4rem 0 1rem;
+    font-size: 1rem;
+    max-width: 44rem;
+  }
+  p.lede {
+    font-size: 1.08rem;
+    color: var(--slate);
+    max-width: 44rem;
+  }
+
+  /* ---------- Code ---------- */
+  pre, code {
+    font-family: 'IBM Plex Mono', Consolas, monospace;
+    font-size: 0.82rem;
+  }
+  pre {
+    background: var(--code-bg);
+    padding: 0.9rem 1.1rem;
+    border-radius: 3px;
+    overflow-x: auto;
+    margin: 0.6rem 0 1.4rem;
+    line-height: 1.65;
+    color: var(--charcoal);
+    border-left: 3px solid var(--teal-mid);
+  }
+  p code, li code, td code, h3 code {
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.88em;
+    color: var(--charcoal);
+  }
+  .comment { color: var(--slate-light); }
+  .kw { color: var(--teal-deep); font-weight: 500; }
+
+  /* ---------- Callouts ---------- */
+  .tip {
+    background: var(--coral-tint);
+    border-left: 3px solid var(--coral);
+    padding: 0.85rem 1.1rem 0.95rem;
+    margin: 1.25rem 0 1.5rem;
+    font-size: 0.94rem;
+    color: var(--charcoal);
+    max-width: 44rem;
+  }
+  .tip-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--coral);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    display: block;
+  }
+  .tip p { margin: 0; max-width: none; }
+
+  /* ---------- Lists ---------- */
+  ul.spaced { padding-left: 1.2rem; margin: 0.6rem 0 1.2rem; max-width: 44rem; }
+  ul.spaced li { margin: 0.55rem 0; font-size: 0.98rem; }
+  ul.spaced li strong { color: var(--charcoal); font-weight: 600; }
+
+  /* ---------- Inline links ---------- */
+  a.inline {
+    color: var(--teal-mid);
+    text-decoration: underline;
+    text-decoration-color: var(--teal-light);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+  }
+  a.inline:hover { color: var(--coral); text-decoration-color: var(--coral); }
+
+  /* ---------- Diagrams ---------- */
+  figure {
+    margin: 1.5rem 0 2rem;
+    max-width: 100%;
+  }
+  figure svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+  }
+  figcaption {
+    font-size: 0.85rem;
+    color: var(--slate);
+    margin-top: 0.75rem;
+    max-width: 44rem;
+    line-height: 1.5;
+  }
+
+  /* ---------- Resources list ---------- */
+  ol.resources {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 1.5rem;
+    max-width: 44rem;
+  }
+  ol.resources li {
+    margin-bottom: 1.1rem;
+    padding-left: 1.5rem;
+    position: relative;
+    font-size: 0.95rem;
+  }
+  ol.resources li::before {
+    content: counter(list-counter) ".";
+    counter-increment: list-counter;
+    position: absolute;
+    left: 0;
+    color: var(--coral);
+    font-weight: 600;
+    font-size: 0.85rem;
+    top: 0.1rem;
+  }
+  ol.resources { counter-reset: list-counter; }
+  ol.resources li .res-title { font-weight: 600; color: var(--charcoal); }
+  ol.resources li .res-note { color: var(--slate); display: block; margin-top: 0.2rem; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2rem 0 3rem;
+    margin-top: 3rem;
+    color: var(--slate);
+    font-size: 0.85rem;
+  }
+  footer p { margin: 0.4rem 0; max-width: none; }
+  footer a { color: var(--teal-mid); }
+
+  /* ---------- Section divider ---------- */
+  .section-rule {
+    border: none;
+    height: 1px;
+    background: var(--rule);
+    margin: 0 0 3.5rem 0;
+  }
+
+  /* ---------- Branch box (Section 7) ---------- */
+  .branch {
+    border-left: 3px solid var(--teal-mid);
+    background: var(--white);
+    padding: 0.9rem 1.2rem;
+    margin: 0.6rem 0 1.4rem;
+    max-width: 44rem;
+  }
+  .branch h3 { margin: 0 0 0.4rem; color: var(--teal-deep); }
+  .branch p { margin: 0; font-size: 0.95rem; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 760px) {
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.75rem; }
+    .container { padding: 2rem 1.25rem 0.5rem; }
+    .masthead { padding: 2.25rem 1.25rem 2rem; }
+    pre { font-size: 0.78rem; padding: 0.7rem 0.85rem; }
+  }
+
+  /* ---------- Print ---------- */
+  @media print {
+    body { background: white; color: black; font-size: 10pt; line-height: 1.45; }
+    .masthead {
+      background: white;
+      color: black;
+      border-bottom: 2px solid black;
+      padding: 0.5rem 0 0.75rem;
+    }
+    .masthead::after { display: none; }
+    .masthead h1 { color: black; font-size: 22pt; }
+    .brand, .subtitle { color: #444; }
+    .container { padding: 0.5rem 0; max-width: none; }
+    nav.quick-nav { display: none; }
+    h2 { font-size: 14pt; page-break-after: avoid; }
+    h3 { font-size: 10.5pt; page-break-after: avoid; }
+    .section-label { color: #666; }
+    pre {
+      background: #f5f5f5 !important;
+      color: black;
+      page-break-inside: avoid;
+      font-size: 8pt;
+      padding: 0.4rem 0.6rem;
+      border-left: 2px solid #888;
+    }
+    .tip, .branch {
+      background: #f5f5f5 !important;
+      border-left: 2px solid #888;
+      page-break-inside: avoid;
+      color: black;
+    }
+    .tip-label { color: #666; }
+    section { page-break-inside: avoid; margin-bottom: 1rem; }
+    a { color: black !important; text-decoration: none; }
+    .kw { color: #333; }
+    .comment { color: #777; }
+    .section-rule { margin: 1rem 0; }
+    figure svg { border: 1px solid #888; }
+    figure { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== Masthead ===================== -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sub-module 1.1</div>
+    <h1>RDF vs LPG, side by side</h1>
+    <div class="subtitle">How the same resume looks in two graph models — and where the choice between them actually matters.</div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ===================== Quick nav ===================== -->
+<nav class="quick-nav" aria-label="Section navigation">
+  <a href="#why">Why</a>
+  <a href="#models">Two models</a>
+  <a href="#resume">The resume</a>
+  <a href="#queries">Three queries</a>
+  <a href="#uri-tax">URI tax</a>
+  <a href="#choice">The choice</a>
+  <a href="#next">Next</a>
+  <a href="#resources">Resources</a>
+</nav>
+
+<!-- ===================== 01 Why ===================== -->
+<section id="why">
+  <div class="section-label">01 · Why this comparison</div>
+  <h2>Why this comparison matters</h2>
+
+  <p class="lede">Anyone arriving at RDF from Neo4j asks the same question. Anyone arriving at Neo4j from RDF asks the inverse. Which one should I be using? What is the actual difference?</p>
+
+  <p>Most existing answers are partisan. Vendor pieces lean one way. Semantic-web defenders lean the other. The honest read is that both stacks are correct for their context, and the choice has cascading consequences for anyone designing a real system. Pick wrong once and the next project will ask the question better.</p>
+
+  <p>This page tries to help you ask it the first time. The comparison gets concrete in Section 3, where the same small resume gets modeled in both. The conceptual unlock arrives in Section 4, where one query — the one that follows a skill into the ESCO occupational graph — exposes what each stack actually buys you.</p>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 02 The two data models ===================== -->
+<section id="models">
+  <div class="section-label">02 · Two data models</div>
+  <h2>The two data models, side by side</h2>
+
+  <p>RDF and labeled property graphs agree on more than their advocates suggest. Both describe a world of entities and the relationships between them. They diverge on where information about the relationship lives.</p>
+
+  <h3>RDF — the triple as the only primitive</h3>
+
+  <p>In RDF, every fact is a triple: subject, predicate, object. Subjects and predicates are URIs. Objects are URIs or literals. That is the entire data model. Classes, vocabularies, ontologies, reasoning — every higher-order structure is convention layered on top of triples.</p>
+
+  <p>The bare assertion "Alice knows Bob" is one triple:</p>
+
+<pre><span class="kw">@prefix</span> foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+
+:Alice foaf:knows :Bob .</pre>
+
+  <p>The predicate <code>foaf:knows</code> is a URI from the FOAF vocabulary. Anyone else's graph that uses <code>foaf:knows</code> means the same relationship. That global agreement is the entire point.</p>
+
+  <h3>LPG — node-plus-property + edge-plus-property</h3>
+
+  <p>In a labeled property graph, nodes carry labels and properties. Edges carry types and properties. Both sides of the connection have their own attribute dictionary. Schema is local; the database does not try to make your <code>KNOWS</code> edge mean the same thing as anyone else's.</p>
+
+  <p>The same assertion in Cypher:</p>
+
+<pre><span class="kw">CREATE</span> (alice:Person)-[:KNOWS]-&gt;(bob:Person)</pre>
+
+  <p>Two nodes labeled <code>Person</code>, one relationship typed <code>KNOWS</code>. Clean.</p>
+
+  <h3>Where the divergence becomes visible</h3>
+
+  <p>Add a property to the relationship — "they have known each other since 2020." In Cypher, the property goes on the edge directly:</p>
+
+<pre><span class="kw">CREATE</span> (alice:Person)-[:KNOWS {since: 2020}]-&gt;(bob:Person)</pre>
+
+  <p>In Turtle, predicates cannot carry properties. The metadata-about-the-triple has to live somewhere else. The standard options: turn the relationship into an event class with its own properties, use RDF-star to annotate the triple itself, or apply classical reification. Module 3 covers the trade-offs in depth; for now, name the cost.</p>
+
+<pre>:Alice :hasFriendship [
+    a :Friendship ;
+    :with :Bob ;
+    :startDate "2020-01-01"^^xsd:date
+] .</pre>
+
+  <p>Three lines became six. The same fact, more characters, more nesting. This is the URI tax in its smallest form, and it shows up everywhere in the rest of the page.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing where the since:2020 metadata sits in RDF versus LPG">
+      <!-- Background panels -->
+      <rect x="0" y="0" width="370" height="280" fill="#FAF7F2"/>
+      <rect x="390" y="0" width="370" height="280" fill="#FAF7F2"/>
+      <line x1="380" y1="20" x2="380" y2="260" stroke="#D8D2C6" stroke-width="1"/>
+
+      <!-- Panel labels -->
+      <text x="20" y="32" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#D85A30" letter-spacing="2">RDF</text>
+      <text x="410" y="32" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#D85A30" letter-spacing="2">LPG</text>
+
+      <text x="20" y="50" font-family="IBM Plex Sans" font-size="12" fill="#5A6671">Metadata needs its own node</text>
+      <text x="410" y="50" font-family="IBM Plex Sans" font-size="12" fill="#5A6671">Metadata lives on the edge</text>
+
+      <!-- ============ RDF panel ============ -->
+      <!-- Alice node -->
+      <circle cx="50" cy="140" r="28" fill="none" stroke="#0B4F4A" stroke-width="2"/>
+      <text x="50" y="145" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#0B4F4A">:Alice</text>
+
+      <!-- Bob node -->
+      <circle cx="335" cy="140" r="28" fill="none" stroke="#0B4F4A" stroke-width="2"/>
+      <text x="335" y="145" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#0B4F4A">:Bob</text>
+
+      <!-- Friendship blank node (the reified relationship) -->
+      <rect x="155" y="115" width="80" height="50" fill="#FAEAE2" stroke="#D85A30" stroke-width="1.5" rx="2"/>
+      <text x="195" y="133" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1F2A2E">:Friendship</text>
+      <text x="195" y="148" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#5A6671">since 2020</text>
+      <text x="195" y="160" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#5A6671">— event —</text>
+
+      <!-- Arrows: Alice → Friendship → Bob -->
+      <line x1="78" y1="140" x2="151" y2="140" stroke="#1E8076" stroke-width="1.5" marker-end="url(#arr-teal)"/>
+      <text x="115" y="132" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1E8076">:hasFriendship</text>
+
+      <line x1="235" y1="140" x2="303" y2="140" stroke="#1E8076" stroke-width="1.5" marker-end="url(#arr-teal)"/>
+      <text x="269" y="132" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1E8076">:with</text>
+
+      <text x="195" y="220" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5A6671" font-style="italic">Three nodes, two edges,</text>
+      <text x="195" y="235" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5A6671" font-style="italic">date on the middle node</text>
+
+      <!-- ============ LPG panel ============ -->
+      <!-- Alice node -->
+      <circle cx="450" cy="140" r="28" fill="none" stroke="#0B4F4A" stroke-width="2"/>
+      <text x="450" y="138" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#0B4F4A">alice</text>
+      <text x="450" y="152" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#5A6671">:Person</text>
+
+      <!-- Bob node -->
+      <circle cx="700" cy="140" r="28" fill="none" stroke="#0B4F4A" stroke-width="2"/>
+      <text x="700" y="138" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#0B4F4A">bob</text>
+      <text x="700" y="152" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#5A6671">:Person</text>
+
+      <!-- Edge -->
+      <line x1="478" y1="140" x2="668" y2="140" stroke="#1E8076" stroke-width="2" marker-end="url(#arr-teal)"/>
+
+      <!-- Edge label (relationship + property attached) -->
+      <rect x="525" y="115" width="100" height="28" fill="#FAEAE2" stroke="#D85A30" stroke-width="1.5" rx="2"/>
+      <text x="575" y="133" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1F2A2E">:KNOWS</text>
+      <text x="575" y="165" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#5A6671">{since: 2020}</text>
+
+      <text x="575" y="220" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5A6671" font-style="italic">Two nodes, one edge,</text>
+      <text x="575" y="235" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5A6671" font-style="italic">date attached to the edge</text>
+
+      <!-- Arrow marker definition -->
+      <defs>
+        <marker id="arr-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1E8076"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>The metadata-on-relationship problem. RDF promotes the relationship to its own node; LPG attaches properties to the edge directly.</figcaption>
+  </figure>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 03 The same resume ===================== -->
+<section id="resume">
+  <div class="section-label">03 · The same resume</div>
+  <h2>The same resume in both stacks</h2>
+
+  <p>One small, realistic resume in both data models. Alex Rivera, two jobs in the data field, a statistics undergrad, three skills. Small enough to fit on screen, structured enough to show the choices each model forces you to make.</p>
+
+  <h3>The Cypher version</h3>
+
+<pre><span class="comment">// People, organizations, schools</span>
+<span class="kw">CREATE</span> (alex:Person {name: "Alex Rivera", email: "alex@example.com"})
+<span class="kw">CREATE</span> (riverbend:Company {name: "Riverbend Analytics"})
+<span class="kw">CREATE</span> (northwind:Company {name: "Northwind Health"})
+<span class="kw">CREATE</span> (midstate:School {name: "Midstate University"})
+
+<span class="comment">// Employment relationships, with properties on the edge</span>
+<span class="kw">CREATE</span> (alex)-[:EMPLOYED_BY {
+  role: "Junior Data Analyst",
+  startDate: date("2020-01-15"),
+  endDate:   date("2022-06-30")
+}]-&gt;(riverbend)
+<span class="kw">CREATE</span> (alex)-[:EMPLOYED_BY {
+  role: "Data Scientist",
+  startDate: date("2022-07-01")
+}]-&gt;(northwind)
+
+<span class="comment">// Education</span>
+<span class="kw">CREATE</span> (alex)-[:EDUCATED_AT {
+  degree:  "BS Statistics",
+  endDate: date("2019-05-15")
+}]-&gt;(midstate)
+
+<span class="comment">// Skills, with ESCO IDs as string properties</span>
+<span class="kw">CREATE</span> (python:Skill {name: "Python (programming)",  escoId: "ccd0a1d9-..."})
+<span class="kw">CREATE</span> (sql:Skill    {name: "SQL",                   escoId: "29cdd2a9-..."})
+<span class="kw">CREATE</span> (ml:Skill     {name: "Machine learning",      escoId: "4d4d5c8e-..."})
+
+<span class="kw">CREATE</span> (alex)-[:HAS_SKILL {level: "advanced"}]-&gt;(python)
+<span class="kw">CREATE</span> (alex)-[:HAS_SKILL {level: "advanced"}]-&gt;(sql)
+<span class="kw">CREATE</span> (alex)-[:HAS_SKILL {level: "intermediate"}]-&gt;(ml)</pre>
+
+  <h3>The Turtle version</h3>
+
+<pre><span class="kw">@prefix</span> rdf:        &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+<span class="kw">@prefix</span> xsd:        &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+<span class="kw">@prefix</span> foaf:       &lt;http://xmlns.com/foaf/0.1/&gt; .
+<span class="kw">@prefix</span> schema:     &lt;https://schema.org/&gt; .
+<span class="kw">@prefix</span> skos:       &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+<span class="kw">@prefix</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt; .
+
+<span class="comment"># ESCO IRIs shown are illustrative.</span>
+
+:alex a foaf:Person ;
+    foaf:name "Alex Rivera" ;
+    schema:email "alex@example.com" ;
+    sensemaking:hasEmployment :emp1, :emp2 ;
+    sensemaking:hasEducation :edu1 ;
+    sensemaking:hasSkill :s_python, :s_sql, :s_ml .
+
+:emp1 a sensemaking:Employment ;
+    sensemaking:employer :riverbend ;
+    sensemaking:role "Junior Data Analyst" ;
+    sensemaking:startDate "2020-01-15"^^xsd:date ;
+    sensemaking:endDate   "2022-06-30"^^xsd:date .
+
+:emp2 a sensemaking:Employment ;
+    sensemaking:employer :northwind ;
+    sensemaking:role "Data Scientist" ;
+    sensemaking:startDate "2022-07-01"^^xsd:date .
+
+:edu1 a sensemaking:Education ;
+    sensemaking:institution :midstate ;
+    sensemaking:degree "BS Statistics" ;
+    sensemaking:endDate "2019-05-15"^^xsd:date .
+
+:riverbend a schema:Organization ; schema:name "Riverbend Analytics" .
+:northwind a schema:Organization ; schema:name "Northwind Health" .
+:midstate  a schema:CollegeOrUniversity ; schema:name "Midstate University" .
+
+:s_python a skos:Concept ;
+    skos:prefLabel "Python (programming)" ;
+    skos:exactMatch &lt;http://data.europa.eu/esco/skill/ccd0a1d9-illustrative&gt; .
+:s_sql a skos:Concept ;
+    skos:prefLabel "SQL" ;
+    skos:exactMatch &lt;http://data.europa.eu/esco/skill/29cdd2a9-illustrative&gt; .
+:s_ml a skos:Concept ;
+    skos:prefLabel "Machine learning" ;
+    skos:exactMatch &lt;http://data.europa.eu/esco/skill/4d4d5c8e-illustrative&gt; .</pre>
+
+  <h3>Where the modeling decisions diverge</h3>
+
+  <p>Three things to notice.</p>
+
+  <p>First, dates on the employment relationship. Cypher attaches them to the edge with native property syntax. Turtle cannot; the standard option is to model employment as its own thing — here, <code>sensemaking:Employment</code> — with the dates as properties of that event. This is the first taste of reification, which Module 3 covers in depth. For now, name the decision. In RDF, attaching properties to a relationship requires modeling the relationship as something.</p>
+
+  <p>Second, the skills. Both versions name them, but the Turtle version types each skill as <code>skos:Concept</code> and adds <code>skos:exactMatch</code> to its ESCO concept IRI. In Cypher, the same data lives as a string property; the ESCO link is a label, not a hyperlink the database knows how to traverse. The difference looks cosmetic. Section 4 shows it isn't.</p>
+
+  <p>Third, line count. Turtle ends up around 35 lines; Cypher around 25. The verbosity is real and not going away. The next two sections show what the verbosity buys and where it does not earn its keep.</p>
+
+  <div class="tip">
+    <span class="tip-label">Reference</span>
+    <p>The Turtle prefix block above is the curriculum standard. Full reference: <a class="inline" href="reference/cheatsheets/module-1-cheatsheet.html#prefixes">Module 1 cheat sheet, Section 1</a>.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 04 Three queries ===================== -->
+<section id="queries">
+  <div class="section-label">04 · Three queries</div>
+  <h2>Three queries, three answers</h2>
+
+  <p>Three questions you would actually ask of this resume. Each one in both languages, each one answered honestly about which stack pulls ahead.</p>
+
+  <h3>Query 1 — All jobs in chronological order</h3>
+
+  <p>Cypher:</p>
+
+<pre><span class="kw">MATCH</span> (p:Person {name: "Alex Rivera"})-[r:EMPLOYED_BY]-&gt;(c:Company)
+<span class="kw">RETURN</span> c.name, r.role, r.startDate
+<span class="kw">ORDER BY</span> r.startDate</pre>
+
+  <p>SPARQL:</p>
+
+<pre><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT</span> ?orgName ?role ?start <span class="kw">WHERE</span> {
+  :alex sensemaking:hasEmployment ?emp .
+  ?emp sensemaking:employer  ?org ;
+       sensemaking:role      ?role ;
+       sensemaking:startDate ?start .
+  ?org schema:name ?orgName .
+} <span class="kw">ORDER BY</span> ?start</pre>
+
+  <p>Cypher wins on ergonomics. Path traversal is what Neo4j was built for; the single <code>MATCH</code> pattern reads like a sentence. The SPARQL version is heavier — the Employment events are nodes, joined to the person via <code>sensemaking:hasEmployment</code>, joined again to the organization via <code>sensemaking:employer</code>. Both queries work. One feels lighter.</p>
+
+  <h3>Query 2 — Skills with broader occupational categories</h3>
+
+  <p>This is where the stacks separate.</p>
+
+  <p>In Cypher, the resume does not know what ESCO is. Each skill carries an ESCO string ID as a property, but the database has no idea what that string points to. To return "broader categories," you would need to import a copy of the ESCO graph as a separate set of <code>:ESCOConcept</code> nodes, maintain that copy as ESCO updates, and join across the string ID — or step outside the database, look up ESCO yourself, and bring the answer back in.</p>
+
+<pre><span class="kw">MATCH</span> (p:Person {name: "Alex Rivera"})-[:HAS_SKILL]-&gt;(s:Skill)
+<span class="comment">// To return broader ESCO categories, you would need an :ESCOConcept
+// subgraph already loaded and joined by escoId. ESCO is external
+// to this database.</span>
+<span class="kw">RETURN</span> s.name, s.escoId</pre>
+
+  <p>In SPARQL, ESCO is published as RDF. Each skill's <code>skos:exactMatch</code> link points to a real <code>skos:Concept</code> whose <code>skos:broader</code> edges connect to the ESCO occupational hierarchy directly. Following those edges is a normal query — no import, no glue code, no joins on string IDs.</p>
+
+<pre><span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT</span> ?skillLabel ?broaderLabel <span class="kw">WHERE</span> {
+  :alex sensemaking:hasSkill ?s .
+  ?s skos:prefLabel ?skillLabel ;
+     skos:exactMatch ?escoSkill .
+  ?escoSkill skos:broader ?broader .
+  ?broader   skos:prefLabel ?broaderLabel .
+}</pre>
+
+  <p>This is the unlock. Not "SPARQL is cleaner" — the SPARQL query has more lines than the Cypher version. The unlock is that the broader-category data exists, is queryable, and did not have to be brought into your database. SKOS is already RDF. ESCO is already published as SKOS. Your skill node lands inside a graph that already knows about programming languages, statistical methods, and the broader occupational shapes a data career takes.</p>
+
+  <p>This is where RDF's interop story has teeth.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram comparing how Cypher requires materializing ESCO as a separate node set versus how SPARQL traverses into ESCO directly via skos:broader">
+      <!-- Background dividers -->
+      <line x1="380" y1="20" x2="380" y2="300" stroke="#D8D2C6" stroke-width="1"/>
+
+      <!-- Panel labels -->
+      <text x="20" y="32" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#D85A30" letter-spacing="2">LPG</text>
+      <text x="410" y="32" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#D85A30" letter-spacing="2">RDF</text>
+
+      <text x="20" y="50" font-family="IBM Plex Sans" font-size="12" fill="#5A6671">ESCO has to be imported and maintained</text>
+      <text x="410" y="50" font-family="IBM Plex Sans" font-size="12" fill="#5A6671">ESCO is queryable from where it lives</text>
+
+      <!-- ============ LPG panel ============ -->
+      <!-- Your resume box -->
+      <rect x="25" y="80" width="150" height="80" fill="#FAF7F2" stroke="#D8D2C6" stroke-width="1" rx="3"/>
+      <text x="100" y="100" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#5A6671" letter-spacing="1">YOUR DATABASE</text>
+      <circle cx="60" cy="130" r="17" fill="none" stroke="#0B4F4A" stroke-width="1.5"/>
+      <text x="60" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#0B4F4A">Person</text>
+      <circle cx="140" cy="130" r="17" fill="none" stroke="#0B4F4A" stroke-width="1.5"/>
+      <text x="140" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#0B4F4A">Skill</text>
+      <line x1="78" y1="130" x2="122" y2="130" stroke="#1E8076" stroke-width="1.2" marker-end="url(#arr2-teal)"/>
+
+      <!-- Foreign string ID -->
+      <text x="100" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#5A6671">escoId: "ccd0..."</text>
+      <text x="100" y="194" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="#8A929A" font-style="italic">(opaque string)</text>
+
+      <!-- Maintenance gap -->
+      <text x="195" y="135" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#D85A30">⇢ join ⇢</text>
+      <text x="195" y="150" text-anchor="middle" font-family="IBM Plex Sans" font-size="9" fill="#8A929A" font-style="italic">if loaded</text>
+
+      <!-- ESCO copy -->
+      <rect x="215" y="80" width="150" height="180" fill="#FAEAE2" stroke="#D85A30" stroke-width="1" stroke-dasharray="3,2" rx="3"/>
+      <text x="290" y="100" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#D85A30" letter-spacing="1">YOUR ESCO COPY</text>
+      <circle cx="290" cy="130" r="17" fill="none" stroke="#0B4F4A" stroke-width="1.5"/>
+      <text x="290" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#0B4F4A">Python</text>
+      <line x1="290" y1="147" x2="290" y2="172" stroke="#1E8076" stroke-width="1.2" marker-end="url(#arr2-teal)"/>
+      <text x="320" y="162" font-family="IBM Plex Mono" font-size="7" fill="#5A6671">broader</text>
+      <circle cx="290" cy="190" r="20" fill="none" stroke="#0B4F4A" stroke-width="1.5"/>
+      <text x="290" y="193" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" fill="#0B4F4A">Prog. langs</text>
+      <line x1="290" y1="210" x2="290" y2="234" stroke="#1E8076" stroke-width="1.2" marker-end="url(#arr2-teal)"/>
+      <text x="290" y="250" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" fill="#5A6671">…</text>
+
+      <text x="195" y="295" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#5A6671" font-style="italic">Two graphs, one you must maintain.</text>
+
+      <!-- ============ RDF panel ============ -->
+      <!-- Your resume box -->
+      <rect x="405" y="80" width="155" height="80" fill="#FAF7F2" stroke="#D8D2C6" stroke-width="1" rx="3"/>
+      <text x="482" y="100" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#5A6671" letter-spacing="1">YOUR TRIPLES</text>
+      <circle cx="440" cy="130" r="17" fill="none" stroke="#0B4F4A" stroke-width="1.5"/>
+      <text x="440" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#0B4F4A">:alex</text>
+      <circle cx="525" cy="130" r="20" fill="none" stroke="#0B4F4A" stroke-width="1.5"/>
+      <text x="525" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#0B4F4A">:s_python</text>
+      <line x1="458" y1="130" x2="504" y2="130" stroke="#1E8076" stroke-width="1.2" marker-end="url(#arr2-teal)"/>
+
+      <!-- exactMatch jump -->
+      <line x1="546" y1="130" x2="608" y2="130" stroke="#D85A30" stroke-width="1.5" marker-end="url(#arr2-coral)"/>
+      <text x="577" y="124" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#D85A30">exactMatch</text>
+
+      <!-- ESCO web -->
+      <rect x="610" y="80" width="140" height="180" fill="#FAF7F2" stroke="#1E8076" stroke-width="1" rx="3"/>
+      <text x="680" y="100" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#1E8076" letter-spacing="1">ESCO (PUBLISHED)</text>
+      <circle cx="638" cy="130" r="17" fill="none" stroke="#0B4F4A" stroke-width="1.5"/>
+      <text x="638" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#0B4F4A">Python</text>
+      <line x1="652" y1="143" x2="678" y2="174" stroke="#1E8076" stroke-width="1.2" marker-end="url(#arr2-teal)"/>
+      <text x="680" y="160" font-family="IBM Plex Mono" font-size="7" fill="#5A6671">broader</text>
+      <circle cx="690" cy="190" r="20" fill="none" stroke="#0B4F4A" stroke-width="1.5"/>
+      <text x="690" y="193" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" fill="#0B4F4A">Prog. langs</text>
+      <line x1="690" y1="210" x2="690" y2="234" stroke="#1E8076" stroke-width="1.2" marker-end="url(#arr2-teal)"/>
+      <text x="700" y="225" font-family="IBM Plex Mono" font-size="7" fill="#5A6671">broader</text>
+      <circle cx="690" cy="250" r="6" fill="#FAF7F2" stroke="#0B4F4A" stroke-width="1.5"/>
+      <text x="715" y="253" font-family="IBM Plex Mono" font-size="7" fill="#5A6671">…</text>
+
+      <text x="577" y="295" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#5A6671" font-style="italic">One graph, ESCO's authors maintain ESCO.</text>
+
+      <defs>
+        <marker id="arr2-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1E8076"/>
+        </marker>
+        <marker id="arr2-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#D85A30"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>The ESCO interop unlock. In RDF, a single <code>skos:exactMatch</code> link lands your skill inside ESCO's existing graph. In LPG, ESCO has to be imported as a parallel node set and kept in sync.</figcaption>
+  </figure>
+
+  <h3>Query 3 — Consecutive job transitions</h3>
+
+  <p>For each pair of adjacent jobs in chronological order, return the pair. Cypher's path traversal makes this concise.</p>
+
+<pre><span class="kw">MATCH</span> (p:Person {name: "Alex Rivera"})-[r1:EMPLOYED_BY]-&gt;(c1),
+      (p)-[r2:EMPLOYED_BY]-&gt;(c2)
+<span class="kw">WHERE</span> r1.endDate &lt; r2.startDate
+<span class="kw">RETURN</span> c1.name <span class="kw">AS</span> prev, c2.name <span class="kw">AS</span> next
+<span class="kw">ORDER BY</span> r1.endDate</pre>
+
+  <p>SPARQL handles it through a self-join on the Employment events, with a FILTER ensuring the second job starts after the first one ends.</p>
+
+<pre><span class="kw">SELECT</span> ?prevName ?nextName <span class="kw">WHERE</span> {
+  :alex sensemaking:hasEmployment ?e1, ?e2 .
+  ?e1 sensemaking:endDate   ?end1 ;
+      sensemaking:employer/schema:name ?prevName .
+  ?e2 sensemaking:startDate ?start2 ;
+      sensemaking:employer/schema:name ?nextName .
+  <span class="kw">FILTER</span>(?end1 &lt; ?start2)
+} <span class="kw">ORDER BY</span> ?end1</pre>
+
+  <p>A wash, but instructively so. Cypher's pattern is slightly easier to write; SPARQL's structure absorbs additional conditions slightly more naturally. Not every query is a clear winner for one stack.</p>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 05 The URI tax ===================== -->
+<section id="uri-tax">
+  <div class="section-label">05 · URI tax</div>
+  <h2>The URI tax</h2>
+
+  <p>Name the cost. RDF is more verbose than Cypher because every term in it carries a globally identifiable URI. The same fact takes more characters in Turtle. Lines run longer; diffs are noisier; the cognitive overhead of seeing prefixes everywhere does not go away just because you have internalized them.</p>
+
+  <p>That cost is real and worth saying out loud. The question is not whether the verbosity exists. It is what the verbosity buys.</p>
+
+  <p>For an isolated application — a single graph database serving one team's queries, no external vocabularies, no integration partners — the URI tax is pure overhead. There is no interop story to unlock, no portability to spend. You are paying for something you will not use. LPG is a better fit, and the team will ship faster.</p>
+
+  <p>For a graph that participates in a broader ecosystem — interoperating with ESCO, FIBO, schema.org, government open data, anything published as Linked Data — the URI tax is what makes the integration possible at all. The cost is paid up front. The value compounds: every external vocabulary you can read is a query you do not have to engineer separately.</p>
+
+  <p>Most practitioners pick the wrong side of this trade-off once before learning to ask the question deliberately. Picking it well the first time is part of what this curriculum is for.</p>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 06 The choice in practice ===================== -->
+<section id="choice">
+  <div class="section-label">06 · The choice</div>
+  <h2>The choice in practice</h2>
+
+  <p>Heuristics, not rules. The kind of starting positions a senior engineer would offer in a design review before reading deeper into requirements.</p>
+
+  <ul class="spaced">
+    <li><strong>Path-heavy and contained.</strong> LPG. Neo4j's traversal ergonomics earn their keep, and the lack of external vocabulary needs means the URI tax has no upside.</li>
+    <li><strong>Integration-heavy or vocabulary-driven.</strong> RDF. The interop story compounds across every external graph you connect to.</li>
+    <li><strong>Reasoning required.</strong> RDF. Subsumption, equivalence, and formal inference are what OWL is for; LPG has no formal semantics, so you would be building one yourself.</li>
+    <li><strong>Provenance-heavy.</strong> Depends on which reification approach you will accept — and which compromises on verbosity and query complexity come with it. Module 3 covers the four options.</li>
+    <li><strong>Team skill matters as much as the technical fit.</strong> An LPG team can ship in Neo4j faster than they can ship a wrong RDF model. A team with knowledge-engineering experience will see the opposite, and the wrong call will be the LPG model that ignores standards their domain already publishes.</li>
+  </ul>
+
+  <p>The honest practitioner has applications where both stacks make sense and chooses based on team skill, operational profile, and integration needs — not on which stack is technically more elegant. Neither is. They are correct for different contexts.</p>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 07 Next ===================== -->
+<section id="next">
+  <div class="section-label">07 · Next</div>
+  <h2>What to do next</h2>
+
+  <div class="branch">
+    <h3>If you are working through the curriculum</h3>
+    <p>Continue with the Module 1 reading (Allemang Chapters 1–3, if not yet done) and start Exercise 1.3, the Resume Graph Explorer slice. That exercise is the hands-on version of what this page walked through conceptually — you will write the Turtle and the queries yourself on your own data, and the difference between reading the comparison and feeling it in your own resume is most of the learning. Sub-module 1.2 follows when it ships.</p>
+  </div>
+
+  <div class="branch">
+    <h3>If you arrived from elsewhere</h3>
+    <p>The Sensemaking Semantic Web curriculum is a 12-week self-directed program working through the semantic web stack from foundations to a deployed hybrid LLM + knowledge graph system. The full syllabus and Module 1 README live in the <a class="inline" href="https://github.com/sensemaking-ai/semantic-web-curriculum">curriculum repo</a>. The <a class="inline" href="reference/cheatsheets/module-1-cheatsheet.html">Module 1 cheat sheet</a> is the back-pocket syntax reference for Turtle and SPARQL.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 08 Resources ===================== -->
+<section id="resources">
+  <div class="section-label">08 · Resources</div>
+  <h2>Curated resources</h2>
+
+  <p>Five annotated links. Each one earns its place; this is not a dump.</p>
+
+  <ol class="resources">
+    <li>
+      <span class="res-title">Allemang, Hendler &amp; Gandon — <em>Semantic Web for the Working Ontologist</em> (3rd ed., 2020), Chapters 1–3.</span>
+      <span class="res-note">The conceptual foundation. The book's voice is honest about pain points in a way most textbooks aren't. Companion site: <a class="inline" href="https://workingontologist.org/">workingontologist.org</a>.</span>
+    </li>
+    <li>
+      <span class="res-title">Hogan et al. — <em>Knowledge Graphs</em> (Synthesis Lectures, 2021), Section 3.</span>
+      <span class="res-note">Free at <a class="inline" href="https://kgbook.org/">kgbook.org</a>. The most balanced single source on RDF and property graphs as siblings rather than rivals — and the one to send anyone who wants the comparison from a neutral position.</span>
+    </li>
+    <li>
+      <span class="res-title">Hartig et al. — <em>Foundations of RDF★ and SPARQL★</em>.</span>
+      <span class="res-note">arXiv. Careful treatment of how edge-labeled and property-graph models can accommodate each other — useful when the comparison stops being abstract and starts being a specification question.</span>
+    </li>
+    <li>
+      <span class="res-title">DeBellis — <em>Semantic Web vs Property Graphs</em>.</span>
+      <span class="res-note">A practitioner's blog written from inside both stacks, without partisan flavor. Worth reading once for the experience-shaped view of where each one bites.</span>
+    </li>
+    <li>
+      <span class="res-title"><a class="inline" href="https://github.com/sensemaking-ai/semantic-web-curriculum/blob/main/modules/01-foundations/README.md">Module 1 README</a>.</span>
+      <span class="res-note">If this is the first piece you have read from the curriculum, this is where the broader arc lives — including where reasoning and reification (the harder versions of the trade-offs sketched here) come in.</span>
+    </li>
+  </ol>
+</section>
+
+<footer>
+  <p>Sub-module 1.1 · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Licensed CC BY 4.0. Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+</div>
+
+</body>
+</html>
