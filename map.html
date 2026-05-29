@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How the curriculum fits together — Sensemaking Semantic Web</title>
+<meta name="description" content="A navigable map of the Sensemaking Semantic Web curriculum: the reading path, the synthesis pages, the exercises, and how the cheat sheet runs alongside the whole thing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-deep:  #0B4F4A;
+    --teal-mid:   #1E8076;
+    --teal-light: #C6E2DD;
+    --teal-pale:  #ECF4F1;
+    --teal-rule:  #C9DED9;
+    --coral:      #D85A30;
+    --coral-tint: #FAEAE2;
+    --charcoal:   #1F2A2E;
+    --slate:      #5A6671;
+    --slate-light:#8A929A;
+    --cream:      #FAF7F2;
+    --rule:       #D8D2C6;
+    --code-bg:    #F2EDE3;
+    --grey-fill:  #F0EBE0;
+    --grey-stroke:#C4BFB5;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    color: var(--charcoal);
+    background: var(--cream);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    background: var(--teal-deep);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+  }
+  .masthead::after {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    background: var(--coral);
+    margin-top: 1.25rem;
+  }
+  .masthead-inner { max-width: 64rem; margin: 0 auto; }
+  .brand {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    color: var(--teal-light);
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+    font-weight: 500;
+  }
+  h1 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 2.75rem;
+    line-height: 1.1;
+    margin: 0 0 0.4rem;
+    letter-spacing: -0.012em;
+  }
+  .lede {
+    font-size: 1rem;
+    color: var(--teal-light);
+    max-width: 38rem;
+    margin: 0;
+  }
+
+  /* ---------- Container ---------- */
+  .container {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 2rem 2rem 1rem;
+  }
+
+  /* ---------- Module chip strip ---------- */
+  .chip-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 0 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .chip-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    font-weight: 600;
+    margin-right: 0.6rem;
+  }
+  .chip {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--slate);
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 0.42rem 0.85rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .chip:hover { color: var(--charcoal); border-color: var(--slate-light); }
+  .chip.active {
+    background: var(--coral);
+    color: white;
+    border-color: var(--coral);
+    font-weight: 600;
+  }
+  .chip:focus-visible {
+    outline: 2px solid var(--coral);
+    outline-offset: 2px;
+  }
+  .chip[data-status="pending"] {
+    color: var(--slate-light);
+    border-style: dashed;
+  }
+  .chip.active[data-status="pending"] {
+    background: var(--slate-light);
+    color: white;
+    border-color: var(--slate-light);
+    border-style: solid;
+  }
+
+  /* ---------- Map ---------- */
+  .map-wrap {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .map-wrap svg { display: block; width: 100%; height: auto; }
+
+  /* ---------- Card interactions (SVG-level) ---------- */
+  .card-link {
+    cursor: pointer;
+    transition: transform 0.18s ease, filter 0.18s ease;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .card-link:hover { filter: brightness(0.97); }
+  .card-link:hover .card-rect-shadow { opacity: 1; }
+  .card-link:focus-visible { outline: none; }
+  .card-link:focus-visible .card-rect {
+    stroke: var(--coral);
+    stroke-width: 2;
+  }
+  .card-rect-shadow {
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    pointer-events: none;
+  }
+  .card-greyed { cursor: pointer; }
+  .card-greyed .card-rect { fill: var(--grey-fill) !important; stroke: var(--grey-stroke) !important; stroke-width: 1 !important; }
+  .card-greyed .card-text,
+  .card-greyed .card-role { fill: var(--slate-light); }
+  .card-greyed .card-pill-text { fill: var(--slate-light); }
+  .card-greyed:hover .card-rect { stroke: var(--slate) !important; }
+
+  /* you-are-here flag */
+  .here-flag.hidden { display: none; }
+
+  /* ---------- Legend ---------- */
+  .legend-row {
+    display: flex;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--rule);
+    font-size: 0.85rem;
+    color: var(--slate);
+    align-items: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.55rem; }
+  .legend-swatch {
+    width: 14px; height: 14px; border-radius: 3px;
+    border: 1px solid var(--teal-rule);
+  }
+  .sw-teal   { background: var(--teal-pale); }
+  .sw-white  { background: white; border-color: #B7BEC4; }
+  .sw-coral  { background: var(--coral-tint); border-color: var(--coral); border-width: 1.2px; }
+  .sw-grey   { background: var(--grey-fill); border-color: var(--grey-stroke); border-style: dashed; }
+  .legend-line-solid {
+    width: 24px; height: 2px; background: var(--coral); border-radius: 1px;
+  }
+  .legend-line-dashed {
+    width: 24px; height: 0; border-top: 2px dashed var(--coral);
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 2rem 0 3rem;
+    color: var(--slate);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--rule);
+    margin-top: 1.5rem;
+  }
+  footer p { margin: 0.35rem 0; }
+  footer a { color: var(--teal-mid); }
+
+  /* ---------- Tooltip (for greyed cards) ---------- */
+  .tip {
+    position: fixed;
+    background: var(--charcoal);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    pointer-events: none;
+    z-index: 1000;
+    max-width: 16rem;
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .tip.show { opacity: 1; }
+  .tip::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 1rem;
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid var(--charcoal);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 760px) {
+    h1 { font-size: 2rem; }
+    .masthead { padding: 2rem 1.25rem 1.5rem; }
+    .container { padding: 1.5rem 1.25rem 0.5rem; }
+    .chip-label { width: 100%; margin-bottom: 0.5rem; }
+    .chip { font-size: 0.72rem; padding: 0.35rem 0.7rem; }
+    .legend-row { gap: 1rem; font-size: 0.78rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== Masthead ===================== -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking Semantic Web · Curriculum map</div>
+    <h1>How the pieces fit together</h1>
+    <p class="lede">Five kinds of page, one reading path. Click any card to jump in. Keep the cheat sheet open the whole way.</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ===================== Module chip strip ===================== -->
+  <div class="chip-row" role="tablist" aria-label="Select a module">
+    <span class="chip-label">Module</span>
+    <button class="chip active" data-module="1" role="tab" aria-selected="true">01 · Foundations</button>
+    <button class="chip" data-module="2" role="tab" aria-selected="false" data-status="pending">02 · Modeling</button>
+    <button class="chip" data-module="3" role="tab" aria-selected="false" data-status="pending">03 · Reasoning</button>
+    <button class="chip" data-module="4" role="tab" aria-selected="false" data-status="pending">04 · Shipping</button>
+  </div>
+
+  <!-- ===================== The Map ===================== -->
+  <div class="map-wrap">
+    <svg id="curriculum-map" viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg"
+         font-family="'IBM Plex Sans', system-ui, sans-serif"
+         role="img" aria-labelledby="map-title map-desc">
+      <title id="map-title">Curriculum reading-path map</title>
+      <desc id="map-desc">A four-stop reading path on the left, with the cheat sheet as a reference rail on the right.</desc>
+
+      <defs>
+        <style>
+          .h1     { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-weight: 500; font-size: 30px; fill: #1F2A2E; }
+          .brand  { font-size: 10.5px; fill: #D85A30; font-weight: 600; letter-spacing: 2.5px; }
+          .role   { font-size: 9px; fill: #D85A30; font-weight: 600; letter-spacing: 1.6px; }
+          .role-mute { font-size: 9px; fill: #8A929A; font-weight: 600; letter-spacing: 1.6px; }
+          .title  { font-size: 15px; fill: #1F2A2E; font-weight: 600; }
+          .title-sm { font-size: 13px; fill: #1F2A2E; font-weight: 600; }
+          .desc   { font-size: 11px; fill: #5A6671; }
+          .desc-sm{ font-size: 10.5px; fill: #5A6671; }
+          .mono   { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: #0B4F4A; }
+          .num    { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; fill: #FFFFFF; font-weight: 600; }
+          .pill   { font-size: 7.5px; fill: #8A929A; font-weight: 600; letter-spacing: 1.2px; }
+          .flag   { font-size: 10px; fill: #FFFFFF; font-weight: 600; letter-spacing: 0.4px; }
+          .loop   { font-size: 10px; fill: #8A929A; }
+        </style>
+        <marker id="loopArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9" fill="none" stroke="#D85A30" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <!-- soft drop shadow for hover -->
+        <filter id="cardHover" x="-10%" y="-30%" width="120%" height="160%">
+          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#1F2A2E" flood-opacity="0.12"/>
+        </filter>
+      </defs>
+
+      <!-- Reading-path spine -->
+      <line x1="98" y1="100" x2="98" y2="492" stroke="#D85A30" stroke-width="2"/>
+
+      <!-- station connectors -->
+      <line x1="111" y1="100" x2="138" y2="100" stroke="#D85A30" stroke-width="1.5"/>
+      <line x1="111" y1="230" x2="138" y2="230" stroke="#D85A30" stroke-width="1.5"/>
+      <line x1="111" y1="360" x2="138" y2="360" stroke="#D85A30" stroke-width="1.5"/>
+      <line x1="111" y1="490" x2="138" y2="490" stroke="#D85A30" stroke-width="1.5"/>
+
+      <!-- Loop back to start -->
+      <path d="M 98 505 C 50 518 38 512 38 468 L 38 125 C 38 85 54 92 85 100"
+            fill="none" stroke="#D85A30" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#loopArrow)"/>
+      <text x="32" y="548" class="loop">the loop: each</text>
+      <text x="32" y="562" class="loop">sub-module retraces</text>
+      <text x="32" y="576" class="loop">this same path</text>
+
+      <!-- =============== Card 1: README =============== -->
+      <a id="link-readme" href="https://curriculum.barbhs.com/modules/01-foundations/README.md" class="card-link" role="link" tabindex="0">
+        <rect class="card-rect-shadow" x="138" y="63" width="320" height="74" rx="6" filter="url(#cardHover)"/>
+        <rect class="card-rect" x="138" y="63" width="320" height="74" rx="6" fill="#ECF4F1" stroke="#C9DED9" stroke-width="1"/>
+        <text x="158" y="86" class="card-role role">01 · START · WHAT TO DO</text>
+        <text x="158" y="107" class="card-text title">Module README</text>
+        <text x="158" y="125" class="card-text desc">The reading and exercises for the module, in order.</text>
+      </a>
+
+      <!-- =============== Card 2: Required reading =============== -->
+      <a id="link-reading" href="https://curriculum.barbhs.com/resources/reading-list.md" class="card-link" role="link" tabindex="0">
+        <rect class="card-rect-shadow" x="138" y="193" width="320" height="74" rx="6" filter="url(#cardHover)"/>
+        <rect class="card-rect" x="138" y="193" width="320" height="74" rx="6" fill="#FFFFFF" stroke="#B7BEC4" stroke-width="1"/>
+        <rect x="364" y="203" width="76" height="17" rx="8.5" fill="#FFFFFF" stroke="#B7BEC4" stroke-width="1"/>
+        <text x="402" y="215" class="card-pill-text pill" text-anchor="middle">EXTERNAL</text>
+        <text x="158" y="216" class="card-role role-mute">02 · LEARN · THE CANON</text>
+        <text x="158" y="237" class="card-text title">The required reading</text>
+        <text x="158" y="255" class="card-text desc">Allemang, DuCharme, Hogan — not mine.</text>
+      </a>
+
+      <!-- Companion deck (subordinate) -->
+      <line x1="458" y1="230" x2="474" y2="230" stroke="#C9DED9" stroke-width="1.2" stroke-dasharray="3,3"/>
+      <a id="link-companion" href="https://curriculum.barbhs.com/roadmap.html" class="card-link" role="link" tabindex="0">
+        <rect class="card-rect-shadow" x="474" y="201" width="220" height="58" rx="6" filter="url(#cardHover)"/>
+        <rect class="card-rect" x="474" y="201" width="220" height="58" rx="6" fill="#F4F8F7" stroke="#C9DED9" stroke-width="1"/>
+        <text x="490" y="221" class="card-role role-mute">COMPANION</text>
+        <text x="490" y="238" class="card-text title-sm">Reading-companion deck</text>
+        <text x="490" y="254" class="card-text desc-sm">Eases you into the dense chapters.</text>
+      </a>
+
+      <!-- =============== Card 3: Synthesis =============== -->
+      <a id="link-synthesis" href="https://curriculum.barbhs.com/modules/01-foundations/submodules/1-1-rdf-vs-lpg.html" class="card-link" role="link" tabindex="0">
+        <rect class="card-rect-shadow" x="138" y="323" width="320" height="74" rx="6" filter="url(#cardHover)"/>
+        <rect class="card-rect" x="138" y="323" width="320" height="74" rx="6" fill="#ECF4F1" stroke="#C9DED9" stroke-width="1"/>
+        <text x="158" y="346" class="card-role role">03 · LEARN · MY TAKE</text>
+        <text x="158" y="367" class="card-text title">Synthesis page</text>
+        <text x="158" y="385" class="card-text desc">The deeper why, on real data — like sub-module 1.1.</text>
+      </a>
+
+      <!-- you-are-here flag (controlled by JS) -->
+      <g id="here-flag" class="here-flag">
+        <path d="M 474 350 L 568 350 L 568 372 L 474 372 L 464 361 Z" fill="#D85A30"/>
+        <text x="523" y="365" class="flag" text-anchor="middle">this page</text>
+      </g>
+
+      <!-- =============== Card 4: Exercise =============== -->
+      <a id="link-exercise" href="https://curriculum.barbhs.com/modules/01-foundations/README.md#exercises" class="card-link" role="link" tabindex="0">
+        <rect class="card-rect-shadow" x="138" y="453" width="320" height="74" rx="6" filter="url(#cardHover)"/>
+        <rect class="card-rect" x="138" y="453" width="320" height="74" rx="6" fill="#FAEAE2" stroke="#D85A30" stroke-width="1.2"/>
+        <text x="158" y="476" class="card-role role">04 · DO · THE RECEIPTS</text>
+        <text x="158" y="497" class="card-text title">The exercise</text>
+        <text x="158" y="515" class="card-text desc">The work itself, on real data. This is the asset.</text>
+      </a>
+
+      <!-- =============== Reference rail: Cheat sheet =============== -->
+      <line x1="696" y1="230" x2="722" y2="230" stroke="#C9DED9" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="696" y1="360" x2="722" y2="360" stroke="#C9DED9" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="696" y1="490" x2="722" y2="490" stroke="#C9DED9" stroke-width="1" stroke-dasharray="3,3"/>
+
+      <a id="link-cheatsheet" href="https://curriculum.barbhs.com/reference/cheatsheets/module-1-cheatsheet.html" class="card-link" role="link" tabindex="0">
+        <rect class="card-rect-shadow" x="722" y="63" width="210" height="464" rx="6" filter="url(#cardHover)"/>
+        <rect class="card-rect" x="722" y="63" width="210" height="464" rx="6" fill="#F2EDE3" stroke="#D8D2C6" stroke-width="1"/>
+        <text x="742" y="93" class="card-role role">REFERENCE</text>
+        <text x="742" y="107" class="card-role role-mute">ALWAYS OPEN</text>
+        <text x="742" y="143" class="card-text title">Module cheat sheet</text>
+        <text x="742" y="167" class="card-text desc">Back-pocket Turtle</text>
+        <text x="742" y="183" class="card-text desc">and SPARQL syntax.</text>
+        <text x="742" y="210" class="card-text desc">Used during every step —</text>
+        <text x="742" y="226" class="card-text desc">not a step itself.</text>
+        <!-- decorative syntax ticks -->
+        <line x1="742" y1="280" x2="880" y2="280" stroke="#DDD7CB" stroke-width="4" stroke-linecap="round"/>
+        <line x1="742" y1="296" x2="844" y2="296" stroke="#DDD7CB" stroke-width="4" stroke-linecap="round"/>
+        <line x1="742" y1="312" x2="864" y2="312" stroke="#DDD7CB" stroke-width="4" stroke-linecap="round"/>
+        <line x1="742" y1="328" x2="816" y2="328" stroke="#DDD7CB" stroke-width="4" stroke-linecap="round"/>
+        <text id="cheatsheet-filename" x="742" y="500" class="mono">module-1-cheatsheet.html</text>
+      </a>
+
+      <!-- station dots LAST so they sit on top -->
+      <circle cx="98" cy="100" r="13" fill="#D85A30"/>
+      <text x="98" y="100" class="num" text-anchor="middle" dominant-baseline="central">1</text>
+      <circle cx="98" cy="230" r="13" fill="#D85A30"/>
+      <text x="98" y="230" class="num" text-anchor="middle" dominant-baseline="central">2</text>
+      <circle cx="98" cy="360" r="13" fill="#D85A30"/>
+      <text x="98" y="360" class="num" text-anchor="middle" dominant-baseline="central">3</text>
+      <circle cx="98" cy="490" r="13" fill="#D85A30"/>
+      <text x="98" y="490" class="num" text-anchor="middle" dominant-baseline="central">4</text>
+    </svg>
+  </div>
+
+  <!-- ===================== Legend ===================== -->
+  <div class="legend-row" aria-label="Legend">
+    <div class="legend-item"><span class="legend-swatch sw-teal"></span><span>written for this curriculum</span></div>
+    <div class="legend-item"><span class="legend-swatch sw-white"></span><span>canonical external source</span></div>
+    <div class="legend-item"><span class="legend-swatch sw-coral"></span><span>the work you produce</span></div>
+    <div class="legend-item"><span class="legend-swatch sw-grey"></span><span>not yet shipped</span></div>
+    <div class="legend-item"><span class="legend-line-solid"></span><span>reading path</span></div>
+    <div class="legend-item"><span class="legend-line-dashed"></span><span>reference &amp; loop</span></div>
+  </div>
+
+  <footer>
+    <p>Sensemaking Semantic Web curriculum · A self-directed semantic web program, worked in public.</p>
+    <p><a href="https://curriculum.barbhs.com/">Back to the curriculum homepage</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a></p>
+  </footer>
+
+</div>
+
+<!-- tooltip element for greyed cards -->
+<div id="tooltip" class="tip" role="tooltip"></div>
+
+<script>
+/* =====================================================================
+   Module switcher.
+
+   Cards have a single canonical href set in the SVG (for Module 1).
+   When the user clicks a different module chip, we rewrite those hrefs.
+
+   Module 1: real URLs.
+   Modules 2-4: every card points to /roadmap.html and is visually greyed.
+
+   Hand-maintained per the user's choice. TBD entries are flagged.
+   ===================================================================== */
+
+const BASE = 'https://curriculum.barbhs.com';
+const ROADMAP = `${BASE}/roadmap.html`;
+
+const MODULE_DATA = {
+  1: {
+    name: 'Foundations',
+    live: true,
+    readme:     `${BASE}/modules/01-foundations/README.md`,
+    reading:    `${BASE}/resources/reading-list.md`,
+    companion:  ROADMAP,  // TBD — companion deck location not yet decided
+    synthesis:  `${BASE}/modules/01-foundations/submodules/1-1-rdf-vs-lpg.html`,
+    exercise:   `${BASE}/modules/01-foundations/README.md#exercises`,
+    cheatsheet: `${BASE}/reference/cheatsheets/module-1-cheatsheet.html`,
+    cheatsheetFilename: 'module-1-cheatsheet.html',
+    showHereFlag: true,
+  },
+  2: {
+    name: 'Modeling',
+    live: false,
+    readme:     ROADMAP, reading: ROADMAP, companion: ROADMAP,
+    synthesis:  ROADMAP, exercise: ROADMAP,
+    cheatsheet: ROADMAP,
+    cheatsheetFilename: 'module-2-cheatsheet.html',
+    showHereFlag: false,
+  },
+  3: {
+    name: 'Reasoning',
+    live: false,
+    readme:     ROADMAP, reading: ROADMAP, companion: ROADMAP,
+    synthesis:  ROADMAP, exercise: ROADMAP,
+    cheatsheet: ROADMAP,
+    cheatsheetFilename: 'module-3-cheatsheet.html',
+    showHereFlag: false,
+  },
+  4: {
+    name: 'Shipping',
+    live: false,
+    readme:     ROADMAP, reading: ROADMAP, companion: ROADMAP,
+    synthesis:  ROADMAP, exercise: ROADMAP,
+    cheatsheet: ROADMAP,
+    cheatsheetFilename: 'module-4-cheatsheet.html',
+    showHereFlag: false,
+  },
+};
+
+const TOOLTIP_MESSAGES = {
+  readme:     m => `${m.name} README — not yet shipped. Click to see the roadmap.`,
+  reading:    m => `Module ${m.name} reading list — coming when the module ships.`,
+  companion:  m => `Reading-companion deck — coming when the module ships.`,
+  synthesis:  m => `Synthesis pages for Module ${m.name} — not yet written.`,
+  exercise:   m => `Module ${m.name} exercises — defined once the module ships.`,
+  cheatsheet: m => `Module ${m.name} cheat sheet — coming when the module ships.`,
+};
+
+const cardIds = {
+  readme:     'link-readme',
+  reading:    'link-reading',
+  companion:  'link-companion',
+  synthesis:  'link-synthesis',
+  exercise:   'link-exercise',
+  cheatsheet: 'link-cheatsheet',
+};
+
+function setModule(num) {
+  const data = MODULE_DATA[num];
+  if (!data) return;
+
+  // Update each card link.
+  for (const [key, id] of Object.entries(cardIds)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.setAttribute('href', data[key]);
+
+    if (data.live) {
+      el.classList.remove('card-greyed');
+      el.removeAttribute('data-tooltip');
+      el.setAttribute('aria-label', `${key} for Module ${num} (${data.name})`);
+    } else {
+      el.classList.add('card-greyed');
+      const msg = TOOLTIP_MESSAGES[key](data);
+      el.setAttribute('data-tooltip', msg);
+      el.setAttribute('aria-label', msg);
+    }
+  }
+
+  // Update cheat sheet filename in the rail.
+  const fnEl = document.getElementById('cheatsheet-filename');
+  if (fnEl) fnEl.textContent = data.cheatsheetFilename;
+
+  // Show / hide the "this page" flag (only relevant for Module 1).
+  const flag = document.getElementById('here-flag');
+  if (flag) flag.classList.toggle('hidden', !data.showHereFlag);
+
+  // Update chip active state.
+  document.querySelectorAll('.chip').forEach(c => {
+    const isActive = c.dataset.module === String(num);
+    c.classList.toggle('active', isActive);
+    c.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+}
+
+// Wire chip clicks.
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => setModule(Number(chip.dataset.module)));
+});
+
+// Initial state: Module 1.
+setModule(1);
+
+/* ---------- Tooltip handling for greyed cards ---------- */
+const tooltip = document.getElementById('tooltip');
+let tipTimer = null;
+
+function showTip(el, evt) {
+  const msg = el.getAttribute('data-tooltip');
+  if (!msg) return;
+  tooltip.textContent = msg;
+  // Position below the cursor.
+  const x = evt.clientX + 12;
+  const y = evt.clientY + 18;
+  tooltip.style.left = `${x}px`;
+  tooltip.style.top  = `${y}px`;
+  clearTimeout(tipTimer);
+  tooltip.classList.add('show');
+}
+function hideTip() {
+  clearTimeout(tipTimer);
+  tipTimer = setTimeout(() => tooltip.classList.remove('show'), 80);
+}
+
+document.querySelectorAll('.card-link').forEach(card => {
+  card.addEventListener('mouseenter', evt => {
+    if (card.classList.contains('card-greyed')) showTip(card, evt);
+  });
+  card.addEventListener('mousemove', evt => {
+    if (card.classList.contains('card-greyed') && tooltip.classList.contains('show')) {
+      tooltip.style.left = `${evt.clientX + 12}px`;
+      tooltip.style.top  = `${evt.clientY + 18}px`;
+    }
+  });
+  card.addEventListener('mouseleave', hideTip);
+  card.addEventListener('blur', hideTip);
+  card.addEventListener('focus', evt => {
+    if (card.classList.contains('card-greyed')) {
+      // For keyboard users, anchor tooltip near the card itself.
+      const rect = card.getBoundingClientRect();
+      const fakeEvt = { clientX: rect.left + 20, clientY: rect.bottom };
+      showTip(card, fakeEvt);
+    }
+  });
+});
+</script>
+
+</body>
+</html>

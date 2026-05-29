@@ -1,0 +1,109 @@
+<svg viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Sans', system-ui, sans-serif" role="img" aria-label="A map of how the Sensemaking Semantic Web curriculum fits together: a four-stop reading path with the cheat sheet as a reference rail alongside it.">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;1,500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap');
+      .h1    { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-weight: 500; font-size: 30px; fill: #1F2A2E; }
+      .brand { font-size: 10.5px; fill: #D85A30; font-weight: 600; letter-spacing: 2.5px; }
+      .sub   { font-size: 13px; fill: #5A6671; }
+      .role  { font-size: 9px; fill: #D85A30; font-weight: 600; letter-spacing: 1.6px; }
+      .role-mute { font-size: 9px; fill: #8A929A; font-weight: 600; letter-spacing: 1.6px; }
+      .title { font-size: 15px; fill: #1F2A2E; font-weight: 600; }
+      .title-sm { font-size: 13px; fill: #1F2A2E; font-weight: 600; }
+      .desc  { font-size: 11px; fill: #5A6671; }
+      .desc-sm { font-size: 10.5px; fill: #5A6671; }
+      .mono  { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; fill: #0B4F4A; }
+      .num   { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; fill: #FFFFFF; font-weight: 600; }
+      .pill  { font-size: 7.5px; fill: #8A929A; font-weight: 600; letter-spacing: 1.2px; }
+      .loop  { font-size: 10px; fill: #8A929A; }
+    </style>
+    <marker id="loopArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9" fill="none" stroke="#D85A30" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="998" height="618" rx="12" fill="#FAF7F2" stroke="#E5DFD4" stroke-width="1.5"/>
+
+  <text x="48" y="50" class="brand">SENSEMAKING SEMANTIC WEB</text>
+  <text x="46" y="88" class="h1">How the pieces fit together</text>
+  <text x="48" y="110" class="sub">Five kinds of page, one reading path. Start at the README — keep the cheat sheet open the whole way.</text>
+  <line x1="48" y1="128" x2="952" y2="128" stroke="#D8D2C6" stroke-width="1"/>
+
+  <line x1="118" y1="195" x2="118" y2="503" stroke="#D85A30" stroke-width="2"/>
+
+  <line x1="131" y1="195" x2="158" y2="195" stroke="#D85A30" stroke-width="1.5"/>
+  <line x1="131" y1="298" x2="158" y2="298" stroke="#D85A30" stroke-width="1.5"/>
+  <line x1="131" y1="400" x2="158" y2="400" stroke="#D85A30" stroke-width="1.5"/>
+  <line x1="131" y1="503" x2="158" y2="503" stroke="#D85A30" stroke-width="1.5"/>
+
+  <path d="M 118 516 C 70 528 58 522 58 478 L 58 220 C 58 180 74 187 105 195"
+        fill="none" stroke="#D85A30" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#loopArrow)"/>
+  <text x="52" y="560" class="loop">the loop: each sub-module</text>
+  <text x="52" y="574" class="loop">retraces this path</text>
+
+  <a href="modules/01-foundations/README.md">
+    <rect x="158" y="158" width="312" height="74" rx="6" fill="#ECF4F1" stroke="#C9DED9" stroke-width="1"/>
+    <text x="178" y="181" class="role">01 · START · WHAT TO DO</text>
+    <text x="178" y="202" class="title">Module README</text>
+    <text x="178" y="220" class="desc">The reading and exercises for the module, in order.</text>
+  </a>
+
+  <a href="resources/reading-list.md">
+    <rect x="158" y="261" width="312" height="74" rx="6" fill="#FFFFFF" stroke="#B7BEC4" stroke-width="1"/>
+    <rect x="384" y="271" width="76" height="17" rx="8.5" fill="#FFFFFF" stroke="#B7BEC4" stroke-width="1"/>
+    <text x="422" y="283" class="pill" text-anchor="middle">EXTERNAL</text>
+    <text x="178" y="284" class="role-mute">02 · LEARN · THE CANON</text>
+    <text x="178" y="305" class="title">The required reading</text>
+    <text x="178" y="323" class="desc">Allemang, DuCharme, Hogan — not mine.</text>
+  </a>
+
+  <line x1="470" y1="298" x2="486" y2="298" stroke="#C9DED9" stroke-width="1.2" stroke-dasharray="3,3"/>
+  <a href="roadmap.html">
+    <rect x="486" y="269" width="208" height="58" rx="6" fill="#F4F8F7" stroke="#C9DED9" stroke-width="1"/>
+    <text x="502" y="289" class="role-mute">COMPANION</text>
+    <text x="502" y="306" class="title-sm">Reading-companion deck</text>
+    <text x="502" y="322" class="desc-sm">Eases you into the dense chapters.</text>
+  </a>
+
+  <a href="modules/01-foundations/submodules/1-1-rdf-vs-lpg.html">
+    <rect x="158" y="363" width="312" height="74" rx="6" fill="#ECF4F1" stroke="#C9DED9" stroke-width="1"/>
+    <text x="178" y="386" class="role">03 · LEARN · MY TAKE</text>
+    <text x="178" y="407" class="title">Synthesis page</text>
+    <text x="178" y="425" class="desc">The deeper why, on real data — like sub-module 1.1.</text>
+  </a>
+
+  <a href="modules/01-foundations/README.md#exercises">
+    <rect x="158" y="466" width="312" height="74" rx="6" fill="#FAEAE2" stroke="#D85A30" stroke-width="1.2"/>
+    <text x="178" y="489" class="role">04 · DO · THE RECEIPTS</text>
+    <text x="178" y="510" class="title">The exercise</text>
+    <text x="178" y="528" class="desc">The work itself, on real data. This is the asset.</text>
+  </a>
+
+  <line x1="716" y1="298" x2="742" y2="298" stroke="#C9DED9" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="716" y1="400" x2="742" y2="400" stroke="#C9DED9" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="716" y1="503" x2="742" y2="503" stroke="#C9DED9" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <a href="reference/cheatsheets/module-1-cheatsheet.html">
+    <rect x="742" y="158" width="210" height="382" rx="6" fill="#F2EDE3" stroke="#D8D2C6" stroke-width="1"/>
+    <text x="762" y="188" class="role">REFERENCE</text>
+    <text x="762" y="202" class="role-mute">ALWAYS OPEN</text>
+    <text x="762" y="238" class="title">Module cheat sheet</text>
+    <text x="762" y="262" class="desc">Back-pocket Turtle</text>
+    <text x="762" y="278" class="desc">and SPARQL syntax.</text>
+    <text x="762" y="302" class="desc">Used during every step —</text>
+    <text x="762" y="318" class="desc">not a step itself.</text>
+    <line x1="762" y1="372" x2="900" y2="372" stroke="#DDD7CB" stroke-width="4" stroke-linecap="round"/>
+    <line x1="762" y1="388" x2="864" y2="388" stroke="#DDD7CB" stroke-width="4" stroke-linecap="round"/>
+    <line x1="762" y1="404" x2="884" y2="404" stroke="#DDD7CB" stroke-width="4" stroke-linecap="round"/>
+    <line x1="762" y1="420" x2="836" y2="420" stroke="#DDD7CB" stroke-width="4" stroke-linecap="round"/>
+    <text x="762" y="510" class="mono">module-1-cheatsheet.html</text>
+  </a>
+
+  <circle cx="118" cy="195" r="13" fill="#D85A30"/>
+  <text x="118" y="195" class="num" text-anchor="middle" dominant-baseline="central">1</text>
+  <circle cx="118" cy="298" r="13" fill="#D85A30"/>
+  <text x="118" y="298" class="num" text-anchor="middle" dominant-baseline="central">2</text>
+  <circle cx="118" cy="400" r="13" fill="#D85A30"/>
+  <text x="118" y="400" class="num" text-anchor="middle" dominant-baseline="central">3</text>
+  <circle cx="118" cy="503" r="13" fill="#D85A30"/>
+  <text x="118" y="503" class="num" text-anchor="middle" dominant-baseline="central">4</text>
+</svg>

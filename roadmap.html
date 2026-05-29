@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadmap — Sensemaking Semantic Web</title>
+<meta name="description" content="Where the Sensemaking Semantic Web curriculum is, where it's going, and the conditions under which it might pause.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-deep:  #0B4F4A;
+    --teal-mid:   #1E8076;
+    --teal-light: #C6E2DD;
+    --teal-pale:  #ECF4F1;
+    --teal-rule:  #C9DED9;
+    --coral:      #D85A30;
+    --coral-tint: #FAEAE2;
+    --charcoal:   #1F2A2E;
+    --slate:      #5A6671;
+    --slate-light:#8A929A;
+    --cream:      #FAF7F2;
+    --rule:       #D8D2C6;
+    --code-bg:    #F2EDE3;
+    --grey-fill:  #F0EBE0;
+    --grey-stroke:#C4BFB5;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    color: var(--charcoal);
+    background: var(--cream);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    background: var(--teal-deep);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+  }
+  .masthead::after {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    background: var(--coral);
+    margin-top: 1.25rem;
+  }
+  .masthead-inner { max-width: 64rem; margin: 0 auto; }
+  .brand {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    color: var(--teal-light);
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+    font-weight: 500;
+  }
+  h1 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 2.75rem;
+    line-height: 1.1;
+    margin: 0 0 0.4rem;
+    letter-spacing: -0.012em;
+  }
+  .lede {
+    font-size: 1rem;
+    color: var(--teal-light);
+    max-width: 42rem;
+    margin: 0;
+  }
+
+  /* ---------- Container ---------- */
+  .container {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 1rem;
+  }
+
+  /* ---------- Section labels ---------- */
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    color: var(--coral);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    margin-top: 3rem;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+  h2 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--charcoal);
+    margin: 0 0 1rem;
+    line-height: 1.15;
+  }
+  p { font-size: 1rem; max-width: 44rem; margin: 0.5rem 0 1.2rem; }
+
+  /* ---------- Status banner ---------- */
+  .status {
+    background: var(--coral-tint);
+    border-left: 3px solid var(--coral);
+    padding: 1.1rem 1.4rem;
+    margin: 0 0 2.5rem;
+    border-radius: 0 4px 4px 0;
+  }
+  .status-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--coral);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .status-text {
+    font-size: 1.02rem;
+    color: var(--charcoal);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .status-text strong { color: var(--coral); font-weight: 600; }
+
+  /* ---------- Module timeline ---------- */
+  .timeline {
+    position: relative;
+    margin: 1rem 0 0;
+    padding-left: 0;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 22px;
+    top: 16px;
+    bottom: 30px;
+    width: 2px;
+    background: var(--rule);
+  }
+  .module {
+    position: relative;
+    padding: 0 0 2rem 60px;
+  }
+  .module:last-child { padding-bottom: 0; }
+  .module-marker {
+    position: absolute;
+    left: 9px;
+    top: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--slate);
+    z-index: 1;
+  }
+  .module.shipped .module-marker {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: white;
+  }
+  .module.in-progress .module-marker {
+    background: white;
+    border-color: var(--coral);
+    color: var(--coral);
+    /* tiny pulse to signal active state without being annoying */
+    box-shadow: 0 0 0 3px rgba(216, 90, 48, 0.15);
+  }
+  .module.pending .module-marker {
+    background: var(--grey-fill);
+    border-color: var(--grey-stroke);
+    border-style: dashed;
+    color: var(--slate-light);
+  }
+
+  .module-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .module-title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin: 0;
+  }
+  .module-status {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+  }
+  .module.in-progress .module-status {
+    color: var(--coral);
+    border: 1px solid var(--coral);
+  }
+  .module.pending .module-status {
+    color: var(--slate-light);
+    border: 1px dashed var(--grey-stroke);
+  }
+  .module.shipped .module-status {
+    color: white;
+    background: var(--coral);
+  }
+  .module-tagline {
+    color: var(--slate);
+    font-size: 0.95rem;
+    margin: 0.3rem 0 0.9rem;
+    font-style: italic;
+  }
+  .module-deliverables {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+  }
+  .module-deliverables li {
+    font-size: 0.92rem;
+    color: var(--slate);
+    padding: 0.25rem 0;
+    padding-left: 1rem;
+    position: relative;
+  }
+  .module-deliverables li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--slate-light);
+  }
+  .module.shipped .module-deliverables li::before { color: var(--coral); }
+  .module-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--slate-light);
+    margin-top: 0.7rem;
+  }
+
+  /* ---------- Pause conditions ---------- */
+  .pause-list {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1.5rem 1.75rem;
+    margin: 1rem 0 0;
+  }
+  .pause-list ul { padding-left: 1.2rem; margin: 0; }
+  .pause-list li {
+    margin: 0.6rem 0;
+    color: var(--slate);
+    font-size: 0.95rem;
+  }
+  .pause-list li strong { color: var(--charcoal); font-weight: 600; }
+
+  /* ---------- Follow strip ---------- */
+  .follow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0 1rem;
+  }
+  .follow-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1.25rem 1.4rem;
+    text-decoration: none;
+    color: var(--charcoal);
+    transition: all 0.18s ease;
+    display: block;
+  }
+  .follow-card:hover {
+    border-color: var(--coral);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(31, 42, 46, 0.08);
+  }
+  .follow-card-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--coral);
+    margin-bottom: 0.4rem;
+  }
+  .follow-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.3rem;
+    color: var(--charcoal);
+  }
+  .follow-card-desc {
+    font-size: 0.88rem;
+    color: var(--slate);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ---------- Back link ---------- */
+  .back {
+    margin: 0 0 1.5rem;
+  }
+  .back a {
+    font-size: 0.85rem;
+    color: var(--slate);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+  .back a:hover { color: var(--coral); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 2rem 0 3rem;
+    color: var(--slate);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--rule);
+    margin-top: 3rem;
+  }
+  footer p { margin: 0.35rem 0; max-width: none; }
+  footer a { color: var(--teal-mid); }
+
+  /* ---------- Section rule ---------- */
+  hr.rule {
+    border: none;
+    height: 1px;
+    background: var(--rule);
+    margin: 3rem 0 0;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 760px) {
+    h1 { font-size: 2rem; }
+    .masthead { padding: 2rem 1.25rem 1.5rem; }
+    .container { padding: 2rem 1.25rem 0.5rem; }
+    .follow { grid-template-columns: 1fr; }
+    .module { padding-left: 50px; }
+    .timeline::before { left: 18px; }
+    .module-marker { left: 5px; width: 26px; height: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== Masthead ===================== -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking Semantic Web · Roadmap</div>
+    <h1>Where this is, where it's going</h1>
+    <p class="lede">An honest tracker for a self-directed curriculum being worked in public. Updated as the work moves.</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="back">
+    <a href="map.html">← Back to the curriculum map</a>
+  </div>
+
+  <!-- ===================== Current status ===================== -->
+  <div class="status">
+    <div class="status-label">Right now</div>
+    <p class="status-text">
+      The curriculum is <strong>pre-launch</strong>. Module 1 materials are taking shape — the syllabus, module READMEs, the first cheat sheet, and the first synthesis page (sub-module 1.1: RDF vs. LPG) are written and published. The first hands-on exercise on real data is the next milestone. Modules 2 through 4 are sketched in the syllabus but not yet written.
+    </p>
+  </div>
+
+  <!-- ===================== Module timeline ===================== -->
+  <div class="section-label">The four modules</div>
+  <h2>What's coming, in rough order</h2>
+
+  <p>The full curriculum is twelve weeks of self-directed work, organized in four modules. Each module produces real artifacts — published ontologies, evaluation notebooks, deployed demos. By the end, the curriculum is the portfolio.</p>
+
+  <p>The default rhythm is five to seven hours per week, but the modules are independent units. Compression to eight weeks or expansion to twenty are both fine. Pauses between modules are expected.</p>
+
+  <div class="timeline">
+
+    <!-- Module 1 — in progress -->
+    <div class="module in-progress">
+      <div class="module-marker">01</div>
+      <div class="module-header">
+        <h3 class="module-title">Foundations</h3>
+        <span class="module-status">In progress</span>
+      </div>
+      <p class="module-tagline">RDF, Turtle, basic SPARQL — the conceptual core of the stack.</p>
+      <ul class="module-deliverables">
+        <li>Resume Graph Explorer slice in both Cypher and Turtle — side-by-side comparison on real data</li>
+        <li>Naruto Network Graph Turtle slice — one arc, converted to RDF</li>
+        <li>Blog post: <em>"LPG vs RDF for resume graphs: a side-by-side"</em></li>
+      </ul>
+      <div class="module-meta">Weeks 1-3 · ~5-7 hours/week · Light new ground</div>
+    </div>
+
+    <!-- Module 2 — pending -->
+    <div class="module pending">
+      <div class="module-marker">02</div>
+      <div class="module-header">
+        <h3 class="module-title">Modeling</h3>
+        <span class="module-status">Not yet started</span>
+      </div>
+      <p class="module-tagline">RDFS, OWL, ontology design — where modeling judgment develops.</p>
+      <ul class="module-deliverables">
+        <li>Naruto ontology v1.0 — published OWL ontology with documented design decisions, REUSE.md, and SHACL shapes</li>
+        <li>Blog post: <em>"Designing an anime ontology in public: the small modeling decisions that compound"</em></li>
+        <li>Optional: career narrative ontology layer for Resume Graph Explorer</li>
+      </ul>
+      <div class="module-meta">Weeks 4-6 · ~6-8 hours/week · Medium new ground</div>
+    </div>
+
+    <!-- Module 3 — pending, hardest -->
+    <div class="module pending">
+      <div class="module-marker">03</div>
+      <div class="module-header">
+        <h3 class="module-title">Reasoning at the edge</h3>
+        <span class="module-status">Not yet started</span>
+      </div>
+      <p class="module-tagline">Inference, reification, SHACL — the conceptually hardest segment.</p>
+      <ul class="module-deliverables">
+        <li>Reified Naruto knowledge graph with full provenance — handling contested fan canon honestly</li>
+        <li>Skill inference notebook on Resume Graph — formal reasoning vs. LLM reasoning, compared honestly</li>
+        <li>Blog post: <em>"Where OWL reasoners beat (and lose to) LLM reasoning"</em></li>
+      </ul>
+      <div class="module-meta">Weeks 7-9 · ~7-9 hours/week · Heavy new ground · Most likely to slip</div>
+    </div>
+
+    <!-- Module 4 — pending capstone -->
+    <div class="module pending">
+      <div class="module-marker">04</div>
+      <div class="module-header">
+        <h3 class="module-title">Shipping</h3>
+        <span class="module-status">Not yet started</span>
+      </div>
+      <p class="module-tagline">SPARQL UPDATE, deployment, LLM + knowledge graph integration.</p>
+      <ul class="module-deliverables">
+        <li>TwinKit v2.0 — RAG framework with optional semantic layer, released on GitHub</li>
+        <li>Naruto KG Explorer — publicly deployed demo combining vector and graph retrieval</li>
+        <li>Case study: <em>"Building a hybrid semantic + vector knowledge twin (with Naruto)"</em></li>
+      </ul>
+      <div class="module-meta">Weeks 10-12 · ~8-10 hours/week · Mixed new ground · The capstone</div>
+    </div>
+
+  </div>
+
+  <!-- ===================== When this might pause ===================== -->
+  <hr class="rule">
+  <div class="section-label">A note on honesty</div>
+  <h2>When this might pause</h2>
+
+  <p>The curriculum is voluntary, self-directed, and worked alongside consulting practice. That means a few conditions could legitimately stop or delay it, and naming them up front is more honest than pretending the path is linear.</p>
+
+  <div class="pause-list">
+    <ul>
+      <li><strong>A serious client engagement or job offer.</strong> Paid work takes priority. The curriculum waits.</li>
+      <li><strong>A module project stalls past two weeks.</strong> Module 2's ontology work is particularly susceptible. If it stalls, the response is a write-up — <em>"lessons from a stalled ontology project"</em> — rather than pushing through. A documented failure is still a credible artifact.</li>
+      <li><strong>Genuine loss of interest.</strong> Dreading the next module is data. The semantic web is interesting but not the only direction; the curriculum's existence does not obligate finishing it.</li>
+    </ul>
+  </div>
+
+  <p style="margin-top: 1.25rem;">None of these are failure modes. They are <em>"this isn't the right vehicle right now"</em> modes. If the curriculum pauses, the pause and its reason will be noted here.</p>
+
+  <!-- ===================== Follow along ===================== -->
+  <hr class="rule">
+  <div class="section-label">Follow along</div>
+  <h2>If you want updates</h2>
+
+  <p>Two low-friction ways to follow what's shipping, without anything resembling a newsletter or email capture.</p>
+
+  <div class="follow">
+    <a href="https://github.com/sensemaking-ai/semantic-web-curriculum" class="follow-card">
+      <div class="follow-card-label">Source of truth</div>
+      <div class="follow-card-title">Watch the GitHub repo</div>
+      <p class="follow-card-desc">Click "Watch" on the curriculum repo. GitHub will notify you when new artifacts land.</p>
+    </a>
+    <a href="https://www.linkedin.com/in/dagny/" class="follow-card">
+      <div class="follow-card-label">Twice-weekly</div>
+      <div class="follow-card-title">LinkedIn updates</div>
+      <p class="follow-card-desc">One short progress note and one artifact-or-question per week. No DMs to inbox.</p>
+    </a>
+  </div>
+
+  <p style="margin-top: 1.5rem;">Questions, corrections, and respectful disagreement about the curriculum design are welcome via GitHub Issues. This is a personal learning project — pull requests on the curriculum itself aren't accepted, but feedback shapes how it evolves.</p>
+
+  <footer>
+    <p>Sensemaking Semantic Web · A self-directed semantic web program, worked in public.</p>
+    <p>Barbara Hidalgo-Sotelo · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+    <p style="margin-top: 0.6rem; font-size: 0.78rem; color: var(--slate-light);">Last updated: pre-launch. This page is regenerated as the curriculum moves.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
