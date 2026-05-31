@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submodule 1.1 workbook — RDF, Turtle, SPARQL · Sensemaking Semantic Web</title>
+<meta name="description" content="RDF vs LPG: the conceptual comparison plus a working SPARQL query lab. Run five queries, learn what each pattern teaches, and work through modification challenges.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal-deep: #0B4F4A;
+  --teal-mid:  #1E8076;
+  --teal-light:#C6E2DD;
+  --coral:     #D85A30;
+  --coral-tint:#FAEAE2;
+  --charcoal:  #1F2A2E;
+  --slate:     #5A6671;
+  --slate-lt:  #8A929A;
+  --cream:     #FAF7F2;
+  --white:     #FFFFFF;
+  --rule:      #D8D2C6;
+  --code-bg:   #F2EDE3;
+  --green:     #2A7040;
+  --green-tint:#E4F1EA;
+  --amber:     #9A6B00;
+  --amber-tint:#FDF6E3;
+  --font-serif:'EB Garamond', Georgia, serif;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: var(--font-sans);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Masthead ── */
+.masthead {
+  background: var(--teal-deep);
+  color: var(--white);
+  padding: 3rem 1.5rem 3.5rem;
+  border-bottom: 5px solid var(--coral);
+}
+.masthead-inner { max-width: 68rem; margin: 0 auto; }
+.brand  { font-size: .74rem; letter-spacing: .18em; color: var(--teal-light); text-transform: uppercase; font-weight: 600; margin-bottom: 1.4rem; }
+.kicker { font-size: .74rem; letter-spacing: .14em; color: var(--teal-light); text-transform: uppercase; font-weight: 600; margin-bottom: .55rem; }
+h1 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2.8rem, 7vw, 5.2rem);
+  color: var(--white);
+  line-height: 1.0;
+  letter-spacing: -.025em;
+  margin: 0 0 .85rem;
+  max-width: 16ch;
+}
+.subtitle {
+  color: var(--teal-light);
+  font-size: clamp(1rem, 2.5vw, 1.18rem);
+  line-height: 1.55;
+  max-width: 46rem;
+  margin: 0 0 1.8rem;
+}
+.meta-row { display: flex; flex-wrap: wrap; gap: .45rem .85rem; }
+.meta-row span {
+  border: 1px solid rgba(198,226,221,.38);
+  border-radius: 999px;
+  padding: .28rem .7rem;
+  font-size: .8rem;
+  color: var(--teal-light);
+}
+
+/* ── Fuseki banner ── */
+.fuseki-banner {
+  padding: .65rem 1.5rem;
+  font-size: .875rem;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  flex-wrap: wrap;
+}
+.fuseki-banner.checking  { background: var(--amber-tint); color: var(--amber); }
+.fuseki-banner.connected { background: var(--green-tint);  color: var(--green); }
+.fuseki-banner.offline   { background: var(--coral-tint);  color: var(--coral); }
+.fuseki-banner .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.fuseki-banner.checking  .dot { background: var(--amber); }
+.fuseki-banner.connected .dot { background: var(--green); }
+.fuseki-banner.offline   .dot { background: var(--coral); }
+.fuseki-banner a    { color: inherit; text-decoration: underline; }
+.fuseki-banner code { font-family: var(--font-mono); font-size: .8em; background: rgba(0,0,0,.08); padding: .1em .3em; border-radius: 3px; }
+
+/* ── Sticky nav ── */
+.quick-nav { position: sticky; top: 0; z-index: 20; background: rgba(250,247,242,.97); border-bottom: 1px solid var(--rule); backdrop-filter: blur(4px); }
+.quick-nav-inner {
+  max-width: 68rem; margin: 0 auto;
+  padding: .65rem 1.5rem;
+  display: flex; gap: .45rem;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.quick-nav-inner::-webkit-scrollbar { display: none; }
+.quick-nav a {
+  flex: 0 0 auto;
+  color: var(--charcoal); border: 1px solid var(--rule); border-radius: 999px;
+  padding: .28rem .68rem; font-size: .76rem; white-space: nowrap;
+  text-decoration: none; background: rgba(255,255,255,.4);
+  transition: border-color .15s, color .15s;
+}
+.quick-nav a:hover { border-color: var(--teal-mid); color: var(--teal-deep); }
+
+/* ── Main layout ── */
+main { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem 4rem; }
+section { padding: 3.75rem 0; border-bottom: 1px solid var(--rule); scroll-margin-top: 3.5rem; }
+section:last-child { border-bottom: none; }
+.section-label { font-size: .7rem; letter-spacing: .2em; color: var(--coral); text-transform: uppercase; font-weight: 600; margin-bottom: .85rem; }
+h2 {
+  font-family: var(--font-serif);
+  font-style: italic; font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: var(--charcoal); line-height: 1.05;
+  letter-spacing: -.015em; margin: 0 0 1.1rem;
+}
+h3 {
+  font-family: var(--font-serif);
+  font-style: italic; font-weight: 500;
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+  color: var(--charcoal); margin: 2.25rem 0 .65rem;
+}
+h3:first-of-type { margin-top: .4rem; }
+p { max-width: 44rem; margin: 0 0 1.05rem; font-size: 1rem; }
+p.lead { font-size: 1.1rem; line-height: 1.6; }
+
+/* ── Code ── */
+pre {
+  font-family: var(--font-mono); font-size: .8rem;
+  background: var(--code-bg);
+  border-left: 4px solid var(--teal-mid);
+  border-radius: 0 8px 8px 0;
+  padding: 1rem 1.1rem; overflow-x: auto;
+  margin: .6rem 0 1.2rem; line-height: 1.6;
+  color: var(--charcoal); tab-size: 2;
+}
+code {
+  font-family: var(--font-mono); font-size: .86em;
+  background: var(--code-bg); padding: .1em .3em; border-radius: 3px;
+}
+pre code { background: transparent; padding: 0; font-size: inherit; }
+.kw { color: var(--teal-deep); font-weight: 500; }
+.cm { color: var(--slate-lt); }
+
+/* ── Callouts ── */
+.note, .tip, .mental-shift {
+  max-width: 44rem; margin: 1.4rem 0;
+  padding: .9rem 1.1rem .9rem 1.25rem;
+  background: var(--coral-tint);
+  border-left: 4px solid var(--coral);
+}
+.note-title {
+  display: block; font-size: .7rem; letter-spacing: .16em;
+  font-weight: 600; color: var(--coral); text-transform: uppercase; margin-bottom: .3rem;
+}
+.note p, .tip p, .mental-shift p { margin: 0; max-width: none; }
+
+/* ── Side-by-side code pair ── */
+.code-pair {
+  display: grid; grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 1rem; margin: 1.1rem 0 1.7rem;
+}
+.panel-label, .winner {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .7rem; letter-spacing: .14em; font-weight: 600;
+  text-transform: uppercase; color: var(--coral); margin-bottom: .45rem;
+}
+.winner { color: var(--teal-mid); margin-top: .5rem; }
+
+/* ── Decision grid ── */
+.decision-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 1rem; margin: 1.3rem 0 1.7rem;
+}
+.decision-card { background: rgba(255,255,255,.45); border: 1px solid var(--rule); border-radius: 14px; padding: 1.1rem; }
+.decision-card h4 { font-family: var(--font-sans); font-size: .7rem; letter-spacing: .14em; font-weight: 600; text-transform: uppercase; color: var(--coral); margin: 0 0 .7rem; }
+.decision-card ul { padding-left: 1.1rem; margin: 0; }
+.decision-card li { font-size: .93rem; margin-bottom: .4rem; }
+
+/* ── Decision table ── */
+table { width: 100%; border-collapse: collapse; margin: 1.4rem 0; font-size: .92rem; }
+th, td { border-bottom: 1px solid var(--rule); padding: .72rem .65rem; vertical-align: top; text-align: left; }
+th { color: var(--coral); text-transform: uppercase; letter-spacing: .1em; font-size: .7rem; font-weight: 600; }
+td code { white-space: nowrap; }
+
+/* ── Resource grid ── */
+.resource-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: .85rem; margin: 1.3rem 0;
+}
+.resource-card { background: rgba(255,255,255,.45); border: 1px solid var(--rule); border-radius: 14px; padding: 1.1rem; }
+.resource-card h4 { font-family: var(--font-sans); font-size: .7rem; letter-spacing: .14em; font-weight: 600; text-transform: uppercase; color: var(--coral); margin: 0 0 .5rem; }
+.resource-card h5 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: 1.08rem; color: var(--charcoal); margin: 0 0 .4rem; }
+.resource-card a { color: var(--teal-mid); text-decoration: underline; text-underline-offset: 2px; }
+.resource-card p { font-size: .87rem; margin: 0; color: var(--slate); max-width: none; }
+
+/* ── Data annotation layout ── */
+.data-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.3rem 0; align-items: start; }
+.anno-note { background: var(--white); border: 1px solid var(--rule); border-radius: 8px; padding: .85rem 1rem; font-size: .9rem; color: var(--slate); }
+.anno-note strong { color: var(--charcoal); }
+
+/* ── SVG diagram wrapper ── */
+.diagram {
+  margin: 1.7rem 0 1.9rem;
+  background: rgba(255,255,255,.42); border: 1px solid var(--rule); border-radius: 14px;
+  padding: 1rem; overflow: hidden;
+}
+.diagram svg { display: block; width: 100%; height: auto; }
+.diagram-cap { font-size: .85rem; color: var(--slate); margin: .7rem 0 0; max-width: 54rem; }
+
+/* ── Query cards ── */
+.query-card { background: var(--white); border: 1px solid var(--rule); border-radius: 12px; margin: 1.5rem 0; overflow: hidden; }
+.query-header { display: flex; align-items: flex-start; gap: .9rem; padding: 1rem 1.15rem .85rem; border-bottom: 1px solid var(--rule); }
+.query-num {
+  font-family: var(--font-mono); font-size: .76rem; font-weight: 500;
+  color: var(--white); background: var(--teal-mid); border-radius: 6px;
+  padding: .22rem .48rem; flex-shrink: 0; margin-top: .1rem;
+}
+.query-meta { flex: 1; min-width: 0; }
+.query-q { font-weight: 600; font-size: .98rem; color: var(--charcoal); margin-bottom: .22rem; }
+.query-c { font-size: .81rem; color: var(--slate); }
+.btn-fuseki {
+  flex-shrink: 0; display: inline-block; font-size: .76rem; font-weight: 500;
+  color: var(--teal-mid); border: 1px solid var(--teal-light); border-radius: 999px;
+  padding: .26rem .72rem; text-decoration: none; white-space: nowrap;
+  transition: background .15s, border-color .15s;
+}
+.btn-fuseki:hover { background: var(--teal-light); border-color: var(--teal-mid); }
+.query-body { position: relative; }
+.query-body pre {
+  margin: 0; border-radius: 0; border-left: none;
+  border-bottom: 1px solid var(--rule);
+}
+.copy-btn {
+  position: absolute; top: .6rem; right: .6rem;
+  background: var(--cream); border: 1px solid var(--rule); border-radius: 5px;
+  padding: .2rem .52rem; font-family: var(--font-sans); font-size: .72rem;
+  color: var(--slate); cursor: pointer; z-index: 2;
+  transition: border-color .15s, color .15s;
+}
+.copy-btn:hover { border-color: var(--teal-mid); color: var(--teal-deep); }
+.query-footer { padding: .7rem 1.15rem; display: flex; flex-direction: column; gap: .45rem; }
+
+/* ── Details / summary ── */
+details.panel summary {
+  font-size: .83rem; font-weight: 600; color: var(--teal-deep);
+  cursor: pointer; padding: .28rem 0; list-style: none;
+  display: flex; align-items: center; gap: .4rem; user-select: none;
+}
+details.panel summary::before { content: "▶"; font-size: .58rem; color: var(--coral); transition: transform .2s; }
+details.panel[open] summary::before { transform: rotate(90deg); }
+details.panel summary::-webkit-details-marker { display: none; }
+.panel-body { padding: .65rem 0 .25rem 1.2rem; }
+.panel-body p { font-size: .9rem; max-width: none; margin: 0 0 .52rem; }
+.panel-body p:last-child { margin-bottom: 0; }
+.panel-body pre { font-size: .77rem; margin: .35rem 0 .65rem; }
+.expected-out {
+  background: var(--code-bg); border-radius: 4px;
+  padding: .38rem .65rem; font-family: var(--font-mono); font-size: .78rem;
+  color: var(--charcoal); margin-bottom: .55rem; line-height: 1.5;
+}
+
+/* ── Challenge cards ── */
+.challenge-card { background: var(--white); border: 1px solid var(--rule); border-radius: 12px; margin: 1.4rem 0; overflow: hidden; }
+.challenge-header { display: flex; align-items: center; gap: .85rem; padding: .85rem 1.15rem; border-bottom: 1px solid var(--rule); }
+.challenge-num {
+  font-family: var(--font-mono); font-size: .76rem; font-weight: 500;
+  background: var(--coral); color: var(--white); border-radius: 6px;
+  padding: .22rem .48rem; flex-shrink: 0;
+}
+.challenge-title { font-weight: 600; font-size: .97rem; }
+.challenge-body { padding: .85rem 1.15rem; }
+.challenge-body p { font-size: .92rem; max-width: none; margin: 0 0 .65rem; }
+
+/* ── Navigation branch ── */
+.branch { border-left: 4px solid var(--teal-mid); background: var(--white); padding: .82rem 1.15rem; margin: .6rem 0 1.3rem; max-width: 44rem; }
+.branch h4 { font-family: var(--font-sans); font-size: .88rem; font-weight: 600; color: var(--teal-deep); margin: 0 0 .3rem; }
+.branch p { margin: 0; font-size: .9rem; max-width: none; }
+.branch a { color: var(--teal-mid); }
+
+/* ── Lists ── */
+ul.spaced { padding-left: 1.2rem; margin: .5rem 0 1.1rem; max-width: 44rem; }
+ul.spaced li { margin: .48rem 0; font-size: .97rem; }
+
+/* ── Footer ── */
+footer { max-width: 68rem; margin: 0 auto; padding: 2rem 1.5rem 3rem; border-top: 1px solid var(--rule); color: var(--slate); font-size: .84rem; }
+footer a { color: var(--teal-mid); text-decoration: underline; }
+footer p { margin: 0 0 .4rem; max-width: none; }
+
+/* ── Domain nav ── */
+.domain-nav {
+  background: var(--white); border-bottom: 1px solid var(--rule);
+  padding: .45rem 1.5rem; display: flex; align-items: center; gap: .75rem; font-size: .8rem;
+}
+.domain-label { text-transform: uppercase; letter-spacing: .14em; font-size: .68rem; font-weight: 600; color: var(--slate-lt); }
+.domain-nav a { color: var(--teal-mid); text-decoration: none; padding-bottom: 1px; border-bottom: 1px solid transparent; transition: border-color .15s; }
+.domain-nav a:hover { border-bottom-color: var(--teal-mid); }
+.domain-nav a.active { color: var(--charcoal); font-weight: 600; border-bottom: 2px solid var(--coral); }
+
+/* ── Responsive ── */
+@media (max-width: 820px) { .resource-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 640px) {
+  .code-pair, .decision-grid, .data-pair { grid-template-columns: 1fr; }
+  .resource-grid { grid-template-columns: 1fr; }
+  .query-header { flex-wrap: wrap; }
+  .btn-fuseki { order: 3; }
+  main { padding-left: 1rem; padding-right: 1rem; }
+  .masthead { padding: 2rem 1rem 2.5rem; }
+}
+
+/* ── Print ── */
+@media print {
+  .masthead { background: white; color: black; border-bottom: 2px solid black; padding: .5rem 0; }
+  h1 { color: black; font-size: 26pt; max-width: none; }
+  .brand, .kicker, .subtitle, .meta-row { color: #444; }
+  .quick-nav, .fuseki-banner, .btn-fuseki, .copy-btn { display: none !important; }
+  main, footer, .masthead-inner { max-width: none; padding-left: 0; padding-right: 0; }
+  section { padding: .3in 0; }
+  pre { background: #f5f5f5; border-left: 2px solid #888; font-size: 7.5pt; page-break-inside: avoid; white-space: pre-wrap; }
+  .query-card, .challenge-card, .decision-card, .resource-card { break-inside: avoid; border: 1px solid #ccc; }
+  details[open] summary::before { content: "▼"; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ MASTHEAD ══════════ -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sensemaking Semantic Web</div>
+    <div class="kicker">Submodule 1.1 · Foundations</div>
+    <h1>RDF, Turtle, and SPARQL</h1>
+    <p class="subtitle">The conceptual comparison between RDF and labeled property graphs, followed by a working query lab on real Naruto data. Start the Fuseki server first — the understanding comes from running queries, not from reading about them.</p>
+    <div class="meta-row">
+      <span>Module 1 · Weeks 1–3</span>
+      <span>Requires Fuseki + starter kit</span>
+      <span>~90 min hands-on</span>
+      <span>RDF · LPG · Turtle · SPARQL</span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════ DOMAIN NAV ══════════ -->
+<div class="domain-nav">
+  <span class="domain-label">Dataset</span>
+  <a href="1-1-workbook-naruto.html" class="active">Naruto</a>
+  <a href="1-1-workbook-mythology.html">Greek mythology</a>
+</div>
+
+<!-- ══════════ FUSEKI STATUS ══════════ -->
+<div id="fuseki-banner" class="fuseki-banner checking">
+  <span class="dot"></span>
+  Checking for Fuseki at localhost:3030…
+</div>
+
+<!-- ══════════ STICKY NAV ══════════ -->
+<nav class="quick-nav" aria-label="Section navigation">
+  <div class="quick-nav-inner">
+    <a href="#why">01 · Why it matters</a>
+    <a href="#models">02 · Two models</a>
+    <a href="#resume">03 · Same resume</a>
+    <a href="#tax">04 · URI tax</a>
+    <a href="#data">05 · The data</a>
+    <a href="#lab">06 · Query lab</a>
+    <a href="#challenges">07 · Challenges</a>
+    <a href="#choice">08 · The choice</a>
+    <a href="#resources">09 · Resources</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════
+     01 · WHY IT MATTERS
+══════════════════════════════════════════════ -->
+<section id="why">
+  <div class="section-label">01 · Why this comparison matters</div>
+  <h2>Which one should I be using?</h2>
+  <p class="lead">Anyone arriving at RDF from Neo4j, or at Neo4j from RDF, asks the same question. Most public answers are not neutral. Vendor pieces make property graphs feel practical and RDF feel ceremonial. Semantic-web defenders make RDF feel principled and property graphs feel parochial. Both framings contain truth and both hide where real system design happens.</p>
+  <p>The honest answer is that RDF and labeled property graphs model many of the same facts but start from different primitives. Once you choose the primitives, consequences cascade: syntax, query shape, metadata, reasoning, reuse, integration, tooling, and team skill. This page tries to make that choice hard in the right way.</p>
+  <p>The Resume Graph Explorer runs on Neo4j. Its ESCO skill links are RDF. Understanding where those two stacks meet — and where they diverge — is the concrete version of Module 1's 30-second test.</p>
+</section>
+
+<!-- ══════════════════════════════════════════
+     02 · TWO DATA MODELS
+══════════════════════════════════════════════ -->
+<section id="models">
+  <div class="section-label">02 · The two data models, side by side</div>
+  <h2>Same fact, different primitives.</h2>
+  <p>RDF starts with the triple: subject, predicate, object. Subjects and predicates are IRIs. Objects can be IRIs, literals, or blank nodes. Classes, vocabularies, entailment, and ontology design sit on top of that single move — there is nothing else.</p>
+  <p>A labeled property graph starts with nodes and relationships. Nodes carry labels and properties; relationships carry types and properties. The model feels closer to how many developers already think: this person worked at this company, and the relationship itself has a title and start date.</p>
+
+  <div class="diagram" role="img" aria-labelledby="diag1-title">
+    <svg viewBox="0 0 980 330" xmlns="http://www.w3.org/2000/svg">
+      <title id="diag1-title">RDF and LPG representations of Alice knows Bob since 2020</title>
+      <rect x="24" y="20" width="440" height="290" rx="16" fill="#FAF7F2" stroke="#D8D2C6"/>
+      <rect x="516" y="20" width="440" height="290" rx="16" fill="#FAF7F2" stroke="#D8D2C6"/>
+      <text x="52" y="57" font-family="'EB Garamond', serif" font-size="18" font-style="italic" fill="#1F2A2E">RDF — triple first</text>
+      <text x="544" y="57" font-family="'EB Garamond', serif" font-size="18" font-style="italic" fill="#1F2A2E">LPG — edge property first</text>
+      <!-- RDF panel -->
+      <circle cx="110" cy="150" r="34" fill="#C6E2DD" stroke="#1E8076" stroke-width="2"/>
+      <text x="110" y="155" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="12" fill="#1F2A2E">:Alice</text>
+      <circle cx="352" cy="150" r="34" fill="#C6E2DD" stroke="#1E8076" stroke-width="2"/>
+      <text x="352" y="155" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="12" fill="#1F2A2E">:Bob</text>
+      <path d="M145 150 C196 106 272 106 317 150" fill="none" stroke="#0B4F4A" stroke-width="2" marker-end="url(#arr1)"/>
+      <text x="231" y="101" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="11" fill="#0B4F4A">foaf:knows</text>
+      <rect x="172" y="210" width="120" height="40" rx="8" fill="#FAEAE2" stroke="#D85A30"/>
+      <text x="232" y="228" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" fill="#5A6671">metadata needs</text>
+      <text x="232" y="243" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" fill="#5A6671">a modeling choice</text>
+      <path d="M232 208 C232 192 232 172 232 152" stroke="#D85A30" stroke-dasharray="4 5" fill="none"/>
+      <text x="52" y="292" font-family="'IBM Plex Mono'" font-size="10" fill="#5A6671">:Alice foaf:knows :Bob .</text>
+      <!-- LPG panel -->
+      <circle cx="606" cy="150" r="34" fill="#C6E2DD" stroke="#1E8076" stroke-width="2"/>
+      <text x="606" y="145" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="11" fill="#1F2A2E">alice</text>
+      <text x="606" y="161" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" fill="#5A6671">:Person</text>
+      <circle cx="850" cy="150" r="34" fill="#C6E2DD" stroke="#1E8076" stroke-width="2"/>
+      <text x="850" y="145" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="11" fill="#1F2A2E">bob</text>
+      <text x="850" y="161" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" fill="#5A6671">:Person</text>
+      <path d="M641 150 C694 106 770 106 815 150" fill="none" stroke="#0B4F4A" stroke-width="2" marker-end="url(#arr1)"/>
+      <rect x="686" y="78" width="88" height="46" rx="10" fill="#FAEAE2" stroke="#D85A30"/>
+      <text x="730" y="97" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="11" fill="#1F2A2E">:KNOWS</text>
+      <text x="730" y="114" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="10" fill="#5A6671">since: 2020</text>
+      <text x="544" y="292" font-family="'IBM Plex Mono'" font-size="10" fill="#5A6671">(alice)-[:KNOWS {since: 2020}]-&gt;(bob)</text>
+      <defs>
+        <marker id="arr1" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L9,3 z" fill="#0B4F4A"/>
+        </marker>
+      </defs>
+    </svg>
+    <p class="diagram-cap">Both models can say "Alice knows Bob" with equal ease. The divergence starts when you want to say something about the relationship itself — like "they have known each other since 2020."</p>
+  </div>
+
+  <div class="code-pair">
+    <div>
+      <div class="panel-label">Turtle</div>
+<pre><span class="kw">@prefix</span> foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+
+:Alice a foaf:Person .
+:Bob   a foaf:Person .
+:Alice foaf:knows :Bob .
+
+<span class="cm"># "since 2020" needs: event node,
+# RDF-star, or classical reification.</span></pre>
+    </div>
+    <div>
+      <div class="panel-label">Cypher</div>
+<pre><span class="kw">CREATE</span>
+  (alice:Person {name: 'Alice'}),
+  (bob:Person   {name: 'Bob'}),
+  (alice)-[:KNOWS {since: 2020}]-&gt;(bob)</pre>
+    </div>
+  </div>
+  <p>That "since 2020" is not a footnote — it is the first hint of the whole trade-off. LPG puts it on the edge and moves on. RDF asks whether this relationship is itself a thing worth naming. Annoying sometimes; clarifying also sometimes.</p>
+  <div class="note">
+    <span class="note-title">RDF 1.2 note</span>
+    <p>Quoted triples (RDF-star) reduce some historical friction around statement-level metadata. You will meet RDF-star in Module 3, alongside the other reification approaches. For now, the event-class pattern teaches the underlying modeling question better: when does a relationship deserve to become a first-class thing?</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     03 · THE SAME RESUME
+══════════════════════════════════════════════ -->
+<section id="resume">
+  <div class="section-label">03 · The same resume in both stacks</div>
+  <h2>A small career graph, twice.</h2>
+  <p>One person, two jobs, one degree, three skills linked to ESCO-style skill concepts. Small enough to fit on screen; structured enough to surface every modeling choice. The ESCO IRIs are illustrative placeholders.</p>
+
+  <div class="code-pair">
+    <div>
+      <div class="panel-label">Cypher create statements</div>
+<pre><span class="kw">CREATE</span>
+  (p:Person {
+    name: "Alex Rivera",
+    email: "alex@example.com" }),
+  (a:Company {name: "Riverbend Analytics"}),
+  (b:Company {name: "Northwind Health"}),
+  (s:School  {name: "Midstate University"}),
+  (p)-[:EMPLOYED_BY {
+    role: "Junior Data Analyst",
+    startDate: date("2020-01-15"),
+    endDate:   date("2022-06-30")
+  }]-&gt;(a),
+  (p)-[:EMPLOYED_BY {
+    role: "Data Scientist",
+    startDate: date("2022-07-01")
+  }]-&gt;(b),
+  (p)-[:EDUCATED_AT {
+    degree: "BS Statistics",
+    endDate: date("2019-05-15")
+  }]-&gt;(s),
+  (py:Skill {name:"Python", escoId:"ccd0..."}),
+  (sq:Skill {name:"SQL",    escoId:"29cd..."}),
+  (ml:Skill {name:"Machine learning",
+             escoId:"4d4d..."}),
+  (p)-[:HAS_SKILL {level:"advanced"}]-&gt;(py),
+  (p)-[:HAS_SKILL {level:"advanced"}]-&gt;(sq),
+  (p)-[:HAS_SKILL {level:"intermediate"}]-&gt;(ml)</pre>
+    </div>
+    <div>
+      <div class="panel-label">Turtle equivalent</div>
+<pre><span class="kw">@prefix</span> rdf:  &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+<span class="kw">@prefix</span> xsd:  &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+<span class="kw">@prefix</span> foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+<span class="kw">@prefix</span> schema: &lt;https://schema.org/&gt; .
+<span class="kw">@prefix</span> skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+<span class="kw">@prefix</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt; .
+
+:alex a foaf:Person ;
+  foaf:name "Alex Rivera" ;
+  sensemaking:hasEmployment :emp1, :emp2 ;
+  sensemaking:hasEducation :edu1 ;
+  sensemaking:hasSkill :s_py, :s_sql, :s_ml .
+
+:emp1 a sensemaking:Employment ;
+  sensemaking:employer :riverbend ;
+  sensemaking:role "Junior Data Analyst" ;
+  sensemaking:startDate "2020-01-15"^^xsd:date ;
+  sensemaking:endDate   "2022-06-30"^^xsd:date .
+
+:emp2 a sensemaking:Employment ;
+  sensemaking:employer :northwind ;
+  sensemaking:role "Data Scientist" ;
+  sensemaking:startDate "2022-07-01"^^xsd:date .
+
+:s_py  a skos:Concept ; skos:prefLabel "Python" ;
+  skos:exactMatch &lt;http://data.europa.eu/esco/skill/ccd0&gt; .
+:s_sql a skos:Concept ; skos:prefLabel "SQL" ;
+  skos:exactMatch &lt;http://data.europa.eu/esco/skill/29cd&gt; .
+:s_ml  a skos:Concept ; skos:prefLabel "Machine learning" ;
+  skos:exactMatch &lt;http://data.europa.eu/esco/skill/4d4d&gt; .</pre>
+    </div>
+  </div>
+
+  <p>Three things to notice. First, employment dates in Cypher go on the edge. In Turtle, employment becomes an event node with dates as properties. More characters, more nesting — but once employment is a named thing, it can carry salary ranges, confidence scores, supervisors, and provenance later. RDF makes you pay earlier so reuse has somewhere to attach.</p>
+  <p>Second, the skills. Cypher stores the ESCO ID as a string. Turtle types each skill as <code>skos:Concept</code> and adds <code>skos:exactMatch</code> to its ESCO IRI. The difference looks cosmetic. The ESCO section below shows it is not.</p>
+  <p>Third, line count. Turtle is longer. That is the URI tax arriving on the page — not a failure of concision. The next section shows what that tax buys.</p>
+
+  <h3>Three queries, three answers</h3>
+
+  <div class="code-pair">
+    <div>
+      <div class="panel-label">Cypher — all jobs, chronological</div>
+<pre><span class="kw">MATCH</span> (p:Person {name: "Alex Rivera"})
+      -[r:EMPLOYED_BY]-&gt;(c:Company)
+<span class="kw">RETURN</span> c.name, r.role, r.startDate
+<span class="kw">ORDER BY</span> r.startDate</pre>
+      <div class="winner">Ergonomic edge: LPG</div>
+    </div>
+    <div>
+      <div class="panel-label">SPARQL — all jobs, chronological</div>
+<pre><span class="kw">SELECT</span> ?orgName ?role ?start <span class="kw">WHERE</span> {
+  :alex sensemaking:hasEmployment ?emp .
+  ?emp  sensemaking:employer  ?org ;
+        sensemaking:role      ?role ;
+        sensemaking:startDate ?start .
+  ?org  schema:name ?orgName .
+} <span class="kw">ORDER BY</span> ?start</pre>
+    </div>
+  </div>
+
+  <h3>The ESCO interop unlock</h3>
+  <p>The skills query is where the stacks separate. In Cypher, the ESCO ID is a string property. The database has no idea what that string points to. To follow the ESCO concept hierarchy you would need to import ESCO into your database as a separate node set, maintain it as ESCO updates, and join on the string ID.</p>
+  <p>In SPARQL, ESCO is published as RDF. Each skill's <code>skos:exactMatch</code> link points to a real <code>skos:Concept</code> in ESCO's graph. Following <code>skos:broader</code> into the occupational hierarchy is a normal triple-pattern — no import, no glue code, no joins on strings.</p>
+
+  <div class="diagram" role="img" aria-labelledby="diag2-title">
+    <svg viewBox="0 0 980 290" xmlns="http://www.w3.org/2000/svg">
+      <title id="diag2-title">ESCO interop: Cypher must materialize ESCO, SPARQL follows the graph directly</title>
+      <rect x="30" y="28" width="420" height="232" rx="16" fill="#FAF7F2" stroke="#D8D2C6"/>
+      <rect x="530" y="28" width="420" height="232" rx="16" fill="#FAF7F2" stroke="#D8D2C6"/>
+      <text x="58" y="63" font-family="'EB Garamond', serif" font-size="18" font-style="italic" fill="#1F2A2E">LPG: materialize first</text>
+      <text x="558" y="63" font-family="'EB Garamond', serif" font-size="18" font-style="italic" fill="#1F2A2E">RDF: follow the graph</text>
+      <!-- LPG panel -->
+      <circle cx="100" cy="148" r="28" fill="#C6E2DD" stroke="#1E8076" stroke-width="1.8"/>
+      <text x="100" y="152" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="11" fill="#1F2A2E">Person</text>
+      <circle cx="208" cy="148" r="28" fill="#C6E2DD" stroke="#1E8076" stroke-width="1.8"/>
+      <text x="208" y="152" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="11" fill="#1F2A2E">Skill</text>
+      <circle cx="334" cy="148" r="32" fill="#FAEAE2" stroke="#D85A30" stroke-dasharray="5 3" stroke-width="1.5"/>
+      <text x="334" y="144" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" fill="#D85A30">ESCO</text>
+      <text x="334" y="160" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="10" fill="#8A929A">copy?</text>
+      <path d="M129 148 L178 148" stroke="#0B4F4A" stroke-width="1.8" marker-end="url(#arr2a)"/>
+      <path d="M237 148 L300 148" stroke="#D85A30" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arr2c)"/>
+      <text x="215" y="210" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" fill="#5A6671">load into database, or join on the string outside it</text>
+      <!-- RDF panel -->
+      <circle cx="595" cy="148" r="28" fill="#C6E2DD" stroke="#1E8076" stroke-width="1.8"/>
+      <text x="595" y="152" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="11" fill="#1F2A2E">:alex</text>
+      <circle cx="703" cy="148" r="28" fill="#C6E2DD" stroke="#1E8076" stroke-width="1.8"/>
+      <text x="703" y="152" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="11" fill="#1F2A2E">:skill</text>
+      <circle cx="830" cy="100" r="27" fill="#FAEAE2" stroke="#D85A30" stroke-width="1.5"/>
+      <text x="830" y="96" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="10" fill="#D85A30">broader</text>
+      <text x="830" y="112" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="10" fill="#8A929A">ESCO</text>
+      <circle cx="830" cy="196" r="27" fill="#FAEAE2" stroke="#D85A30" stroke-width="1.5"/>
+      <text x="830" y="192" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="10" fill="#D85A30">related</text>
+      <text x="830" y="208" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="10" fill="#8A929A">ESCO</text>
+      <path d="M624 148 L674 148" stroke="#0B4F4A" stroke-width="1.8" marker-end="url(#arr2a)"/>
+      <path d="M726 141 C762 124 795 113 802 106" stroke="#0B4F4A" stroke-width="1.8" marker-end="url(#arr2a)"/>
+      <path d="M726 156 C762 172 795 186 802 193" stroke="#0B4F4A" stroke-width="1.8" marker-end="url(#arr2a)"/>
+      <text x="703" y="250" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" fill="#5A6671">SKOS is already RDF — ESCO is not an afterthought</text>
+      <defs>
+        <marker id="arr2a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L9,3 z" fill="#0B4F4A"/>
+        </marker>
+        <marker id="arr2c" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L9,3 z" fill="#D85A30"/>
+        </marker>
+      </defs>
+    </svg>
+    <p class="diagram-cap">With RDF, <code>skos:exactMatch</code> connects your skill node to ESCO where ESCO lives. With LPG, ESCO has to be imported as a parallel node set or accessed outside the database via a string join.</p>
+  </div>
+
+  <div class="code-pair">
+    <div>
+      <div class="panel-label">Cypher — skills with ESCO categories</div>
+<pre><span class="cm">// Works only if ESCO is in Neo4j already.</span>
+<span class="kw">MATCH</span> (p:Person {name:"Alex Rivera"})
+      -[:HAS_SKILL]-&gt;(s:Skill)
+<span class="kw">OPTIONAL MATCH</span> (s)-[:EXACT_MATCH]
+  -&gt;(e:ESCOConcept)-[:BROADER]
+  -&gt;(b:ESCOConcept)
+<span class="kw">RETURN</span> s.name, e.iri, b.label</pre>
+    </div>
+    <div>
+      <div class="panel-label">SPARQL — skills with ESCO categories</div>
+<pre><span class="kw">SELECT</span> ?skillLabel ?broaderLabel <span class="kw">WHERE</span> {
+  :alex sensemaking:hasSkill ?skill .
+  ?skill skos:prefLabel ?skillLabel ;
+         skos:exactMatch ?escoSkill .
+  <span class="kw">OPTIONAL</span> {
+    ?escoSkill skos:broader/skos:prefLabel
+               ?broaderLabel .
+  }
+}</pre>
+      <div class="winner">Interop edge: RDF</div>
+    </div>
+  </div>
+  <p>The SPARQL version is not shorter. The unlock is that the broader-category data exists, is queryable, and did not have to be imported. SKOS is already RDF. ESCO is published using RDF, OWL, and SKOS. The query follows predicates the external vocabulary already understands — not "integrating" in the glue-code sense, just following the graph.</p>
+</section>
+
+<!-- ══════════════════════════════════════════
+     04 · URI TAX
+══════════════════════════════════════════════ -->
+<section id="tax">
+  <div class="section-label">04 · The URI tax</div>
+  <h2>The verbosity is real.</h2>
+  <p>RDF is more verbose because every important term carries a globally identifiable IRI. Files have more prefixes. Diffs are longer. Beginners feel as if the syntax is asking them to write the whole internet before breakfast.</p>
+  <p>For an isolated application — one team, one database, no integration partners — the URI tax is pure overhead. There is no interop story to unlock. LPG is the humane choice, and the team ships faster.</p>
+  <p>For a graph that participates in a broader ecosystem — ESCO, FIBO, schema.org, PROV-O, Wikidata — the tax becomes infrastructure. The cost arrives early. The value compounds: every external vocabulary you can read is a query you do not have to engineer separately.</p>
+  <div class="mental-shift">
+    <span class="note-title">Mental shift</span>
+    <p>RDF does not win because it is cleaner to type. RDF wins when the future integration surface matters more than the immediate typing experience. The inverse is also true — which is why "always use RDF" is as wrong as "always use Neo4j."</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     05 · THE DATA
+══════════════════════════════════════════════ -->
+<section id="data">
+  <div class="section-label">05 · The data: what's in example.ttl</div>
+  <h2>Eight ninja, five patterns.</h2>
+  <p>The starter kit's <code>data/example.ttl</code> is ~200 lines and follows the curriculum's standard conventions. Before running the query lab, read the structure — not line by line, but section by section. Three things to notice before the queries begin.</p>
+
+  <div class="data-pair">
+    <div>
+<pre><span class="cm"># Class declaration — reuse before defining</span>
+sensemaking:Ninja a owl:Class ;
+    rdfs:subClassOf schema:Person ;
+    rdfs:label "Ninja" ;
+    rdfs:comment "A character trained in
+                  jutsu and affiliated
+                  with a hidden village." .</pre>
+    </div>
+    <div class="anno-note">
+      <strong>Reuse before defining.</strong> <code>sensemaking:Ninja</code> is declared as a subclass of <code>schema:Person</code> rather than a standalone class. A reasoner can infer every Ninja is also a Person without that triple being explicitly stated. This is not Module 3 magic — it is a design habit that starts with the first file.
+    </div>
+  </div>
+
+  <div class="data-pair">
+    <div>
+<pre><span class="cm"># Symmetric property declaration</span>
+sensemaking:rivalOf
+    a owl:ObjectProperty,
+      owl:SymmetricProperty ;
+    rdfs:domain sensemaking:Ninja ;
+    rdfs:range  sensemaking:Ninja .</pre>
+    </div>
+    <div class="anno-note">
+      <strong>Property annotations carry meaning.</strong> Declaring <code>owl:SymmetricProperty</code> means a reasoner could infer the reverse: if Naruto rivals Sasuke, then Sasuke rivals Naruto — without that second triple being in the file. Challenge 4 below asks what a plain SPARQL query sees vs. what an OWL reasoner would add.
+    </div>
+  </div>
+
+  <div class="data-pair">
+    <div>
+<pre><span class="cm"># SKOS for jutsu — controlled vocabulary,
+# not a class hierarchy</span>
+sensemaking:Sharingan a skos:Concept ;
+    skos:prefLabel "Sharingan"@en ,
+                   "写輪眼"@ja .</pre>
+    </div>
+    <div class="anno-note">
+      <strong>Concepts, not classes.</strong> Jutsu are typed as <code>skos:Concept</code> rather than OWL classes. That choice shows up in q03 and q04 where <code>skos:prefLabel</code> drives the language filter. It also demonstrates why "Sharingan" and "Byakugan" can coexist in a controlled vocabulary without needing class hierarchy machinery.
+    </div>
+  </div>
+
+  <div class="branch">
+    <h4>Open the file before running queries</h4>
+    <p>Read <code>data/example.ttl</code> in a text editor alongside this page. The inline comments explain every non-obvious choice. You should be able to predict what each query returns before running it. If you cannot, re-read the relevant section of the file first — prediction is where the learning happens.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     06 · QUERY LAB
+══════════════════════════════════════════════ -->
+<section id="lab">
+  <div class="section-label">06 · Query lab</div>
+  <h2>Five queries, five patterns.</h2>
+  <p>Each query below demonstrates one core SPARQL pattern. Copy the query, paste it into the Fuseki SPARQL editor (linked per card), and run it. Then work through the "Think about this" prompts before moving on — the comprehension comes from prediction and modification, not from reading results.</p>
+
+  <!-- ── q01 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q01</span>
+      <div class="query-meta">
+        <div class="query-q">Who are all the ninja in the dataset?</div>
+        <div class="query-c">Pattern: SELECT · two triple patterns · ORDER BY</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q01"><span class="kw">PREFIX</span> rdf:         &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT</span> ?ninja ?name
+<span class="kw">WHERE</span> {
+  ?ninja a sensemaking:Ninja ;
+         schema:name ?name .
+}
+<span class="kw">ORDER BY</span> ?name</pre>
+      <button class="copy-btn" onclick="copyQuery('q01',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">8 rows · alphabetical: Gaara, Hinata Hyuga, Kakashi Hatake, Kurenai Yuhi, Naruto Uzumaki, Rock Lee, Sakura Haruno, Sasuke Uchiha</div>
+          <p>Each row has two columns: <code>?ninja</code> (the full IRI) and <code>?name</code> (a string literal). Both triple patterns must match for a row to appear — if either fails for a given subject, that subject is excluded entirely.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Remove <code>ORDER BY ?name</code>. Do the results come back in the same order? Is SPARQL's result order guaranteed without an explicit ORDER BY?</p>
+          <p>2. Replace <code>sensemaking:Ninja</code> with <code>sensemaking:Village</code>. What do you expect? Run it and check — note what <code>?ninja</code> and <code>?name</code> contain now.</p>
+          <p>3. Add <code>FILTER (CONTAINS(?name, "a"))</code> before the closing brace. How many rows does that return? Try LCASE first if the result surprises you.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q02 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q02</span>
+      <div class="query-meta">
+        <div class="query-q">How many ninja are on each team, and which village?</div>
+        <div class="query-c">Pattern: GROUP BY · COUNT aggregation · multilingual literal trap</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q02"><span class="kw">PREFIX</span> rdfs:        &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT</span> ?teamName ?villageName (<span class="kw">COUNT</span>(?ninja) <span class="kw">AS</span> ?memberCount)
+<span class="kw">WHERE</span> {
+  ?team a sensemaking:Team ;
+        schema:name ?teamName ;
+        schema:memberOf ?village .
+
+  ?village schema:name ?villageName .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?villageName) = "en")
+
+  ?ninja sensemaking:memberOfTeam ?team .
+}
+<span class="kw">GROUP BY</span> ?teamName ?villageName
+<span class="kw">ORDER BY</span> <span class="kw">DESC</span>(?memberCount) ?teamName</pre>
+      <button class="copy-btn" onclick="copyQuery('q02',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">3 rows · Team 7: 3 members (Konohagakure) · Team Guy: 1 member · Team 8: 1 member</div>
+          <p>Team 7 ranks first because <code>ORDER BY DESC(?memberCount)</code> sorts by count descending. The LANG filter selects the English name; remove it and watch what happens to row count.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Delete the <code>FILTER (LANG(?villageName) = "en")</code> line entirely. What happens to the row count? Open <code>example.ttl</code> and count how many <code>schema:name</code> values Konohagakure has — that is why.</p>
+          <p>2. Add <code>HAVING (?memberCount &gt; 1)</code> after the <code>GROUP BY</code> line. Which teams survive? HAVING filters on aggregated values the way WHERE filters on individual rows.</p>
+          <p>3. Gaara is a ninja but is not on any team. Does he appear anywhere in this query's results? Why not?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q03 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q03</span>
+      <div class="query-meta">
+        <div class="query-q">Does anyone in the dataset know the Sharingan?</div>
+        <div class="query-c">Pattern: ASK · existence check · open-world assumption</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q03"><span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">ASK</span>
+<span class="kw">WHERE</span> {
+  ?someone sensemaking:hasJutsu sensemaking:Sharingan .
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('q03',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">true · (both Sasuke and Kakashi have Sharingan in example.ttl)</div>
+          <p>ASK returns a single boolean — faster and more readable than <code>SELECT ... LIMIT 1</code> when existence is all you need to know. Fuseki renders it as a simple "true" or "false" in the results panel.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Swap <code>sensemaking:Sharingan</code> for <code>sensemaking:SandManipulation</code>. Expected result? Run it to confirm.</p>
+          <p>2. Ask for <code>sensemaking:KatonJutsu</code> — fire-style jutsu that doesn't appear in the dataset at all. The result is <em>false</em>. Under the open-world assumption, what does <em>false</em> actually mean? Does it mean no one in the Naruto universe has fire-style jutsu, or something narrower?</p>
+          <p>3. Rewrite this as a SELECT that returns the names of every character who knows the Sharingan. When would you prefer ASK over that SELECT, and when the reverse?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q04 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q04</span>
+      <div class="query-meta">
+        <div class="query-q">Which Konoha ninja have jutsu listed, and which don't?</div>
+        <div class="query-c">Pattern: FILTER on bound variable · OPTIONAL left-join · row multiplication</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q04"><span class="kw">PREFIX</span> rdfs:        &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT</span> ?name ?jutsuLabel
+<span class="kw">WHERE</span> {
+  ?ninja a sensemaking:Ninja ;
+         schema:name ?name ;
+         sensemaking:memberOfVillage ?village .
+
+  ?village rdfs:label ?villageLabel .
+  <span class="kw">FILTER</span> (<span class="kw">CONTAINS</span>(<span class="kw">LCASE</span>(?villageLabel), "leaf"))
+
+  <span class="kw">OPTIONAL</span> {
+    ?ninja sensemaking:hasJutsu ?jutsu .
+    ?jutsu skos:prefLabel ?jutsuLabel .
+    <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?jutsuLabel) = "en")
+  }
+}
+<span class="kw">ORDER BY</span> ?name</pre>
+      <button class="copy-btn" onclick="copyQuery('q04',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">8 rows · Kakashi contributes 2 rows (Shadow Clone + Sharingan) · Sakura and Rock Lee appear once with unbound ?jutsuLabel · Gaara absent (Suna, not Konoha)</div>
+          <p>OPTIONAL keeps Sakura and Rock Lee in the result even though they have no jutsu — <code>?jutsuLabel</code> is simply unbound for those rows. This is the left-join idiom: "show me everyone, with extra info where available." Kakashi's two jutsu cause row multiplication — one row per jutsu.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Move the jutsu triple patterns <em>outside</em> the OPTIONAL block (remove OPTIONAL entirely, keep the jutsu patterns). What happens to Sakura and Rock Lee? How many rows does the query return now?</p>
+          <p>2. Kakashi appears twice — once per jutsu. How would you collapse him into one row with a comma-separated jutsu list? Look up SPARQL <code>GROUP_CONCAT</code> — the pattern is <code>GROUP_CONCAT(?jutsuLabel; separator=", ")</code> inside a <code>GROUP BY ?name</code>.</p>
+          <p>3. Gaara is from Suna. The filter checks <code>CONTAINS(LCASE(?villageLabel), "leaf")</code>. Open <code>example.ttl</code> and find how Suna's <code>rdfs:label</code> is declared. Why doesn't it match "leaf"?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q05 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q05</span>
+      <div class="query-meta">
+        <div class="query-q">If two ninja share a team, emit a new "colleague" triple for each pair.</div>
+        <div class="query-c">Pattern: CONSTRUCT · inference materialization · symmetric deduplication</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q05"><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">CONSTRUCT</span> {
+  ?a sensemaking:colleagueOf ?b .
+}
+<span class="kw">WHERE</span> {
+  ?a sensemaking:memberOfTeam ?team .
+  ?b sensemaking:memberOfTeam ?team .
+
+  <span class="kw">FILTER</span> (<span class="kw">STR</span>(?a) &lt; <span class="kw">STR</span>(?b))
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('q05',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">3 triples (Turtle format) · Naruto–Sasuke, Naruto–Sakura, Sasuke–Sakura · Team 8 and Team Guy each have only one member in the dataset, so no pairs</div>
+          <p>In Fuseki, change the "Content Type" dropdown to <strong>Turtle (text/turtle)</strong> — CONSTRUCT returns a graph, not a table, and the default JSON view of a graph is hard to read. The FILTER prevents self-pairs (<code>?a != ?b</code> by IRI string comparison) and halves the output by skipping the symmetric duplicate of each pair.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Remove the <code>FILTER (STR(?a) &lt; STR(?b))</code> line entirely and re-run. How many triples now? What do the extra triples represent, and why might you want both directions materialized in some cases?</p>
+          <p>2. Team 8 has only one member in this dataset. Look at <code>example.ttl</code> — how many ninja have <code>sensemaking:memberOfTeam sensemaking:Team8</code>? Why does one member produce zero colleague pairs?</p>
+          <p>3. CONSTRUCT emits Turtle. How would you load those new triples back into Fuseki so future SELECT queries can find them? (Hint: the Fuseki UI has an "update" tab; the SPARQL operation is <code>INSERT DATA { ... }</code> or a SPARQL UPDATE sent to the <code>/update</code> endpoint.)</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════
+     07 · MODIFICATION CHALLENGES
+══════════════════════════════════════════════ -->
+<section id="challenges">
+  <div class="section-label">07 · Modification challenges</div>
+  <h2>Four things to build.</h2>
+  <p>Each challenge asks you to write a query not in the starter kit. Start from the closest existing query and modify from there. Expected results are given inside the "expand" panel — write the query before opening it.</p>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C1</span>
+      <span class="challenge-title">Find all ninja who are not on any team</span>
+    </div>
+    <div class="challenge-body">
+      <p>Start from q01. Add a pattern that excludes ninja who have at least one <code>sensemaking:memberOfTeam</code> triple. The SPARQL keyword is <code>FILTER NOT EXISTS { ... }</code>.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected:</strong> 2 rows — Gaara (affiliated with Suna, no team) and Kurenai Yuhi (listed as sensei, but no team membership in the data).</p>
+<pre><span class="kw">SELECT</span> ?name <span class="kw">WHERE</span> {
+  ?ninja a sensemaking:Ninja ;
+         schema:name ?name .
+  <span class="kw">FILTER NOT EXISTS</span> {
+    ?ninja sensemaking:memberOfTeam ?team .
+  }
+} <span class="kw">ORDER BY</span> ?name</pre>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C2</span>
+      <span class="challenge-title">Count jutsu per ninja, most to fewest</span>
+    </div>
+    <div class="challenge-body">
+      <p>Write a GROUP BY query that returns each ninja's name and a count of their jutsu. Only include ninja who have at least one jutsu. Start from q02's aggregation pattern.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected:</strong> 5 rows — Kakashi (2), then Naruto, Sasuke, Hinata, Gaara (1 each). Rock Lee, Sakura, and Kurenai have no jutsu and should not appear.</p>
+<pre><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT</span> ?name (<span class="kw">COUNT</span>(?jutsu) <span class="kw">AS</span> ?jutsuCount)
+<span class="kw">WHERE</span> {
+  ?ninja a sensemaking:Ninja ;
+         schema:name ?name ;
+         sensemaking:hasJutsu ?jutsu .
+}
+<span class="kw">GROUP BY</span> ?name
+<span class="kw">ORDER BY</span> <span class="kw">DESC</span>(?jutsuCount) ?name</pre>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C3</span>
+      <span class="challenge-title">List all sensei–student relationships; then filter to multi-student sensei only</span>
+    </div>
+    <div class="challenge-body">
+      <p>Write a SELECT returning every sensei–student pair using <code>sensemaking:senseiOf</code>. Then extend it: use HAVING to return only sensei who teach more than one student in the dataset.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>All pairs:</strong> Kakashi → Naruto, Kakashi → Sasuke, Kakashi → Sakura, Kurenai → Hinata.<br>
+          <strong>Multi-student sensei only:</strong> Kakashi (3 students). Kurenai has one and should not appear.</p>
+<pre><span class="cm"># All pairs</span>
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT</span> ?senseiName ?studentName <span class="kw">WHERE</span> {
+  ?sensei sensemaking:senseiOf ?student ;
+          schema:name ?senseiName .
+  ?student schema:name ?studentName .
+} <span class="kw">ORDER BY</span> ?senseiName
+
+<span class="cm"># Multi-student sensei only — add aggregation</span>
+<span class="kw">SELECT</span> ?senseiName (<span class="kw">COUNT</span>(?student) <span class="kw">AS</span> ?n)
+<span class="kw">WHERE</span> {
+  ?sensei sensemaking:senseiOf ?student ;
+          schema:name ?senseiName .
+}
+<span class="kw">GROUP BY</span> ?senseiName
+<span class="kw">HAVING</span> (<span class="kw">COUNT</span>(?student) &gt; 1)</pre>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C4</span>
+      <span class="challenge-title">Find rivals — then reason about what symmetry means in plain SPARQL</span>
+    </div>
+    <div class="challenge-body">
+      <p>Write a SELECT returning all rivalry pairs using <code>sensemaking:rivalOf</code>. Check <code>example.ttl</code> — is the rivalry stated in both directions, or only one? <code>rivalOf</code> is declared <code>owl:SymmetricProperty</code>. Does a plain SPARQL query over the raw Turtle pick up inferred triples, or only a reasoner?</p>
+      <details class="panel">
+        <summary>Expected result and the reasoning note</summary>
+        <div class="panel-body">
+          <p><strong>Stated in the file:</strong> Naruto rivals Sasuke and Gaara rivals Rock Lee — asserted in one direction only.</p>
+          <p><strong>The reasoning wrinkle:</strong> a plain SPARQL query against <code>example.ttl</code> returns only triples that are explicitly present. <code>owl:SymmetricProperty</code> is a declaration an OWL reasoner would use to infer the reverse pair — but Fuseki's default dataset does not apply OWL entailment. Run the query, count the rows, then think about what a fully-reasoned dataset would add.</p>
+<pre><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT</span> ?aName ?bName <span class="kw">WHERE</span> {
+  ?a sensemaking:rivalOf ?b ;
+     schema:name ?aName .
+  ?b schema:name ?bName .
+} <span class="kw">ORDER BY</span> ?aName</pre>
+          <p>This is the open-world assumption and the reasoning layer showing up together. SPARQL queries what is present; OWL entailment expands what is present. Module 3 covers how to enable the latter.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════
+     08 · THE CHOICE IN PRACTICE
+══════════════════════════════════════════════ -->
+<section id="choice">
+  <div class="section-label">08 · The choice in practice</div>
+  <h2>Heuristics, not slogans.</h2>
+  <p>This section is the answer to Module 1's 30-second test: explain to a working engineer, without slogans, why someone would choose RDF over a labeled property graph or vice versa. These are the heuristics that come up in an actual design review.</p>
+
+  <div class="decision-grid">
+    <div class="decision-card">
+      <h4>Choose LPG when</h4>
+      <ul>
+        <li>The system is path-heavy and contained in one product.</li>
+        <li>Relationship metadata is central and local — dates on edges, weights on edges.</li>
+        <li>Your team already ships comfortably in Neo4j or similar.</li>
+        <li>No external vocabulary needs to be queried as first-class data.</li>
+      </ul>
+    </div>
+    <div class="decision-card">
+      <h4>Choose RDF when</h4>
+      <ul>
+        <li>The data is vocabulary-driven or integration-heavy.</li>
+        <li>External graphs — ESCO, FIBO, Wikidata, schema.org — already speak your terms.</li>
+        <li>Reasoning, equivalence, or subsumption matter to the application.</li>
+        <li>Long-term portability matters more than short-term terseness.</li>
+      </ul>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Pressure</th><th>Usually favors</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Path traversal inside one product</td>
+        <td>LPG</td>
+        <td>Traversal ergonomics and edge properties earn their keep; the URI tax has no upside.</td>
+      </tr>
+      <tr>
+        <td>Vocabulary reuse across systems</td>
+        <td>RDF</td>
+        <td>Global IRIs and shared vocabularies are the structural point. SKOS, ESCO, PROV-O.</td>
+      </tr>
+      <tr>
+        <td>Formal reasoning</td>
+        <td>RDF</td>
+        <td>RDF/RDFS/OWL have formal semantics; LPG semantics are application-defined.</td>
+      </tr>
+      <tr>
+        <td>Provenance-heavy assertions</td>
+        <td>Depends</td>
+        <td>LPG edge properties are easy; RDF reification is more portable but more expensive. Module 3 covers four options.</td>
+      </tr>
+      <tr>
+        <td>Fast team ramp-up</td>
+        <td>The stack the team already knows</td>
+        <td>A correct LPG model beats a confused RDF model. The reverse is also true. Team fit is technical fit.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="branch">
+    <h4>The 30-second test</h4>
+    <p>Before moving to Module 2: explain to a working engineer why someone would choose RDF over a labeled property graph — without the words "semantic," "ontology," or "standards." If the answer is concrete and uses specific examples, the foundations have landed. If it feels vague, redo Exercise 1.3 before moving on. The comparison work is where the conceptual difference clicks; rushing past it makes Module 2's modeling work harder.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     09 · RESOURCES
+══════════════════════════════════════════════ -->
+<section id="resources">
+  <div class="section-label">09 · Curated resources</div>
+  <h2>Six good next reads.</h2>
+  <p>Not equal-purpose links — read them for different kinds of evidence.</p>
+
+  <div class="resource-grid">
+    <article class="resource-card">
+      <h4>Foundation</h4>
+      <h5><a href="https://workingontologist.org/">Semantic Web for the Working Ontologist</a></h5>
+      <p>Allemang, Hendler &amp; Gandon. The conceptual foundation for this whole curriculum. Unusually honest about where RDF hurts. Read Chapters 1–3 alongside this module.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Balanced frame</h4>
+      <h5><a href="https://kgbook.org/">Knowledge Graphs, section 3</a></h5>
+      <p>Hogan et al. Places RDF and property graphs in the same landscape without declaring a winner. The paper to send when debates get too confident.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Query reference</h4>
+      <h5><a href="https://www.learningsparql.com/">Learning SPARQL</a></h5>
+      <p>DuCharme. The clearest single-source reference for SPARQL syntax and patterns — the curriculum's canonical reference. Chapters 1–2 belong in this module.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Hands-on endpoint</h4>
+      <h5><a href="https://query.wikidata.org/">Wikidata Query Service</a></h5>
+      <p>The largest public SPARQL endpoint. Fastest way to feel SPARQL on real, large data — modify the example queries in the helper UI rather than starting from scratch.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Practitioner blog</h4>
+      <h5><a href="https://www.bobdc.com/blog/">Bob DuCharme's blog</a></h5>
+      <p>Author of Learning SPARQL. Ongoing posts on SPARQL patterns and the LLM + knowledge graph intersection. Worth bookmarking for the rest of the curriculum.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Curriculum context</h4>
+      <h5><a href="../README.md">Module 1 README</a></h5>
+      <p>The full arc for Weeks 1–3: exercises, primary project, pain points, deliverables, and the 30-second test. This workbook covers Submodule 1.1; the README covers the rest.</p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Submodule 1.1 workbook · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Written content: CC BY 4.0 · Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+<script>
+/* ── Fuseki connection check ───────────────────────────── */
+(function checkFuseki() {
+  var banner = document.getElementById('fuseki-banner');
+  if (!window.fetch) {
+    banner.className = 'fuseki-banner checking';
+    banner.innerHTML =
+      '<span class="dot"></span>Check Fuseki manually: ' +
+      '<a href="http://localhost:3030/" target="_blank" rel="noopener">localhost:3030 ↗</a>';
+    return;
+  }
+  fetch('http://localhost:3030/', { mode: 'no-cors', cache: 'no-store' })
+    .then(function () {
+      banner.className = 'fuseki-banner connected';
+      banner.innerHTML =
+        '<span class="dot"></span>' +
+        'Fuseki running — ' +
+        '<a href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener">' +
+        'open SPARQL editor at localhost:3030 ↗</a>' +
+        ' &nbsp;·&nbsp; Copy a query below, paste it there, run it.';
+    })
+    .catch(function () {
+      banner.className = 'fuseki-banner offline';
+      banner.innerHTML =
+        '<span class="dot"></span>' +
+        'Fuseki not detected — start it from the starter-kit root: ' +
+        '<code>fuseki-server --config=fuseki/config.ttl</code>' +
+        ' &nbsp;—&nbsp; then reload this page.';
+    });
+})();
+
+/* ── Open Fuseki + auto-copy ───────────────────────────── */
+function openFuseki(e, btn) {
+  e.preventDefault();
+  var card = btn.closest('.query-card');
+  var text = card.querySelector('pre[id]').textContent;
+  var url  = btn.getAttribute('href');
+  function doOpen() { window.open(url, '_blank', 'noopener,noreferrer'); }
+  function flash() {
+    var orig = btn.textContent;
+    btn.textContent = 'Copied — paste in Fuseki ↗';
+    btn.style.borderColor = 'var(--teal-mid)';
+    setTimeout(function() { btn.textContent = orig; btn.style.borderColor = ''; }, 2500);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() { flash(); doOpen(); })
+      .catch(function() { legacyCopy(text, null); doOpen(); });
+  } else { legacyCopy(text, null); doOpen(); }
+}
+
+/* ── Copy query to clipboard ───────────────────────────── */
+function copyQuery(id, btn) {
+  var text = document.getElementById(id).textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(function () { flashBtn(btn); })
+      .catch(function () { legacyCopy(text, btn); });
+  } else {
+    legacyCopy(text, btn);
+  }
+}
+
+function legacyCopy(text, btn) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); if (btn) flashBtn(btn); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+function flashBtn(btn) {
+  var orig = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(function () { btn.textContent = orig; }, 1600);
+}
+</script>
+
+</body>
+</html>

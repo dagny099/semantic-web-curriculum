@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossary — Sensemaking Semantic Web</title>
+<meta name="description" content="Working definitions for the recurring terms in the Sensemaking Semantic Web curriculum. Voiced, cross-referenced, honest about contested terms.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-deep: #0B4F4A;
+    --teal-mid: #1E8076;
+    --teal-light: #C6E2DD;
+    --coral: #D85A30;
+    --coral-tint: #FAEAE2;
+    --charcoal: #1F2A2E;
+    --slate: #5A6671;
+    --slate-light: #8A929A;
+    --cream: #FAF7F2;
+    --white: #FFFFFF;
+    --rule: #D8D2C6;
+    --code-bg: #F2EDE3;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    color: var(--charcoal);
+    background: var(--cream);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    background: var(--teal-deep);
+    color: var(--white);
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+  }
+  .masthead::after {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    background: var(--coral);
+    margin-top: 1.5rem;
+  }
+  .masthead-inner {
+    max-width: 68rem;
+    margin: 0 auto;
+  }
+  .brand {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--teal-light);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  h1 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 3rem;
+    line-height: 1.1;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.015em;
+  }
+  .subtitle {
+    font-size: 1.05rem;
+    color: var(--teal-light);
+    letter-spacing: 0.02em;
+    max-width: 40rem;
+  }
+
+  /* ---------- Container ---------- */
+  .container {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 1rem;
+  }
+
+  /* ---------- Intro block ---------- */
+  .intro {
+    margin: 0 0 2rem;
+    max-width: 44rem;
+    color: var(--slate);
+    font-size: 0.98rem;
+  }
+  .intro p { margin: 0.5rem 0; }
+  .intro .legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  /* ---------- A-Z strip ---------- */
+  .az-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 1rem 0;
+    margin-bottom: 2.5rem;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .az-strip a {
+    display: inline-block;
+    min-width: 1.85rem;
+    text-align: center;
+    padding: 0.3rem 0.4rem;
+    color: var(--teal-mid);
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    border-radius: 2px;
+    transition: background 0.15s ease, color 0.15s ease;
+    font-weight: 500;
+  }
+  .az-strip a:hover {
+    background: var(--coral-tint);
+    color: var(--coral);
+  }
+  .az-strip a.disabled {
+    color: var(--slate-light);
+    pointer-events: none;
+    cursor: default;
+  }
+
+  /* ---------- Letter sections ---------- */
+  .letter-section {
+    margin-bottom: 3rem;
+    scroll-margin-top: 1rem;
+  }
+  .letter-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 2.4rem;
+    color: var(--coral);
+    margin: 0 0 1rem;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- Entries ---------- */
+  .entry {
+    margin: 0 0 1.5rem;
+    padding: 0;
+    scroll-margin-top: 1.5rem;
+  }
+  .term {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1.02rem;
+    color: var(--charcoal);
+    display: block;
+    margin: 0 0 0.3rem;
+  }
+  .gloss {
+    font-weight: 400;
+    color: var(--slate);
+    font-size: 0.92em;
+    font-style: italic;
+  }
+  .gloss::before { content: " — "; font-style: normal; }
+  .def {
+    margin: 0;
+  }
+  .def p {
+    margin: 0.35rem 0;
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+  .def p code {
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.86em;
+    color: var(--charcoal);
+  }
+  .see-also {
+    font-size: 0.85rem;
+    color: var(--slate);
+    margin-top: 0.5rem !important;
+  }
+  .see-also::before {
+    content: "See also: ";
+    color: var(--slate-light);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .see-also a {
+    color: var(--teal-mid);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--teal-light);
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .see-also a:hover {
+    color: var(--coral);
+    border-bottom-color: var(--coral);
+  }
+  .see-also a + a::before { content: ", "; color: var(--slate-light); border: 0; }
+
+  /* ---------- Contested badge ---------- */
+  .badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--coral);
+    background: var(--coral-tint);
+    padding: 0.2em 0.55em;
+    border-radius: 2px;
+    margin-left: 0.55rem;
+    vertical-align: 0.15em;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .legend-badge {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--coral);
+    background: var(--coral-tint);
+    padding: 0.2em 0.55em;
+    border-radius: 2px;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+
+  /* ---------- Inline code in terms ---------- */
+  .term code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.92em;
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    color: var(--teal-deep);
+    font-weight: 500;
+  }
+
+  /* ---------- Inline links ---------- */
+  a.inline {
+    color: var(--teal-mid);
+    text-decoration: underline;
+    text-decoration-color: var(--teal-light);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+  }
+  a.inline:hover { color: var(--coral); text-decoration-color: var(--coral); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2rem 0 3rem;
+    margin-top: 3rem;
+    color: var(--slate);
+    font-size: 0.85rem;
+  }
+  footer p { margin: 0.4rem 0; }
+  footer a { color: var(--teal-mid); }
+
+  /* ---------- Print ---------- */
+  @media print {
+    body { background: white; color: black; font-size: 9.5pt; line-height: 1.4; }
+    .masthead {
+      background: white;
+      color: black;
+      border-bottom: 2px solid black;
+      padding: 0.5rem 0 0.75rem;
+    }
+    .masthead::after { display: none; }
+    .masthead h1 { color: black; font-size: 20pt; }
+    .brand, .subtitle { color: #444; }
+    .container { padding: 0.5rem 0; max-width: none; }
+    .az-strip { display: none; }
+    .intro { font-size: 9pt; }
+    .letter-heading {
+      font-size: 14pt;
+      color: black;
+      page-break-after: avoid;
+      page-break-before: auto;
+      border-bottom: 1px solid #888;
+    }
+    .letter-section { page-break-inside: auto; margin-bottom: 0.8rem; }
+    .entry { page-break-inside: avoid; margin-bottom: 0.6rem; }
+    .term { font-size: 10pt; }
+    .def p { font-size: 9pt; }
+    .see-also { font-size: 8.5pt; color: #555; }
+    .badge, .legend-badge {
+      color: #444;
+      background: #eee !important;
+      border: 1px solid #ccc;
+    }
+    a { color: black !important; text-decoration: none; }
+    .see-also a { border-bottom: none; color: #333 !important; }
+    footer { border-top: 1px solid #888; font-size: 8pt; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== Masthead ===================== -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Curriculum reference</div>
+    <h1>Glossary</h1>
+    <div class="subtitle">Working definitions for the recurring terms in the Sensemaking Semantic Web curriculum — written in the curriculum's voice, with cross-references so reading one entry leads to three more.</div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ===================== Intro ===================== -->
+<div class="intro">
+  <p>Coverage is scoped to Modules 1 and 2 — foundations and modeling. Module 3 and 4 vocabulary (reification approaches, SHACL constructs, GraphRAG, federation) gets added when those modules come online. The glossary grows with the curriculum rather than predicting what hasn't been written yet.</p>
+  <p>Entries marked <span class="legend-badge">contested</span> have multiple legitimate definitions in working use. Where that happens, the curriculum's position is named, not hidden. For terms with a single uncontroversial definition, a quick Wikipedia paraphrase wouldn't earn its place here — those entries cross-link out instead of duplicating.</p>
+</div>
+
+<!-- ===================== A-Z strip ===================== -->
+<nav class="az-strip" aria-label="Alphabetical navigation">
+  <a href="#a">A</a>
+  <a href="#b">B</a>
+  <a href="#c">C</a>
+  <a href="#d">D</a>
+  <a href="#e">E</a>
+  <a href="#f">F</a>
+  <a href="#g">G</a>
+  <a class="disabled" aria-disabled="true">H</a>
+  <a href="#i">I</a>
+  <a href="#j">J</a>
+  <a href="#k">K</a>
+  <a href="#l">L</a>
+  <a href="#m">M</a>
+  <a href="#n">N</a>
+  <a href="#o">O</a>
+  <a href="#p">P</a>
+  <a href="#q">Q</a>
+  <a href="#r">R</a>
+  <a href="#s">S</a>
+  <a href="#t">T</a>
+  <a href="#u">U</a>
+  <a href="#v">V</a>
+  <a class="disabled" aria-disabled="true">W</a>
+  <a class="disabled" aria-disabled="true">X</a>
+  <a class="disabled" aria-disabled="true">Y</a>
+  <a class="disabled" aria-disabled="true">Z</a>
+</nav>
+
+<!-- ===================== A ===================== -->
+<section class="letter-section" id="a">
+  <h2 class="letter-heading">A</h2>
+
+  <div class="entry" id="entry-ask">
+    <span class="term">ASK<span class="gloss">a SPARQL query form returning true or false rather than results</span></span>
+    <div class="def">
+      <p>Use ASK when the question is yes/no — does at least one match exist? — and the actual matches don't matter. Cheaper than SELECT because the engine can stop at the first hit. Useful in validation flows where you want a boolean answer about whether some pattern holds.</p>
+      <p class="see-also"><a href="#entry-select">SELECT</a><a href="#entry-sparql">SPARQL</a><a href="#entry-basic-graph-pattern">basic graph pattern</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== B ===================== -->
+<section class="letter-section" id="b">
+  <h2 class="letter-heading">B</h2>
+
+  <div class="entry" id="entry-basic-graph-pattern">
+    <span class="term">basic graph pattern (BGP)<span class="gloss">a set of triple patterns evaluated together — the workhorse of SPARQL</span></span>
+    <div class="def">
+      <p>The conjunction of triple patterns inside a <code>WHERE</code> clause, without OPTIONAL, UNION, or FILTER. A SPARQL engine matches a BGP by finding every assignment of variables that satisfies all the patterns simultaneously. Most SPARQL queries are at heart a BGP plus modifiers; understanding BGPs first makes the rest of SPARQL easier to read.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-triple-pattern">triple pattern</a><a href="#entry-graph-pattern">graph pattern</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-blank-node">
+    <span class="term">blank node<span class="gloss">a node in an RDF graph with no URI — only a local existence</span></span>
+    <div class="def">
+      <p>Useful when you need to group properties but don't care to reference the grouped thing from outside. In Turtle, written as <code>[ ... ]</code> for anonymous use or with an underscore-colon prefix (<code>_:b1</code>) for named local reference. The trap: blank nodes are scoped to their file or graph. Two blank nodes from different sources can't be reliably matched even if every property aligns. If a thing will be referenced from elsewhere, give it a real URI instead.</p>
+      <p class="see-also"><a href="#entry-uri">URI</a><a href="#entry-iri">IRI</a><a href="#entry-triple">triple</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== C ===================== -->
+<section class="letter-section" id="c">
+  <h2 class="letter-heading">C</h2>
+
+  <div class="entry" id="entry-cardinality">
+    <span class="term">cardinality<span class="gloss">how many values a property is allowed or required to have on an instance</span></span>
+    <div class="def">
+      <p>An OWL restriction can constrain a property to exactly N values, at least N, at most N, or some combination. Minimum-one cardinality is the most common in practice ("a Ninja must have at least one village"). The temptation to add cardinality constraints early is strong; resist it until you have real data to validate against. Premature cardinality is a common source of "the reasoner won't accept my data" pain.</p>
+      <p class="see-also"><a href="#entry-restriction">restriction</a><a href="#entry-owl">OWL</a><a href="#entry-domain">domain</a><a href="#entry-range">range</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-category">
+    <span class="term">category<span class="gloss">a grouping by shared properties — pre-formal, broader than "class"</span></span>
+    <div class="def">
+      <p>In cognitive science, categories are how minds carve experience into manageable kinds, with fuzzy boundaries and prototype effects (Rosch's classic work). In ontology engineering, the categorical work gets formalized as classes with crisp membership conditions. The translation is lossy in both directions: real categories are messier than OWL classes, and an OWL class never quite captures the family resemblance that makes a category cognitively useful. Naming the gap matters when discussing modeling decisions with domain experts.</p>
+      <p class="see-also"><a href="#entry-class">class</a><a href="#entry-schema-cognitive">schema (cognitive)</a><a href="#entry-frame">frame</a><a href="#entry-concept-philosophical">concept (philosophical)</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-class">
+    <span class="term">class<span class="gloss">a set of things that share a type, expressed in OWL or RDFS</span></span>
+    <div class="def">
+      <p>An RDFS or OWL class is a URI-identified set whose members are connected via <code>rdf:type</code>. Classes can be subclassed (<code>rdfs:subClassOf</code>), declared equivalent (<code>owl:equivalentClass</code>), or marked disjoint (<code>owl:disjointWith</code>). The shift in mental model from object-oriented programming is real: an OWL class is defined by what's true of its members, not by what methods it offers. Inheritance in OWL means set inclusion, not behavior reuse.</p>
+      <p class="see-also"><a href="#entry-instance">instance</a><a href="#entry-subclassof">subClassOf</a><a href="#entry-restriction">restriction</a><a href="#entry-rdfs">RDFS</a><a href="#entry-owl">OWL</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-closed-world-assumption">
+    <span class="term">closed-world assumption (CWA)<span class="gloss">what isn't asserted is false — the default in SQL and most application logic</span></span>
+    <div class="def">
+      <p>The classic database mindset: if the customers table has no entry for Alice, Alice is not a customer. RDF and OWL reject this by default — see <a href="#entry-open-world-assumption" class="inline">open-world assumption</a>. CWA returns in SHACL, which lets you say "for this validation, treat the data as complete" without abandoning the open-world model for inference. Knowing when each regime is right is the central judgment call in any real deployment.</p>
+      <p class="see-also"><a href="#entry-open-world-assumption">open-world assumption</a><a href="#entry-monotonic-reasoning">monotonic reasoning</a><a href="#entry-unique-name-assumption">unique name assumption</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-concept-philosophical">
+    <span class="term">concept (philosophical)<span class="gloss">a mental representation of a kind — the cog-sci sibling of "class" with looser metaphysics</span></span>
+    <div class="def">
+      <p>Philosophers and psychologists argue about what concepts are — definitions, prototypes, exemplars, theories. Knowledge engineering largely sidesteps the debate by working with classes (formal, set-theoretic, with crisp membership) instead. The translation from "concept" to "class" loses prototypicality and fuzzy edges; sometimes that loss is acceptable, sometimes it forces SKOS or a fuzzier modeling approach. Naming what's lost helps justify modeling decisions to non-technical stakeholders.</p>
+      <p class="see-also"><a href="#entry-class">class</a><a href="#entry-concept-scheme">concept scheme</a><a href="#entry-skos">SKOS</a><a href="#entry-schema-cognitive">schema (cognitive)</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-concept-scheme">
+    <span class="term">concept scheme<span class="gloss">a controlled vocabulary of related concepts, typically expressed in SKOS</span></span>
+    <div class="def">
+      <p>A SKOS concept scheme groups <code>skos:Concept</code> instances under a single namespace with relations like <code>skos:broader</code> and <code>skos:narrower</code>. Use this when the structure is taxonomic but not strictly class-based — concepts don't need disjointness, can be polyhierarchical, and don't require the rigor of OWL. ESCO (occupations), MeSH (medical subjects), and the Getty AAT (art and architecture) are all concept schemes.</p>
+      <p class="see-also"><a href="#entry-skos">SKOS</a><a href="#entry-taxonomy">taxonomy</a><a href="#entry-controlled-vocabulary">controlled vocabulary</a><a href="#entry-ontology-engineering">ontology (engineering)</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-construct">
+    <span class="term">CONSTRUCT<span class="gloss">a SPARQL query form that returns RDF instead of a table</span></span>
+    <div class="def">
+      <p>Where SELECT returns variable bindings, CONSTRUCT returns a new graph built from a template using those bindings. The workhorse of inference materialization: write the rule as a SPARQL pattern, emit the inferred triples, store them. CONSTRUCT is also the cleanest way to transform one vocabulary into another — read the source pattern, emit the target shape.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-materialization">materialization</a><a href="#entry-select">SELECT</a><a href="#entry-inference">inference</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-controlled-vocabulary">
+    <span class="term">controlled vocabulary<span class="gloss">a list of approved terms for use in a domain, ideally with definitions and relations</span></span>
+    <div class="def">
+      <p>The simplest form is a flat list of allowed values for a field. The richest forms (concept schemes, taxonomies, ontologies) add hierarchy, equivalences, and definitions. Most enterprise data quality work, when done well, starts here — agree on the terms before arguing about the schema. The semantic web's tooling gives controlled vocabularies global identifiers and machine-readable relations, but the underlying discipline predates RDF by centuries.</p>
+      <p class="see-also"><a href="#entry-concept-scheme">concept scheme</a><a href="#entry-taxonomy">taxonomy</a><a href="#entry-vocabulary">vocabulary</a><a href="#entry-skos">SKOS</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== D ===================== -->
+<section class="letter-section" id="d">
+  <h2 class="letter-heading">D</h2>
+
+  <div class="entry" id="entry-datatype">
+    <span class="term">datatype<span class="gloss">the kind of value a literal is — integer, date, boolean, etc.</span></span>
+    <div class="def">
+      <p>An RDF literal optionally carries an XSD datatype URI declaring how to interpret it. <code>"42"^^xsd:integer</code> is a number; <code>"42"^^xsd:string</code> is a string of two characters. Untyped literals default to <code>xsd:string</code>. Datatypes matter for filtering ("find all dates after 2020"), arithmetic, and validation; mixing typed and untyped literals in the same predicate is a frequent source of "why doesn't my query return anything" frustration.</p>
+      <p class="see-also"><a href="#entry-literal">literal</a><a href="#entry-language-tag">language tag</a><a href="#entry-filter">FILTER</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-describe">
+    <span class="term">DESCRIBE<span class="gloss">a SPARQL query form that returns "everything the endpoint knows" about a resource</span></span>
+    <div class="def">
+      <p>The least specified of the four query forms — what counts as "everything" is up to the implementation. Useful for exploration ("what does Wikidata have on Q42?") and rarely useful for production queries because the result shape is non-portable across endpoints. Treat it as a debugging tool, not a building block.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-select">SELECT</a><a href="#entry-construct">CONSTRUCT</a><a href="#entry-ask">ASK</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-disjointwith">
+    <span class="term">disjointWith<span class="gloss">an OWL declaration that no instance can belong to both classes</span></span>
+    <div class="def">
+      <p><code>owl:disjointWith</code> tells the reasoner that membership in class A is incompatible with membership in class B. Useful for catching errors — if a Person is asserted to be a Place, the reasoner can complain. Underused in practice because most ontologies don't bother declaring disjointness, which means most reasoners can't catch the contradictions that disjointness would expose. Declare it when the boundary actually matters.</p>
+      <p class="see-also"><a href="#entry-class">class</a><a href="#entry-equivalent-class">equivalent class</a><a href="#entry-inference">inference</a><a href="#entry-owl">OWL</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-domain">
+    <span class="term">domain<span class="gloss">the class of resources a property is expected to apply to as subject</span></span>
+    <div class="def">
+      <p>Declaring <code>rdfs:domain :Ninja</code> on <code>:hasJutsu</code> says that anything appearing as the subject of <code>:hasJutsu</code> is a Ninja. Note the direction of the rule: domain is an inference, not a validation. If the data says <code>:RockLee :hasJutsu :PrimaryLotus</code> without RockLee being typed as a Ninja, RDFS will infer the type rather than reject the data. SHACL exists in part to flip this from inference to validation when application logic needs the latter.</p>
+      <p class="see-also"><a href="#entry-range">range</a><a href="#entry-property">property</a><a href="#entry-rdfs">RDFS</a><a href="#entry-open-world-assumption">open-world assumption</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-dublin-core">
+    <span class="term">Dublin Core<span class="gloss">the classic bibliographic metadata vocabulary — title, creator, date, source</span></span>
+    <div class="def">
+      <p>One of the oldest standardized RDF vocabularies, originally for library and archival metadata. The DCMI Terms namespace (<code>dcterms:</code>) is what's used today; the older Dublin Core Elements (<code>dc:</code>) is mostly legacy. Reach for it whenever you're describing metadata about a resource rather than properties of the thing itself: who created it, when, what license, what source.</p>
+      <p class="see-also"><a href="#entry-vocabulary">vocabulary</a><a href="#entry-foaf">FOAF</a><a href="#entry-schema-org">schema.org</a><a href="#entry-prov-o">PROV-O</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== E ===================== -->
+<section class="letter-section" id="e">
+  <h2 class="letter-heading">E</h2>
+
+  <div class="entry" id="entry-endpoint">
+    <span class="term">endpoint<span class="gloss">a URL that accepts SPARQL queries over HTTP</span></span>
+    <div class="def">
+      <p>Wikidata's endpoint is <code>https://query.wikidata.org/sparql</code>. A locally-running Fuseki exposes one at <code>http://localhost:3030/&lt;dataset&gt;/query</code>. The term is overloaded — sometimes it means the URL, sometimes the triplestore behind it; context disambiguates. Federation depends on multiple endpoints reachable simultaneously, which is part of why federated queries are powerful in theory and fragile in practice.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-federated-query">federated query</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-equivalent-class">
+    <span class="term">equivalent class<span class="gloss">an OWL declaration that two classes have identical members</span></span>
+    <div class="def">
+      <p><code>owl:equivalentClass</code> tells the reasoner that membership in class A implies membership in class B and vice versa. Distinct from <code>subClassOf</code> in both directions and from <code>sameAs</code> in that it operates on classes, not individuals. Useful for vocabulary alignment — declare <code>:Person owl:equivalentClass foaf:Person</code> and a reasoner can move freely between the two vocabularies. Use with care: equivalence cascades through all member-level reasoning.</p>
+      <p class="see-also"><a href="#entry-class">class</a><a href="#entry-sameas">sameAs</a><a href="#entry-subclassof">subClassOf</a><a href="#entry-disjointwith">disjointWith</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== F ===================== -->
+<section class="letter-section" id="f">
+  <h2 class="letter-heading">F</h2>
+
+  <div class="entry" id="entry-federated-query">
+    <span class="term">federated query<span class="gloss">a SPARQL query that joins data across multiple endpoints via the <code>SERVICE</code> keyword</span></span>
+    <div class="def">
+      <p>Powerful in theory: query your local graph and join with Wikidata in one call. Brittle in practice: network latency dominates, the remote endpoint can rate-limit or time out, and silent schema changes at the remote source break queries with no warning. Most production systems materialize external data locally and refresh on a schedule rather than relying on live federation. Module 4 surfaces this tradeoff explicitly.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-endpoint">endpoint</a><a href="#entry-materialization">materialization</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-filter">
+    <span class="term">FILTER<span class="gloss">a SPARQL clause that narrows already-bound variables</span></span>
+    <div class="def">
+      <p>Applies a boolean expression to existing variable bindings — range checks (<code>?d &gt; "2020-01-01"^^xsd:date</code>), regex (<code>REGEX(?name, "Uchiha", "i")</code>), presence tests (<code>FILTER EXISTS { ... }</code>). FILTER cannot introduce new bindings; if no other pattern binds the variable, the filter operates on unbound and produces nothing. The "empty result" pitfall is often a FILTER on an unbound variable.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-basic-graph-pattern">basic graph pattern</a><a href="#entry-optional">OPTIONAL</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-foaf">
+    <span class="term">FOAF<span class="gloss">"Friend Of A Friend" — the classic vocabulary for describing people and their connections</span></span>
+    <div class="def">
+      <p>Predates schema.org by years. <code>foaf:Person</code>, <code>foaf:knows</code>, <code>foaf:name</code>, <code>foaf:homepage</code>. Still standard in some academic and linked-data communities, increasingly replaced by <code>schema:Person</code> in modern work. Reach for FOAF when working with older graphs or in social-network domains where it's the established choice; reach for schema.org when starting fresh.</p>
+      <p class="see-also"><a href="#entry-vocabulary">vocabulary</a><a href="#entry-schema-org">schema.org</a><a href="#entry-linked-data">linked data</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-frame">
+    <span class="term">frame<span class="gloss">a cognitive-science structure for representing stereotyped situations with typical participants and defaults</span></span>
+    <div class="def">
+      <p>Minsky's 1974 frames captured everyday knowledge as structured templates: a "restaurant" frame has slots for cuisine, location, server, bill. Frame-based knowledge representation languages (KL-ONE, Loom, OKBC) are direct ancestors of OWL — the OWL class with property restrictions is the same idea, with the cognitive flexibility (defaults, exceptions, prototypicality) stripped out for the sake of decidable reasoning. Naming the lineage helps when explaining ontology design to domain experts familiar with frames or schemas.</p>
+      <p class="see-also"><a href="#entry-schema-cognitive">schema (cognitive)</a><a href="#entry-class">class</a><a href="#entry-restriction">restriction</a><a href="#entry-category">category</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== G ===================== -->
+<section class="letter-section" id="g">
+  <h2 class="letter-heading">G</h2>
+
+  <div class="entry" id="entry-graph">
+    <span class="term">graph<span class="gloss">in RDF, a set of triples; in property-graph databases, a different kind of graph entirely</span></span>
+    <div class="def">
+      <p>An RDF graph is a labeled directed graph whose edges are triples — every edge has a single URI label (the predicate). A property graph (Neo4j-style) is also a labeled directed graph but each edge can carry multiple key-value properties natively. The term "graph" is shared across both models and they're often conflated in writing. Module 1 leans into the contrast: the choice between RDF and property graphs is one of the most consequential modeling decisions for any knowledge-graph project.</p>
+      <p class="see-also"><a href="#entry-named-graph">named graph</a><a href="#entry-knowledge-graph">knowledge graph</a><a href="#entry-rdf">RDF</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-graph-pattern">
+    <span class="term">graph pattern<span class="gloss">a SPARQL construct combining triple patterns with operators like OPTIONAL, UNION, FILTER</span></span>
+    <div class="def">
+      <p>Where a basic graph pattern is conjunction only, a graph pattern adds alternation, negation, and conditional matching. Most real-world SPARQL queries are graph patterns, not BGPs. The mental model is: describe the shape of the subgraph you want, then have the engine find every assignment of variables that fits the shape.</p>
+      <p class="see-also"><a href="#entry-basic-graph-pattern">basic graph pattern</a><a href="#entry-triple-pattern">triple pattern</a><a href="#entry-sparql">SPARQL</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== I ===================== -->
+<section class="letter-section" id="i">
+  <h2 class="letter-heading">I</h2>
+
+  <div class="entry" id="entry-inference">
+    <span class="term">inference<span class="gloss">deriving new triples from asserted triples plus a rule set</span></span>
+    <div class="def">
+      <p>RDFS inference is simple: subclass and subproperty propagation, domain and range type assignment. OWL inference is powerful and computationally expensive: equivalence, restrictions, disjointness, cardinality. SHACL Advanced and SWRL extend further with custom rules. "Inference" is overloaded — it can mean the act of deriving (process) or the derived triple itself (result); context disambiguates.</p>
+      <p class="see-also"><a href="#entry-reasoner">reasoner</a><a href="#entry-materialization">materialization</a><a href="#entry-rdfs">RDFS</a><a href="#entry-owl">OWL</a><a href="#entry-monotonic-reasoning">monotonic reasoning</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-instance">
+    <span class="term">instance<span class="gloss">a particular thing declared to be a member of one or more classes via <code>rdf:type</code></span></span>
+    <div class="def">
+      <p>"Instance" and "individual" are used interchangeably; OWL prefers "individual." The same URI can be an instance of multiple classes simultaneously — RDF and OWL don't enforce single inheritance. Whether something should be modeled as an instance or a class is one of the design judgment calls that compounds — see <a href="#entry-punning" class="inline">punning</a> for the case where the answer is "both."</p>
+      <p class="see-also"><a href="#entry-class">class</a><a href="#entry-punning">punning</a><a href="#entry-subject">subject</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-inverse-property">
+    <span class="term">inverse property<span class="gloss">an OWL declaration that two properties run in opposite directions</span></span>
+    <div class="def">
+      <p><code>owl:inverseOf</code> says that if <code>:parent</code> is the inverse of <code>:child</code>, then asserting <code>:Alice :child :Bob</code> lets the reasoner infer <code>:Bob :parent :Alice</code>. Useful and dangerous: every inverse declaration roughly doubles the inferred triple count the reasoner maintains. Declare inverses when both directions of the relationship are queried in practice; skip them when only one direction is.</p>
+      <p class="see-also"><a href="#entry-property">property</a><a href="#entry-symmetric-property">symmetric property</a><a href="#entry-transitive-property">transitive property</a><a href="#entry-inference">inference</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-iri">
+    <span class="term">IRI<span class="gloss">Internationalized Resource Identifier — a URI extended to allow Unicode characters</span></span>
+    <div class="def">
+      <p>Practically every modern RDF tool accepts IRIs. The terms URI and IRI are used interchangeably in casual writing; the W3C specs distinguish them for compliance reasons. Unless you're working with non-ASCII URIs explicitly, the distinction rarely surfaces.</p>
+      <p class="see-also"><a href="#entry-uri">URI</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== J ===================== -->
+<section class="letter-section" id="j">
+  <h2 class="letter-heading">J</h2>
+
+  <div class="entry" id="entry-json-ld">
+    <span class="term">JSON-LD<span class="gloss">an RDF serialization that looks like JSON, drop-in compatible with JSON-based pipelines</span></span>
+    <div class="def">
+      <p>The RDF format with the strongest adoption outside the semantic-web community, largely because schema.org markup on websites uses JSON-LD. The <code>@context</code> block maps JSON keys to URIs, turning a familiar JSON document into a valid RDF graph. Reach for JSON-LD when RDF needs to coexist with web APIs or JavaScript ingestion; reach for Turtle when humans need to read or write the data.</p>
+      <p class="see-also"><a href="#entry-turtle">Turtle</a><a href="#entry-rdf">RDF</a><a href="#entry-linked-data">linked data</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== K ===================== -->
+<section class="letter-section" id="k">
+  <h2 class="letter-heading">K</h2>
+
+  <div class="entry" id="entry-knowledge-graph">
+    <span class="term">knowledge graph <span class="badge">contested</span><span class="gloss">a graph-structured representation of knowledge — and a term with at least three working definitions</span></span>
+    <div class="def">
+      <p>The term carries three loads in modern use: (1) the RDF/semantic-web flavor, with URIs, formal semantics, and W3C standards; (2) the labeled-property-graph flavor (Neo4j, TigerGraph, Memgraph), without formal semantics but with native edge properties; (3) the marketing flavor — anything graph-shaped that ships in an analytics product. The curriculum uses sense (1) as default but treats the distinction as a first-class topic. Module 1 makes the LPG-vs-RDF comparison explicit; Module 4 surfaces the LLM-era reality that the current renaissance is graph-shaped but not necessarily RDF-shaped, which is part of why a practitioner fluent in both traditions is unusually well-positioned.</p>
+      <p class="see-also"><a href="#entry-rdf">RDF</a><a href="#entry-graph">graph</a><a href="#entry-semantic-web">semantic web</a><a href="#entry-ontology-engineering">ontology (engineering)</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== L ===================== -->
+<section class="letter-section" id="l">
+  <h2 class="letter-heading">L</h2>
+
+  <div class="entry" id="entry-language-tag">
+    <span class="term">language tag<span class="gloss">a suffix declaring the natural language of a string literal</span></span>
+    <div class="def">
+      <p>Written as <code>"hello"@en</code>, <code>"こんにちは"@ja</code>. SPARQL can filter by language (<code>FILTER(LANG(?label) = "en")</code>) and Wikidata leans on language-tagged literals heavily — most labels are multilingual. Use language tags for human-readable text; reserve plain untyped strings for codes and identifiers. The IETF BCP 47 spec defines valid tags (<code>en</code>, <code>en-GB</code>, <code>zh-Hant</code>, etc.).</p>
+      <p class="see-also"><a href="#entry-literal">literal</a><a href="#entry-datatype">datatype</a><a href="#entry-filter">FILTER</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-linked-data">
+    <span class="term">linked data<span class="gloss">a set of practices for publishing structured data on the web so it can be cross-linked</span></span>
+    <div class="def">
+      <p>Codified by Berners-Lee in 2006 as four rules: use URIs as names, use HTTP URIs (so they dereference), return useful info when someone looks one up, include links to other URIs. The semantic web is the broader vision; linked data is the practical methodology. The Linked Open Data Cloud diagram is a visualization of how successful (and selective) this methodology has been in practice — life sciences, government, library science have invested heavily; most of the commercial web has not.</p>
+      <p class="see-also"><a href="#entry-semantic-web">semantic web</a><a href="#entry-uri">URI</a><a href="#entry-rdf">RDF</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-literal">
+    <span class="term">literal<span class="gloss">a value in a triple that isn't a resource — a string, number, date, boolean</span></span>
+    <div class="def">
+      <p>Literals carry either a language tag (for strings) or a datatype (for everything else); a plain string with neither defaults to <code>xsd:string</code>. Cannot appear as the subject of a triple in standard RDF, only as an object. RDF-star relaxes this for embedded triples but most tooling assumes the classic restriction. Mixing typed and untyped literals on the same predicate is a frequent source of "why doesn't my SPARQL filter match anything" debugging.</p>
+      <p class="see-also"><a href="#entry-datatype">datatype</a><a href="#entry-language-tag">language tag</a><a href="#entry-object">object</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== M ===================== -->
+<section class="letter-section" id="m">
+  <h2 class="letter-heading">M</h2>
+
+  <div class="entry" id="entry-materialization">
+    <span class="term">materialization<span class="gloss">computing inferred triples once and storing them, rather than deriving on every query</span></span>
+    <div class="def">
+      <p>The classic tradeoff: materialize and queries are fast but results go stale on data update; reason at query time and results are fresh but queries are slow. Production systems usually materialize and accept staleness, with rebuild schedules tied to update frequency. SPARQL CONSTRUCT queries are the most common materialization tool. Knowing which lever to pull — and how often — is a senior judgment call.</p>
+      <p class="see-also"><a href="#entry-inference">inference</a><a href="#entry-reasoner">reasoner</a><a href="#entry-construct">CONSTRUCT</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-monotonic-reasoning">
+    <span class="term">monotonic reasoning<span class="gloss">adding facts never invalidates previously-derived conclusions</span></span>
+    <div class="def">
+      <p>RDFS and OWL reasoning are monotonic by design: more data can only add to what's inferred, never retract it. This is what makes RDF "honest" but also what makes it bad at exceptions ("birds fly, except penguins"). Non-monotonic reasoning exists in other formalisms (default logic, answer set programming); RDF deliberately doesn't. The trade is intentional — monotonicity is what makes large-scale reasoning tractable and federated reasoning sound.</p>
+      <p class="see-also"><a href="#entry-open-world-assumption">open-world assumption</a><a href="#entry-inference">inference</a><a href="#entry-reasoner">reasoner</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== N ===================== -->
+<section class="letter-section" id="n">
+  <h2 class="letter-heading">N</h2>
+
+  <div class="entry" id="entry-named-graph">
+    <span class="term">named graph<span class="gloss">a graph identified by a URI, distinguishable from other graphs in the same dataset</span></span>
+    <div class="def">
+      <p>One of four standard approaches to reification. Put related triples in a graph, attach metadata to the graph URI, and the metadata describes the contained triples without bloating each one individually. SPARQL's <code>GRAPH</code> keyword scopes patterns to specific named graphs; the dataset abstraction in SPARQL 1.1 is named-graph-aware throughout. Useful for source tracking, versioning, and access control. Module 3 treats named graphs as the recommended reification approach for the Naruto provenance project.</p>
+      <p class="see-also"><a href="#entry-graph">graph</a><a href="#entry-reification">reification</a><a href="#entry-quad">quad</a><a href="#entry-trig">TriG</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-n-ary-relation">
+    <span class="term">n-ary relation<span class="gloss">a relation among more than two things — requiring some form of reification in RDF</span></span>
+    <div class="def">
+      <p>RDF triples are binary by definition: subject, predicate, object. A fact like "Itachi killed Shisui under orders, at age 13" has at least four roles (actor, victim, motive, time) and can't be a single triple. The standard pattern is to introduce an <code>Event</code> instance and attach properties for each role. The Ontology Design Patterns portal documents the n-ary relation pattern formally; one of the four reification approaches in Module 3.</p>
+      <p class="see-also"><a href="#entry-reification">reification</a><a href="#entry-time-indexed-situation">time-indexed situation</a><a href="#entry-triple">triple</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-n-triples">
+    <span class="term">N-Triples<span class="gloss">the simplest RDF serialization — one full triple per line, no prefixes</span></span>
+    <div class="def">
+      <p>Verbose by design. Meant for machines and version-control diffs, not for humans to read. Every URI is spelled out in full; every line is independently valid. Useful when you want to see exactly what a triple is, stripped of Turtle's prefix sugar and grouping syntax. Most triplestores can serialize to N-Triples on request.</p>
+      <p class="see-also"><a href="#entry-turtle">Turtle</a><a href="#entry-triple">triple</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== O ===================== -->
+<section class="letter-section" id="o">
+  <h2 class="letter-heading">O</h2>
+
+  <div class="entry" id="entry-object">
+    <span class="term">object<span class="gloss">the third position in a triple — what the predicate connects the subject to</span></span>
+    <div class="def">
+      <p>Can be a URI, a blank node, or a literal. The only position in a triple where a literal is allowed in standard RDF. The choice between making an object a literal (a date as <code>xsd:date</code>) vs. a URI (a date as a resource with multiple representations) is a modeling decision worth pausing over — literals are simpler, URIs are extensible.</p>
+      <p class="see-also"><a href="#entry-subject">subject</a><a href="#entry-predicate">predicate</a><a href="#entry-triple">triple</a><a href="#entry-literal">literal</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-ontology-engineering">
+    <span class="term">ontology (engineering) <span class="badge">contested</span><span class="gloss">a formal specification of concepts and relationships in a domain, expressed in OWL or similar</span></span>
+    <div class="def">
+      <p>In knowledge engineering, an ontology is a file (or set of files) declaring classes, properties, restrictions, and instances, with the semantics of those declarations governed by a standard like OWL. Tom Gruber's working definition — "a formal, explicit specification of a shared conceptualization" — is the most cited. The engineering sense deliberately narrows the philosophical one: an OWL ontology says what categories exist in a chosen model, not what exists in the world. The curriculum uses "ontology" in this engineering sense unless explicitly qualified.</p>
+      <p class="see-also"><a href="#entry-ontology-philosophical">ontology (philosophical)</a><a href="#entry-owl">OWL</a><a href="#entry-vocabulary">vocabulary</a><a href="#entry-knowledge-graph">knowledge graph</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-ontology-philosophical">
+    <span class="term">ontology (philosophical) <span class="badge">contested</span><span class="gloss">the branch of metaphysics concerned with what exists and how things relate</span></span>
+    <div class="def">
+      <p>From Aristotle forward: what kinds of things are there, what makes them the kinds they are, what relationships hold between them. The knowledge-engineering use of "ontology" borrowed this term in the 1990s, and the borrowing was honestly somewhat presumptuous — an OWL file specifies a model, not a metaphysics. Worth knowing the genealogy when talking to philosophers, domain experts in humanities, or anyone who notices the appropriation. Naming the disciplinary tension can earn credibility in stakeholder conversations.</p>
+      <p class="see-also"><a href="#entry-ontology-engineering">ontology (engineering)</a><a href="#entry-category">category</a><a href="#entry-concept-philosophical">concept (philosophical)</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-open-world-assumption">
+    <span class="term">open-world assumption (OWA)<span class="gloss">what isn't asserted might still be true — the default in RDF and OWL</span></span>
+    <div class="def">
+      <p>If the graph doesn't say Alice has children, that doesn't mean Alice is childless — only that this graph hasn't asserted it either way. Coming from SQL or property graphs, this feels broken at first. The shift from "this is broken" to "this is honest" is the inflection point of learning to think semantically. SHACL exists in part to layer closed-world validation on top when application logic needs it; the underlying inference model stays open. The OWA is what makes RDF appropriate for data integration across sources you don't control — no single source needs to be complete.</p>
+      <p class="see-also"><a href="#entry-closed-world-assumption">closed-world assumption</a><a href="#entry-monotonic-reasoning">monotonic reasoning</a><a href="#entry-unique-name-assumption">unique name assumption</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-optional">
+    <span class="term">OPTIONAL<span class="gloss">a SPARQL operator that returns matches when the inner pattern holds and the outer row anyway when it doesn't</span></span>
+    <div class="def">
+      <p>The left outer join of SPARQL. Use it for properties that might not be present, without dropping the parent resource from results. Stacks of OPTIONAL clauses are a code smell — three or more in a single query usually signals that the data model wants reshaping. The unbound variables OPTIONAL produces interact subtly with FILTER; check the spec when the behavior surprises you.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-filter">FILTER</a><a href="#entry-graph-pattern">graph pattern</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-owl">
+    <span class="term">OWL<span class="gloss">the Web Ontology Language — a W3C standard for expressing classes, properties, and constraints with formal semantics</span></span>
+    <div class="def">
+      <p>Sits on top of RDF: every OWL file is also valid RDF, but the converse isn't true. The name is a deliberate Winnie-the-Pooh reference (OWL, not WOL). Has five profiles trading expressive power for tractability — DL, EL, QL, RL, and Full — each with different reasoning guarantees. Most ontology design work uses OWL DL through Protégé; production deployments often use EL or RL for performance.</p>
+      <p class="see-also"><a href="#entry-owl-dl">OWL DL</a><a href="#entry-owl-el">OWL EL</a><a href="#entry-owl-ql">OWL QL</a><a href="#entry-owl-rl">OWL RL</a><a href="#entry-owl-full">OWL Full</a><a href="#entry-rdfs">RDFS</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-owl-dl">
+    <span class="term">OWL DL<span class="gloss">the description-logic profile of OWL — decidable, supports most of what ontology engineers actually use</span></span>
+    <div class="def">
+      <p>The default profile in Protégé and the one books mostly teach. Decidable reasoning, full expressive power short of OWL Full. Reasoning can be slow on large ontologies, but performance is predictable. When in doubt about profile choice, OWL DL is the safe default.</p>
+      <p class="see-also"><a href="#entry-owl">OWL</a><a href="#entry-reasoner">reasoner</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-owl-el">
+    <span class="term">OWL EL<span class="gloss">a profile designed for very large biomedical ontologies — polynomial-time reasoning</span></span>
+    <div class="def">
+      <p>Trades expressive power (no inverse properties, no negation, limited cardinality) for the ability to reason over hundreds of thousands of classes in reasonable time. SNOMED CT is the canonical EL ontology. The ELK reasoner is purpose-built for this profile.</p>
+      <p class="see-also"><a href="#entry-owl">OWL</a><a href="#entry-reasoner">reasoner</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-owl-full">
+    <span class="term">OWL Full<span class="gloss">OWL without the syntactic restrictions of DL — undecidable, mostly conceptual</span></span>
+    <div class="def">
+      <p>Without DL's constraints, anything can be both class and instance, every restriction is allowed, and any RDF graph that uses OWL terms is a valid OWL Full ontology. Useful conceptually, impractical for tooling — no reasoner is guaranteed to terminate. Most ontologies described as "OWL" are actually OWL DL.</p>
+      <p class="see-also"><a href="#entry-owl-dl">OWL DL</a><a href="#entry-punning">punning</a><a href="#entry-owl">OWL</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-owl-ql">
+    <span class="term">OWL QL<span class="gloss">a profile designed for query answering over relational databases</span></span>
+    <div class="def">
+      <p>Reasoning in QL can be implemented as SQL query rewriting — the ontology rewrites the query, and the database answers it. The foundation of ontology-based data access (OBDA) work. Less common in semantic-web tutorials than DL or EL but important wherever an ontology sits in front of a relational store.</p>
+      <p class="see-also"><a href="#entry-owl">OWL</a><a href="#entry-sparql">SPARQL</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-owl-rl">
+    <span class="term">OWL RL<span class="gloss">a profile designed for rule-based implementation — reasoning by forward-chaining rules</span></span>
+    <div class="def">
+      <p>The OWL semantics that map cleanly to a rule engine or graph-database materialization pass. The right profile when you want OWL inference on top of existing rule-engine or graph-database infrastructure, rather than installing a dedicated DL reasoner.</p>
+      <p class="see-also"><a href="#entry-owl">OWL</a><a href="#entry-materialization">materialization</a><a href="#entry-inference">inference</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== P ===================== -->
+<section class="letter-section" id="p">
+  <h2 class="letter-heading">P</h2>
+
+  <div class="entry" id="entry-predicate">
+    <span class="term">predicate<span class="gloss">the second position in a triple — the relation between subject and object</span></span>
+    <div class="def">
+      <p>Always a URI; literals and blank nodes can't be predicates. Naming predicates well is one of the small modeling decisions that compounds across an ontology — <code>:hasJutsu</code> reads naturally; <code>:jutsu</code> would be ambiguous about direction; <code>:hasJutsuRelation</code> is bureaucratic. The convention is camelCase, lowercase first letter, verb-ish.</p>
+      <p class="see-also"><a href="#entry-property">property</a><a href="#entry-subject">subject</a><a href="#entry-object">object</a><a href="#entry-triple">triple</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-property">
+    <span class="term">property<span class="gloss">synonym for predicate, used in ontology context</span></span>
+    <div class="def">
+      <p>In OWL, properties are classified as object properties (link two resources), datatype properties (link a resource to a literal), or annotation properties (carry metadata without reasoning impact). Properties have domains, ranges, and characteristics (transitive, symmetric, inverse, functional). "Predicate" and "property" both refer to the same thing but signal different contexts — "predicate" leans toward describing triples; "property" leans toward describing ontology design.</p>
+      <p class="see-also"><a href="#entry-predicate">predicate</a><a href="#entry-domain">domain</a><a href="#entry-range">range</a><a href="#entry-transitive-property">transitive property</a><a href="#entry-symmetric-property">symmetric property</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-property-path">
+    <span class="term">property path<span class="gloss">SPARQL 1.1 syntax for navigating multi-hop relationships in a single triple pattern</span></span>
+    <div class="def">
+      <p><code>?p foaf:knows+ :Naruto</code> matches anyone connected to Naruto by one or more <code>knows</code> hops. Variants: <code>*</code> for zero or more, <code>?</code> for zero or one, <code>|</code> for alternation, <code>/</code> for sequence, <code>^</code> for inverse direction. Property paths make traversal queries dramatically more readable than the same logic expressed as repeated joins, and they're one of the SPARQL 1.1 features Cypher users tend to appreciate quickly.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-triple-pattern">triple pattern</a><a href="#entry-transitive-property">transitive property</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-prov-o">
+    <span class="term">PROV-O<span class="gloss">the W3C provenance ontology for describing who, when, and how an assertion came to exist</span></span>
+    <div class="def">
+      <p>Core classes: <code>prov:Entity</code> (things), <code>prov:Activity</code> (what happened), <code>prov:Agent</code> (who did it). Core properties: <code>prov:wasAttributedTo</code>, <code>prov:wasGeneratedBy</code>, <code>prov:wasDerivedFrom</code>. The right choice when tracking provenance at the assertion level — Module 3's Naruto reification project layers PROV-O over named graphs for source attribution.</p>
+      <p class="see-also"><a href="#entry-reification">reification</a><a href="#entry-named-graph">named graph</a><a href="#entry-dublin-core">Dublin Core</a><a href="#entry-vocabulary">vocabulary</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-punning">
+    <span class="term">punning<span class="gloss">using the same URI as both a class and an instance in OWL 2</span></span>
+    <div class="def">
+      <p>"Software Engineer" might be an instance of "Job Title" (a class of job-title concepts) and itself a class whose instances are individual software engineers. OWL 2 allows the same URI to be interpreted at the right type from context — class in one statement, instance in another. Useful when you genuinely need it, confusing when you don't. Most modeling decisions that seem to need punning are actually decisions that should be cleaner — usually splitting the URI into two related ones.</p>
+      <p class="see-also"><a href="#entry-class">class</a><a href="#entry-instance">instance</a><a href="#entry-owl">OWL</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== Q ===================== -->
+<section class="letter-section" id="q">
+  <h2 class="letter-heading">Q</h2>
+
+  <div class="entry" id="entry-quad">
+    <span class="term">quad<span class="gloss">a triple plus a graph identifier — the unit of an RDF dataset with named graphs</span></span>
+    <div class="def">
+      <p>Written conceptually as (subject, predicate, object, graph). The TriG and N-Quads serializations write quads directly; Turtle writes triples and leaves graph membership implicit. Datasets in SPARQL 1.1 are effectively sets of quads, with a default graph (unnamed) and zero or more named graphs.</p>
+      <p class="see-also"><a href="#entry-triple">triple</a><a href="#entry-named-graph">named graph</a><a href="#entry-trig">TriG</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== R ===================== -->
+<section class="letter-section" id="r">
+  <h2 class="letter-heading">R</h2>
+
+  <div class="entry" id="entry-range">
+    <span class="term">range<span class="gloss">the class of resources a property is expected to take as object</span></span>
+    <div class="def">
+      <p>Like domain but on the other side. Declaring <code>rdfs:range :Village</code> on <code>:memberOfVillage</code> says that anything appearing as the object of that property is a Village. And again, this is an inference rule, not a validation rule — RDFS infers the type rather than rejecting bad data. SHACL is what flips this from "infer membership" to "validate membership" when application logic needs the latter.</p>
+      <p class="see-also"><a href="#entry-domain">domain</a><a href="#entry-property">property</a><a href="#entry-rdfs">RDFS</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-rdf">
+    <span class="term">RDF<span class="gloss">Resource Description Framework — the base data model of the semantic web</span></span>
+    <div class="def">
+      <p>Knowledge as triples of subject, predicate, object, where subjects and predicates are URIs and objects are URIs or literals. Everything else in the semantic-web stack — RDFS, OWL, SPARQL, SHACL, SKOS — is built on top of this primitive. The data model itself is almost embarrassingly simple; the power comes from what's layered on top, and from the discipline of using global URIs for everything that needs to be referenced from elsewhere.</p>
+      <p class="see-also"><a href="#entry-triple">triple</a><a href="#entry-uri">URI</a><a href="#entry-turtle">Turtle</a><a href="#entry-rdfs">RDFS</a><a href="#entry-owl">OWL</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-rdf-xml">
+    <span class="term">RDF/XML<span class="gloss">the original RDF serialization — verbose, mostly legacy</span></span>
+    <div class="def">
+      <p>The first standardized RDF serialization, and the one that gave RDF much of its early bad reputation. Hard to read, hard to write by hand. Turtle and JSON-LD have replaced it for new work. Worth knowing it exists because older ontologies and some tools still default to it — when Protégé saves to RDF/XML by default, switch to Turtle.</p>
+      <p class="see-also"><a href="#entry-turtle">Turtle</a><a href="#entry-json-ld">JSON-LD</a><a href="#entry-rdf">RDF</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-rdfs">
+    <span class="term">RDFS<span class="gloss">RDF Schema — the vocabulary for describing classes and properties</span></span>
+    <div class="def">
+      <p>Sits between RDF (data model) and OWL (full ontology language). Provides <code>rdfs:Class</code>, <code>rdfs:subClassOf</code>, <code>rdfs:domain</code>, <code>rdfs:range</code>, <code>rdfs:label</code>, <code>rdfs:comment</code>. Most real ontologies use RDFS plus a useful subset of OWL — Allemang's "RDFS Plus" framing captures this practice well. The RDFS-only sweet spot is taxonomies with light type structure; once you need cardinality or equivalence, you've moved into OWL.</p>
+      <p class="see-also"><a href="#entry-rdf">RDF</a><a href="#entry-owl">OWL</a><a href="#entry-subclassof">subClassOf</a><a href="#entry-domain">domain</a><a href="#entry-range">range</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-reasoner">
+    <span class="term">reasoner<span class="gloss">software that derives new triples from an ontology plus data by applying RDFS or OWL semantics</span></span>
+    <div class="def">
+      <p>HermiT and Pellet are the classic OWL DL reasoners; ELK specializes in OWL EL; rdflib and Apache Jena include simpler RDFS reasoners. Choosing a reasoner is mostly a choice about which OWL profile you need and how much data you're reasoning over. The performance gap between EL and DL reasoners on large ontologies is large enough to drive profile selection.</p>
+      <p class="see-also"><a href="#entry-inference">inference</a><a href="#entry-owl">OWL</a><a href="#entry-materialization">materialization</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-reification">
+    <span class="term">reification<span class="gloss">talking about a statement rather than just asserting it</span></span>
+    <div class="def">
+      <p>Four standard approaches exist: classical RDF reification (using <code>rdf:Statement</code> with its quartet of properties), n-ary relations (turning the relation into a class), named graphs (putting the assertion in a labeled container), and RDF-star (annotating the triple directly with the <code>&lt;&lt;&gt;&gt;</code> syntax). Each trades verbosity, query ergonomics, and tool support differently. Module 3 makes the comparison explicit; reification verbosity is one of the most-cited reasons people prefer property graphs.</p>
+      <p class="see-also"><a href="#entry-named-graph">named graph</a><a href="#entry-n-ary-relation">n-ary relation</a><a href="#entry-prov-o">PROV-O</a><a href="#entry-time-indexed-situation">time-indexed situation</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-restriction">
+    <span class="term">restriction<span class="gloss">an OWL construct constraining how a property is used on instances of a class</span></span>
+    <div class="def">
+      <p>"Every Ninja has at least one Village" is a minimum-cardinality restriction on <code>memberOfVillage</code> for the Ninja class. Restrictions are how OWL classes get their "defined by what's true of their members" character. The temptation to stack restrictions early is strong; resist until the data demands them. Every premature restriction is a future bug, usually surfacing as "the reasoner won't accept my data."</p>
+      <p class="see-also"><a href="#entry-class">class</a><a href="#entry-cardinality">cardinality</a><a href="#entry-owl">OWL</a><a href="#entry-frame">frame</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== S ===================== -->
+<section class="letter-section" id="s">
+  <h2 class="letter-heading">S</h2>
+
+  <div class="entry" id="entry-sameas">
+    <span class="term"><code>owl:sameAs</code><span class="gloss">a declaration that two URIs refer to the same individual</span></span>
+    <div class="def">
+      <p>The reasoner then treats every property of one URI as a property of the other — assertions about Alice become assertions about her aliased self. Powerful and dangerous: sameAs collapses all attributes. If <code>:Dagny owl:sameAs :Barbara</code>, properties meaningful to only one of the two personas merge inseparably. Use <code>skos:exactMatch</code> when the intent is "same referent, keep attribute sets separate" — this is one of the alignment-vocabulary decisions Module 3 surfaces in detail.</p>
+      <p class="see-also"><a href="#entry-equivalent-class">equivalent class</a><a href="#entry-skos">SKOS</a><a href="#entry-unique-name-assumption">unique name assumption</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-schema-cognitive">
+    <span class="term">schema (cognitive) <span class="badge">contested</span><span class="gloss">a mental structure organizing knowledge about a category of objects, events, or situations</span></span>
+    <div class="def">
+      <p>From Bartlett, Piaget, Rumelhart: schemas are how minds organize experience into reusable templates. The semantic web's "schema" inherits the name but only part of the meaning: an OWL or RDFS schema specifies formal class and property structure, with none of the flexibility, defaults, or fuzzy edges of a cognitive schema. Cog-sci framing earns its place when explaining ontology work to non-technical stakeholders — "this project is about making explicit what's usually tacit in your mental schema for X." It also names what's being lost in the formalization, which is honest.</p>
+      <p class="see-also"><a href="#entry-frame">frame</a><a href="#entry-category">category</a><a href="#entry-class">class</a><a href="#entry-concept-philosophical">concept (philosophical)</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-schema-org">
+    <span class="term">schema.org<span class="gloss">a vocabulary originally backed by major search engines for marking up structured data on the web</span></span>
+    <div class="def">
+      <p>Now a general-purpose vocabulary covering <code>Person</code>, <code>Organization</code>, <code>Event</code>, <code>Book</code>, <code>Place</code>, and hundreds more. Reuse target number one for new modeling work — if schema.org has a term for what you mean, use it. The canonical namespace is <code>https://schema.org/</code> with the trailing slash; older tutorials use <code>http://</code> and mixing the two in one graph creates two distinct URIs that look identical to the eye.</p>
+      <p class="see-also"><a href="#entry-vocabulary">vocabulary</a><a href="#entry-foaf">FOAF</a><a href="#entry-linked-data">linked data</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-select">
+    <span class="term">SELECT<span class="gloss">the most-used SPARQL query form — returns a table of variable bindings</span></span>
+    <div class="def">
+      <p>Output looks like a SQL result set: rows are matches, columns are projected variables. Most introductory SPARQL is SELECT plus a WHERE clause containing a basic graph pattern. The other query forms (ASK, CONSTRUCT, DESCRIBE) are specialized; SELECT is the workhorse.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-construct">CONSTRUCT</a><a href="#entry-ask">ASK</a><a href="#entry-basic-graph-pattern">basic graph pattern</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-semantic-web">
+    <span class="term">semantic web <span class="badge">contested</span><span class="gloss">the broader vision (Berners-Lee, Hendler, Lassila 2001) of a web of machine-readable data with formal semantics</span></span>
+    <div class="def">
+      <p>The 2001 vision didn't materialize as advertised. Successes have been narrower than the framing suggested — life sciences (UMLS), finance (FIBO), government linked data, schema.org for SEO, Wikidata. "Semantic web" can mean (1) the original vision, (2) the W3C stack of standards built toward it, (3) the practitioner community. The curriculum uses sense (2) as default and treats the gap between vision and reality as a feature of the field worth knowing. The LLM moment is causing a renaissance, but the renaissance is graph-shaped, not necessarily RDF-shaped.</p>
+      <p class="see-also"><a href="#entry-linked-data">linked data</a><a href="#entry-knowledge-graph">knowledge graph</a><a href="#entry-rdf">RDF</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-skos">
+    <span class="term">SKOS<span class="gloss">Simple Knowledge Organization System — a W3C vocabulary for concept schemes, taxonomies, thesauri</span></span>
+    <div class="def">
+      <p>Core terms: <code>skos:Concept</code>, <code>skos:broader</code>, <code>skos:narrower</code>, <code>skos:related</code>, <code>skos:exactMatch</code>, <code>skos:closeMatch</code>. The right choice when the structure is taxonomic but not strictly class-based — concepts don't need disjointness, can be polyhierarchical, and don't carry the rigor of OWL classes. ESCO uses SKOS heavily, which is why Module 1's Resume Graph Explorer work makes the RDF case especially clean.</p>
+      <p class="see-also"><a href="#entry-concept-scheme">concept scheme</a><a href="#entry-taxonomy">taxonomy</a><a href="#entry-controlled-vocabulary">controlled vocabulary</a><a href="#entry-sameas">sameAs</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-sparql">
+    <span class="term">SPARQL<span class="gloss">the query language for RDF — pronounced "sparkle"</span></span>
+    <div class="def">
+      <p>Four query forms (SELECT, ASK, CONSTRUCT, DESCRIBE) plus a separate update sublanguage. The syntax is small; the mental shift from SQL — pattern matching over a graph rather than relational joins — is the real lift. Most of SPARQL fluency is learning to think in basic graph patterns, then learning the modifiers that wrap them.</p>
+      <p class="see-also"><a href="#entry-select">SELECT</a><a href="#entry-construct">CONSTRUCT</a><a href="#entry-ask">ASK</a><a href="#entry-describe">DESCRIBE</a><a href="#entry-basic-graph-pattern">basic graph pattern</a><a href="#entry-endpoint">endpoint</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-subclassof">
+    <span class="term">subClassOf<span class="gloss">the RDFS relation declaring that every instance of class A is also an instance of class B</span></span>
+    <div class="def">
+      <p><code>rdfs:subClassOf</code> is transitive: if <code>Genin subClassOf Ninja</code> and <code>Ninja subClassOf Character</code>, then <code>Genin subClassOf Character</code> is inferred automatically. The foundational relation for taxonomic structure in RDFS and OWL ontologies. Most introductory ontology work is mostly subclass relationships plus a small number of properties.</p>
+      <p class="see-also"><a href="#entry-class">class</a><a href="#entry-rdfs">RDFS</a><a href="#entry-taxonomy">taxonomy</a><a href="#entry-subpropertyof">subPropertyOf</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-subject">
+    <span class="term">subject<span class="gloss">the first position in a triple — the thing the statement is about</span></span>
+    <div class="def">
+      <p>Always a URI or blank node; never a literal. The role most likely to have a clear referent in the world — a person, an organization, a document, an event.</p>
+      <p class="see-also"><a href="#entry-predicate">predicate</a><a href="#entry-object">object</a><a href="#entry-triple">triple</a><a href="#entry-blank-node">blank node</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-subpropertyof">
+    <span class="term">subPropertyOf<span class="gloss">the RDFS relation declaring that one property implies another</span></span>
+    <div class="def">
+      <p>If <code>senseiOf rdfs:subPropertyOf colleagueOf</code>, then asserting <code>:Jiraiya senseiOf :Naruto</code> infers <code>:Jiraiya colleagueOf :Naruto</code>. Less commonly used than <code>subClassOf</code> but powerful for vocabulary alignment — when you want to map a specific property in one vocabulary onto a more general one in another.</p>
+      <p class="see-also"><a href="#entry-subclassof">subClassOf</a><a href="#entry-property">property</a><a href="#entry-rdfs">RDFS</a><a href="#entry-inference">inference</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-symmetric-property">
+    <span class="term">symmetric property<span class="gloss">a property where <code>(A, P, B)</code> implies <code>(B, P, A)</code></span></span>
+    <div class="def">
+      <p>Declared via <code>owl:SymmetricProperty</code>. Useful for relations like <code>:siblingOf</code> or <code>:marriedTo</code>. Multiplies inferred triples — every asserted symmetric triple implies a second one. Performance gets pathological quickly with several symmetric properties on a large graph. Declare deliberately, not reflexively.</p>
+      <p class="see-also"><a href="#entry-property">property</a><a href="#entry-inverse-property">inverse property</a><a href="#entry-transitive-property">transitive property</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== T ===================== -->
+<section class="letter-section" id="t">
+  <h2 class="letter-heading">T</h2>
+
+  <div class="entry" id="entry-taxonomy">
+    <span class="term">taxonomy<span class="gloss">a hierarchical classification of concepts or kinds, usually tree-shaped</span></span>
+    <div class="def">
+      <p>A subset of what ontologies do: taxonomies have subclass-like structure but typically lack restrictions, equivalences, or formal property semantics. Most "ontologies" referenced in marketing materials are taxonomies plus a controlled vocabulary. That's fine — taxonomies are useful — but the distinction matters when scoping work or estimating effort. A taxonomy can be built quickly; an ontology with restrictions and reasoning support cannot.</p>
+      <p class="see-also"><a href="#entry-ontology-engineering">ontology (engineering)</a><a href="#entry-concept-scheme">concept scheme</a><a href="#entry-controlled-vocabulary">controlled vocabulary</a><a href="#entry-skos">SKOS</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-time-indexed-situation">
+    <span class="term">time-indexed situation<span class="gloss">a modeling pattern for facts that hold at some times but not others</span></span>
+    <div class="def">
+      <p>Rather than asserting <code>:Naruto :rank :Genin</code> as if eternal, introduce a Situation instance carrying <code>:rank :Genin</code>, <code>:beginsAt 2003</code>, <code>:endsAt 2005</code>. Verbose but honest about the temporal validity. The Ontology Design Patterns portal documents this formally; Module 2 reaches for it when modeling characters whose ninja rank changes across arcs. A specific case of n-ary relation.</p>
+      <p class="see-also"><a href="#entry-n-ary-relation">n-ary relation</a><a href="#entry-reification">reification</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-transitive-property">
+    <span class="term">transitive property<span class="gloss">a property where <code>(A, P, B)</code> and <code>(B, P, C)</code> imply <code>(A, P, C)</code></span></span>
+    <div class="def">
+      <p>Declared via <code>owl:TransitiveProperty</code>. Useful for relations like <code>:ancestorOf</code> or <code>:partOf</code>. Computationally expensive — every transitive property requires the reasoner to compute the transitive closure across the graph. The "transitivity trap" is declaring transitivity reflexively (it feels right) and then watching reasoning slow to a crawl. Property paths in SPARQL 1.1 often replace the need for transitive declarations on the property itself.</p>
+      <p class="see-also"><a href="#entry-property">property</a><a href="#entry-property-path">property path</a><a href="#entry-symmetric-property">symmetric property</a><a href="#entry-inverse-property">inverse property</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-triplestore">
+    <span class="term">triplestore<span class="gloss">a database optimized for storing and querying RDF triples</span></span>
+    <div class="def">
+      <p>The semantic-web equivalent of Postgres or Neo4j — except the market is sparse and no single product dominates. Fuseki (Apache Jena's HTTP server) is the de facto teaching default; Oxigraph is a lean Rust alternative for deployment; GraphDB and Stardog are commercial options with strong reasoning. Most triplestores expose SPARQL over HTTP, support some flavor of OWL reasoning, and accept Turtle for bulk loading. The lack of a Postgres-equivalent default is a real cost when scoping production work.</p>
+      <p class="see-also"><a href="#entry-endpoint">endpoint</a><a href="#entry-sparql">SPARQL</a><a href="#entry-rdf">RDF</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-trig">
+    <span class="term">TriG<span class="gloss">a Turtle extension that supports named graphs — writes quads, not triples</span></span>
+    <div class="def">
+      <p>Each block of triples in a TriG file is wrapped with a graph URI: <code>:myGraph { ... }</code>. Reach for it when working with multiple named graphs in a single file, particularly for provenance and reification work. Most triplestores that read Turtle also read TriG.</p>
+      <p class="see-also"><a href="#entry-turtle">Turtle</a><a href="#entry-named-graph">named graph</a><a href="#entry-quad">quad</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-triple">
+    <span class="term">triple<span class="gloss">the unit of RDF — (subject, predicate, object), written in Turtle as three terms followed by a period</span></span>
+    <div class="def">
+      <p>Conceptually similar to a row in a three-column relational table, except every column position has constraints on what it can hold: subjects are URIs or blank nodes, predicates are URIs, objects are URIs or blank nodes or literals. The smallest unit of assertion the semantic-web stack works with. Everything else is triples plus structure.</p>
+      <p class="see-also"><a href="#entry-subject">subject</a><a href="#entry-predicate">predicate</a><a href="#entry-object">object</a><a href="#entry-rdf">RDF</a><a href="#entry-quad">quad</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-triple-pattern">
+    <span class="term">triple pattern<span class="gloss">a triple in a SPARQL query where some positions are variables</span></span>
+    <div class="def">
+      <p><code>?ninja schema:memberOf :Konoha .</code> is a triple pattern with one variable (<code>?ninja</code>) and two fixed positions. Variables bind to URIs or literals during query evaluation. Triple patterns are the building blocks of basic graph patterns and, by extension, of nearly every SPARQL query.</p>
+      <p class="see-also"><a href="#entry-basic-graph-pattern">basic graph pattern</a><a href="#entry-graph-pattern">graph pattern</a><a href="#entry-sparql">SPARQL</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-turtle">
+    <span class="term">Turtle<span class="gloss">the Terse RDF Triple Language — the default RDF serialization for human reading and writing</span></span>
+    <div class="def">
+      <p>Concise by design: prefixes shorten URIs, semicolons reuse the subject across predicates, commas reuse subject and predicate across objects, the <code>a</code> keyword stands in for <code>rdf:type</code>, blank nodes use square brackets. The curriculum uses Turtle for almost everything; only specific tasks (linked data on the web, JSON pipelines, native named-graph files) reach for other serializations.</p>
+      <p class="see-also"><a href="#entry-rdf">RDF</a><a href="#entry-n-triples">N-Triples</a><a href="#entry-json-ld">JSON-LD</a><a href="#entry-trig">TriG</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== U ===================== -->
+<section class="letter-section" id="u">
+  <h2 class="letter-heading">U</h2>
+
+  <div class="entry" id="entry-union">
+    <span class="term">UNION<span class="gloss">a SPARQL operator returning matches from either of two patterns</span></span>
+    <div class="def">
+      <p>Use it when the same conceptual property might be expressed using different vocabularies — name from <code>foaf:name</code> OR <code>schema:name</code>, for instance. Cheaper than running two separate queries and merging results in application code; more readable than collapsing the alternatives into a single complex FILTER.</p>
+      <p class="see-also"><a href="#entry-sparql">SPARQL</a><a href="#entry-optional">OPTIONAL</a><a href="#entry-graph-pattern">graph pattern</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-unique-name-assumption">
+    <span class="term">unique name assumption (UNA)<span class="gloss">the assumption that different names refer to different things</span></span>
+    <div class="def">
+      <p>Standard in databases — the primary key value uniquely identifies the row. NOT made by default in RDF: two distinct URIs might or might not refer to the same individual unless explicitly declared via <code>owl:sameAs</code> or <code>owl:differentFrom</code>. The consequence is that a reasoner can't conclude "X is not Y just because their URIs differ" — and applications that need this guarantee must assert it. Most clean RDF data implicitly relies on UNA without saying so, which works until it doesn't.</p>
+      <p class="see-also"><a href="#entry-open-world-assumption">open-world assumption</a><a href="#entry-closed-world-assumption">closed-world assumption</a><a href="#entry-sameas">sameAs</a></p>
+    </div>
+  </div>
+
+  <div class="entry" id="entry-uri">
+    <span class="term">URI<span class="gloss">Uniform Resource Identifier — a string that names a resource globally</span></span>
+    <div class="def">
+      <p>The naming primitive of RDF: every class, every property, and most instances get a URI. URIs in RDF don't need to resolve over HTTP, though Linked Data practice strongly recommends they do. The trailing slash, hash, and protocol all matter — <code>http://schema.org/</code> and <code>https://schema.org/</code> are distinct URIs that look identical to the eye and behave differently in a triplestore. URI versus IRI: IRIs allow Unicode; in casual writing the terms are used interchangeably.</p>
+      <p class="see-also"><a href="#entry-iri">IRI</a><a href="#entry-blank-node">blank node</a><a href="#entry-linked-data">linked data</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== V ===================== -->
+<section class="letter-section" id="v">
+  <h2 class="letter-heading">V</h2>
+
+  <div class="entry" id="entry-vocabulary">
+    <span class="term">vocabulary<span class="gloss">a named set of terms with a stable namespace, intended for reuse across datasets</span></span>
+    <div class="def">
+      <p>FOAF, schema.org, SKOS, Dublin Core, PROV-O are all vocabularies. The line between "vocabulary" and "ontology" is fuzzy in practice — vocabularies tend to have lighter formal semantics, ontologies tend to carry more axioms — but the terms are used interchangeably in casual conversation. The senior move is to check whether a vocabulary already has a term for what you mean before defining a new one. Every custom term is a future maintenance burden and a missed interoperability opportunity.</p>
+      <p class="see-also"><a href="#entry-ontology-engineering">ontology (engineering)</a><a href="#entry-schema-org">schema.org</a><a href="#entry-foaf">FOAF</a><a href="#entry-skos">SKOS</a><a href="#entry-dublin-core">Dublin Core</a></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Glossary · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Licensed CC BY 4.0. Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+</div>
+
+</body>
+</html>

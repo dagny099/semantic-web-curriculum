@@ -8,10 +8,6 @@
 
 ## About this curriculum
 
-<a href="map.html">
-  <img src="curriculum-map.svg" width="40%" style="padding: 20px;" align="right" />
-</a>
-
 This repository is the canonical record of a self-directed learning project: working through the semantic web stack from foundations to a deployed hybrid LLM + knowledge graph application.
 
 It's published openly under **Sensemaking AI**, an independent AI/ML consulting practice. Sensemaking AI is run by [Barbara Hidalgo-Sotelo](https://www.linkedin.com/in/dagny/) — this curriculum is her work, published transparently under her consulting brand. No fake team, no corporate scaffolding. One practitioner working through the material in public, with the receipts in this repo.
@@ -19,16 +15,6 @@ It's published openly under **Sensemaking AI**, an independent AI/ML consulting 
 This is not a course you can enroll in. It's a learning journey published in public. You're welcome to follow along, fork the repo, run the exercises yourself, or use it as a roadmap for your own self-directed path.
 
 <br clear="right" />
-
----
-
-## Why publish learning openly
-
-Three reasons:
-
-1. **Forcing function.** Public commitments dramatically reduce stall rates. Knowing the work is visible turns "I should write notes" into "I have to ship notes."
-2. **Compounding portfolio.** Each module produces real artifacts: published ontologies, evaluation notebooks, deployed demos. By the end, the curriculum *is* the portfolio.
-3. **Showing the work matters.** Most learning artifacts you find online describe finished states. This one shows the process — including the redos, the failed exercises, and the wrong turns.
 
 ---
 
@@ -91,6 +77,11 @@ Each module folder contains its own README, `exercises/`, `notes/` (weekly synth
 - **sensemaking-ai.com:** End-of-module long-form posts. The deeper analysis, the design decisions, the "what I changed my mind about."
 - **barbhs.com:** Occasional musings and explorations that don't fit elsewhere.
 
+<a href="map.html">
+  <img src="curriculum-map.svg" width="80%" style="padding: 20px;" align="right" />
+</a>
+
+
 ---
 
 ## The anchoring projects
@@ -100,6 +91,16 @@ Two existing projects are the canvases for this curriculum:
 **[Naruto Network Graph](https://docs.barbhs.com/naruto-network-graph/)** is the primary canvas. 87 characters, 3 narrative arcs (Chunin Exams, Sasuke Retrieval Mission, Pain's Assault), 36 hand-coded canonical relationships layered over subtitle-based co-appearance edges. The rich categorical structure of the Naruto universe — ninja ranks as a clean subclass hierarchy, villages as organizations, jutsu, contested fan canon — makes it an unusually good semantic-web testbed. Pop-culture domains are standard in ontology pedagogy (the Pizza ontology is the canonical Protégé tutorial) for exactly this reason.
 
 **[Resume Graph Explorer](https://resume-graph-explorer.vercel.app/)** anchors Module 1 specifically. Its existing ESCO/SKOS integration is genuine semantic-web interop — that's where the case for RDF over a property graph is sharpest. It returns in Module 3 as a secondary venue for skill inference.
+
+---
+
+## Why publish learning openly
+
+Three reasons:
+
+1. **Forcing function.** Public commitments dramatically reduce stall rates. Knowing the work is visible turns "I should write notes" into "I have to ship notes."
+2. **Compounding portfolio.** Each module produces real artifacts: published ontologies, evaluation notebooks, deployed demos. By the end, the curriculum *is* the portfolio.
+3. **Showing the work matters.** Most learning artifacts you find online describe finished states. This one shows the process — including the redos, the failed exercises, and the wrong turns.
 
 ---
 
