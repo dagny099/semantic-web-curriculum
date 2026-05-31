@@ -2,7 +2,7 @@
 
 > A 12-week self-directed curriculum through RDF, OWL, SPARQL, and modern knowledge graphs — worked in public, with every artifact open.
 
-**Status:** Pre-launch · Module 1 begins soon
+**Status:** 🟢 Launched · Module 1 begins 5/31/2026
 
 ---
 
@@ -10,11 +10,9 @@
 
 This repository is the canonical record of a self-directed learning project: working through the semantic web stack from foundations to a deployed hybrid LLM + knowledge graph application.
 
-It's published openly under **Sensemaking AI**, an independent AI/ML consulting practice. Sensemaking AI is run by [Barbara Hidalgo-Sotelo](https://www.linkedin.com/in/dagny/) — this curriculum is her work, published transparently under her consulting brand. No fake team, no corporate scaffolding. One practitioner working through the material in public, with the receipts in this repo.
+It's published openly under **Sensemaking AI**, an independent AI/ML consulting practice. Sensemaking AI is run by [Barbara Hidalgo-Sotelo](https://www.linkedin.com/in/barbara-hidalgo-sotelo/) — this curriculum is her work, published transparently under her consulting brand. No fake team, no corporate scaffolding. One practitioner working through the material in public, with the receipts in this repo.
 
 This is not a course you can enroll in. It's a learning journey published in public. You're welcome to follow along, fork the repo, run the exercises yourself, or use it as a roadmap for your own self-directed path.
-
-<br clear="right" />
 
 ---
 
@@ -33,11 +31,11 @@ Full details in **[SYLLABUS.md](./SYLLABUS.md)**. Live progress in **[PROGRESS.m
 
 ## How to use this site
 
-<a href="map.html">
-  <img src="how-to-use-course-materials.svg" width="40%" style="padding: 20px;" align="right" />
-</a>
-
 The curriculum has three kinds of readers and three matching paths through the material. Pick the one that fits.
+
+<a href="https://curriculum.barbhs.com/map.html">
+  <img src="how-to-use-course-materials.svg" width="80%" style="padding: 20px;" align="right" />
+</a>
 
 **New readers** start at this README, read the SYLLABUS for the arc, then enter Module 1. The Module READMEs are the operational layer — they orchestrate three weeks of reading, exercises, and a project. Submodule HTML pages, linked from each Module README, are the synthesis essays: short reads that explain the conceptual moves in my voice rather than restating the canonical references. Exercises and notes produce the artifacts that prove the work happened.
 
@@ -73,11 +71,11 @@ Each module folder contains its own README, `exercises/`, `notes/` (weekly synth
 ## How to follow along
 
 - **GitHub (here):** The official, canonical record. All commits dated. Watch the repo for notifications when new work lands.
-- **LinkedIn:** [Twice-weekly progress posts](https://www.linkedin.com/in/dagny/) — one short insight from the week's reading, one artifact-or-question.
+- **LinkedIn:** [Twice-weekly progress posts](https://www.linkedin.com/in/barbara-hidalgo-sotelo/) — one short insight from the week's reading, one artifact-or-question.
 - **sensemaking-ai.com:** End-of-module long-form posts. The deeper analysis, the design decisions, the "what I changed my mind about."
 - **barbhs.com:** Occasional musings and explorations that don't fit elsewhere.
 
-<a href="map.html">
+<a href="https://curriculum.barbhs.com/map.html">
   <img src="curriculum-map.svg" width="80%" style="padding: 20px;" align="right" />
 </a>
 
@@ -129,6 +127,6 @@ You're welcome to reuse, adapt, and remix any of it — just attribute.
 
 Barbara Hidalgo-Sotelo · Sensemaking AI · Austin, TX
 
-[LinkedIn](https://www.linkedin.com/in/dagny/) · [sensemaking-ai.com](https://sensemaking-ai.com) · [barbhs.com](https://barbhs.com)
+[LinkedIn](https://www.linkedin.com/in/barbara-hidalgo-sotelo/) · [sensemaking-ai.com](https://sensemaking-ai.com) · [barbhs.com](https://barbhs.com)
 
-Questions, corrections, and discussion welcome via GitHub Issues. This is a personal learning project, so I'm not accepting pull requests on the curriculum itself, but I'd love to hear from anyone working through this material — including disagreements about the design choices.
+Questions, corrections, and discussion welcome via GitHub Issues. This is a personal learning project, so I'm not accepting pull requests on the curriculum itself, but I'd love to hear from anyone working through this material — including disagreements about the content choices.
