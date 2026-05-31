@@ -257,6 +257,34 @@
 </head>
 <body>
 
+<!-- ===================== Site nav (shared across pages) ===================== -->
+<nav class="site-nav" aria-label="Curriculum sections">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="/">Sensemaking Semantic Web</a>
+    <div class="site-nav-links">
+      <a href="/">Home</a>
+      <a href="/map.html" aria-current="page">Map</a>
+      <a href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">Syllabus</a>
+      <a href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md">Module 1</a>
+      <a href="/glossary.html">Glossary</a>
+      <a href="/roadmap.html">Roadmap</a>
+    </div>
+  </div>
+</nav>
+<style>
+  .site-nav { border-bottom: 1px solid rgba(31,42,46,0.1); background: #fff; }
+  .site-nav-inner { max-width: 64rem; margin: 0 auto; padding: 0.75rem 2rem;
+    display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .site-nav-brand { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1rem;
+    color: #1F2A2E; text-decoration: none; }
+  .site-nav-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  .site-nav-links a { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 0.8125rem;
+    color: #5A6671; text-decoration: none; letter-spacing: 0.02em; }
+  .site-nav-links a:hover { color: #1F2A2E; }
+  .site-nav-links a[aria-current="page"] { color: #D85A30; font-weight: 600; }
+  @media print { .site-nav { display: none; } }
+</style>
+
 <!-- ===================== Masthead ===================== -->
 <header class="masthead">
   <div class="masthead-inner">

@@ -235,7 +235,11 @@ section:first-of-type { border-top: none; }
   border-radius: 8px;
   position: relative;
   transition: border-color 0.2s, transform 0.2s;
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
+a.module-card { border: 1px solid var(--line); }
 .module-card:hover { border-color: var(--amber-soft); transform: translateY(-2px); }
 .module-card .num {
   font-family: var(--font-serif);
@@ -322,6 +326,8 @@ section:first-of-type { border-top: none; }
 .repo-tree .dir { color: var(--amber-soft); }
 .repo-tree .file { color: var(--paper); }
 .repo-tree .file.active { color: var(--amber-soft); font-weight: 500; }
+.repo-tree a { border-bottom: 1px solid transparent; color: inherit; transition: border-color 0.2s; }
+.repo-tree a:hover { border-bottom-color: currentColor; }
 
 /* ─── Tomorrow checklist ─── */
 
@@ -551,10 +557,11 @@ footer a:hover { color: var(--ink); }
 <header class="site-header">
   <a href="#top" class="brand-mark"><span class="brand-dot"></span> Sensemaking AI</a>
   <nav>
-    <a href="#arc">The arc</a>
-    <a href="#projects">Projects</a>
-    <a href="#tomorrow">Get started</a>
-    <a href="#resources">Resources</a>
+    <a href="/map.html">Map</a>
+    <a href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">Syllabus</a>
+    <a href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md">Module 1</a>
+    <a href="/glossary.html">Glossary</a>
+    <a href="/roadmap.html">Roadmap</a>
   </nav>
 </header>
 
@@ -619,7 +626,7 @@ footer a:hover { color: var(--ink); }
 <section id="arc">
   <div class="eyebrow">The arc</div>
   <h2>Four modules across twelve weeks.</h2>
-  <p>The curriculum builds from foundations (reading and writing the basic data model) to deployment (shipping a system that combines vector and graph retrieval). Module 3 is genuinely the hardest segment &mdash; planning slower pacing there matters.</p>
+  <p>The curriculum builds from foundations (reading and writing the basic data model) to deployment (shipping a system that combines vector and graph retrieval). Module 3 is genuinely the hardest segment &mdash; planning slower pacing there matters. For how the reading, exercises, and synthesis pages fit together, see the <a href="/map.html">curriculum map</a>.</p>
 
   <div class="diagram-block">
     <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arc-title arc-desc">
@@ -672,30 +679,30 @@ footer a:hover { color: var(--ink); }
   </div>
 
   <div class="modules-grid">
-    <div class="module-card">
+    <a class="module-card" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md">
       <span class="num">i.</span>
       <h4>Foundations</h4>
       <p>RDF, Turtle, basic SPARQL. The conceptual core: knowledge as triples with global identifiers.</p>
-      <div class="weeks">Weeks 1&ndash;3</div>
-    </div>
-    <div class="module-card">
+      <div class="weeks">Weeks 1&ndash;3 · Open module &rarr;</div>
+    </a>
+    <a class="module-card" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">
       <span class="num">ii.</span>
       <h4>Modeling</h4>
       <p>OWL ontology design. The shift from RDF as data format to ontology as design discipline.</p>
-      <div class="weeks">Weeks 4&ndash;6</div>
-    </div>
-    <div class="module-card hard">
+      <div class="weeks">Weeks 4&ndash;6 · In the syllabus</div>
+    </a>
+    <a class="module-card hard" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">
       <span class="num">iii.</span>
       <h4>Reasoning</h4>
       <p>Inference, reification, vocabulary alignment, SHACL validation. The conceptually hardest segment.</p>
-      <div class="weeks">Weeks 7&ndash;9</div>
-    </div>
-    <div class="module-card">
+      <div class="weeks">Weeks 7&ndash;9 · In the syllabus</div>
+    </a>
+    <a class="module-card" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">
       <span class="num">iv.</span>
       <h4>Shipping</h4>
       <p>SPARQL UPDATE, deployment, hybrid LLM + knowledge graph capstone.</p>
-      <div class="weeks">Weeks 10&ndash;12</div>
-    </div>
+      <div class="weeks">Weeks 10&ndash;12 · In the syllabus</div>
+    </a>
   </div>
 </section>
 
@@ -762,6 +769,7 @@ footer a:hover { color: var(--ink); }
         <span><strong>3</strong> arcs</span>
         <span><strong>36</strong> canonical relationships</span>
       </div>
+      <p style="margin: 1rem 0 0; font-size: 0.875rem;"><a href="https://docs.barbhs.com/naruto-network-graph/" target="_blank" rel="noopener">Explore the Naruto graph &rarr;</a></p>
     </div>
 
     <div class="project-card secondary">
@@ -773,6 +781,7 @@ footer a:hover { color: var(--ink); }
         <span><strong>SKOS</strong> + ESCO</span>
         <span><strong>Module 1 + 3</strong></span>
       </div>
+      <p style="margin: 1rem 0 0; font-size: 0.875rem;"><a href="https://resume-graph-explorer.vercel.app/" target="_blank" rel="noopener">Open the Resume Graph Explorer &rarr;</a></p>
     </div>
   </div>
 
@@ -820,20 +829,20 @@ footer a:hover { color: var(--ink); }
   <p>The GitHub repository is the canonical record. Syllabus, weekly progress, exercises, ontologies, notes, and published artifacts all live in one place. Visitors land on the README; followers track <code>PROGRESS.md</code> for weekly updates.</p>
 
   <div class="repo-tree">
-    <span class="comment">// dagny099/semantic-web-curriculum</span>
-    ├── <span class="file">README.md</span>           <span class="comment">// repo front door</span>
-    ├── <span class="file">SYLLABUS.md</span>         <span class="comment">// full 12-week curriculum</span>
-    ├── <span class="file active">PROGRESS.md</span>         <span class="comment">// live weekly tracker ← updated 2x/week</span>
-    ├── <span class="file">REFLECTIONS.md</span>      <span class="comment">// cross-module learnings</span>
+    <a class="comment" href="https://github.com/dagny099/semantic-web-curriculum">// dagny099/semantic-web-curriculum</a>
+    ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/README.md">README.md</a>           <span class="comment">// repo front door</span>
+    ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">SYLLABUS.md</a>         <span class="comment">// full 12-week curriculum</span>
+    ├── <a class="file active" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/PROGRESS.md">PROGRESS.md</a>         <span class="comment">// live weekly tracker ← updated 2x/week</span>
+    ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/REFLECTIONS.md">REFLECTIONS.md</a>      <span class="comment">// cross-module learnings</span>
     ├── <span class="dir">modules/</span>
-    │   ├── <span class="dir">01-foundations/</span>
-    │   ├── <span class="dir">02-modeling/</span>
-    │   ├── <span class="dir">03-reasoning/</span>
-    │   └── <span class="dir">04-shipping/</span>
+    │   ├── <a class="dir" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md">01-foundations/</a>
+    │   ├── <a class="dir" href="https://github.com/dagny099/semantic-web-curriculum/tree/main/modules/02-modeling">02-modeling/</a>
+    │   ├── <a class="dir" href="https://github.com/dagny099/semantic-web-curriculum/tree/main/modules/03-reasoning">03-reasoning/</a>
+    │   └── <a class="dir" href="https://github.com/dagny099/semantic-web-curriculum/tree/main/modules/04-shipping">04-shipping/</a>
     └── <span class="dir">resources/</span>
-        ├── <span class="file">reading-list.md</span>
-        ├── <span class="file">tools.md</span>
-        └── <span class="file">public-kgs.md</span>
+        ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/resources/reading-list.md">reading-list.md</a>
+        ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/resources/tools.md">tools.md</a>
+        └── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/resources/public-kgs.md">public-kgs.md</a>
   </div>
 </section>
 
@@ -910,7 +919,7 @@ footer a:hover { color: var(--ink); }
 <section id="future">
   <div class="eyebrow">Coming as the work progresses</div>
   <h2>Placeholders for richer content.</h2>
-  <p>These slots will fill in as each module produces its artifacts. Listed here so the structure is visible from day one and the work has clear targets.</p>
+  <p>These slots will fill in as each module produces its artifacts. Listed here so the structure is visible from day one and the work has clear targets. Track what&rsquo;s shipped and what&rsquo;s next on the <a href="/roadmap.html">roadmap</a>.</p>
 
   <div class="future-grid">
     <div class="future-card">
