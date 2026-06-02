@@ -82,6 +82,21 @@ Commit as `exercises/1-4-naruto-slice/` with `data.ttl`, `queries/*.rq`, and a `
 
 ---
 
+## Synthesis pages & reference
+
+These are the published HTML companions to the reading above — short reads in my own voice, plus the back-pocket reference you keep open while working. (Best viewed on the live site, [curriculum.barbhs.com](https://curriculum.barbhs.com/map.html).)
+
+| Page | What it is |
+|---|---|
+| [1.1 — RDF vs. LPG](./submodules/1-1-rdf-vs-lpg.html) | The synthesis essay: why you'd reach for RDF over a property graph, on the real resume data. |
+| [1.1 workbook — Naruto](./submodules/1-1-workbook-naruto.html) | Hands-on workbook applying the 1.1 ideas to the Naruto graph. |
+| [1.1 workbook — Greek mythology](./submodules/1-1-workbook-mythology.html) | The same workbook on an alternate domain, if Naruto isn't your thing. |
+| [Reading companion (PDF)](./submodules/1-1-reading-companion.pdf) | Eases you into the dense Allemang/DuCharme chapters. |
+| [Module 1 cheat sheet](../../reference/cheatsheets/module-1-cheatsheet.html) | Back-pocket Turtle + SPARQL syntax. Keep it open the whole module. |
+| [Glossary](../../glossary.html) · [Curriculum map](../../map.html) | Term definitions, and how all the pieces fit together. |
+
+---
+
 ## Primary project hook: Resume Graph Explorer RDF slice
 
 The Resume Graph anchors this module specifically because of ESCO/SKOS — that's where RDF's interoperability story has actual teeth and where the comparison with property graphs is sharpest.
