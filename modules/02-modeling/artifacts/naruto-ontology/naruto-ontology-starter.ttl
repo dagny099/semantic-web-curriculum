@@ -1,0 +1,409 @@
+# =============================================================================
+# Title:   Naruto Ontology — Starter Scaffold
+# Purpose: Class hierarchy and properties for the Naruto domain, intentionally
+#          without restrictions or SHACL shapes. Submodule 2.1 and 2.2
+#          workbooks query this file. Exercise 2.3 extends it into the full
+#          naruto-ontology-1.0.0.ttl release.
+#
+#          Design decisions are documented here so they are visible alongside
+#          the code. Every non-obvious choice has a comment.
+#
+# Date:    2026-06-02
+# Author:  Barbara Hidalgo-Sotelo (Sensemaking AI)
+# License: CC BY 4.0
+# =============================================================================
+
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:         <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix foaf:        <http://xmlns.com/foaf/0.1/> .
+@prefix schema:      <https://schema.org/> .
+@prefix skos:        <http://www.w3.org/2004/02/skos/core#> .
+@prefix naruto:      <https://sensemaking-ai.com/ns/naruto#> .
+
+# =============================================================================
+# Ontology Header
+# =============================================================================
+
+<https://sensemaking-ai.com/ns/naruto>
+    a owl:Ontology ;
+    dcterms:title       "Naruto Domain Ontology" ;
+    dcterms:description "An OWL ontology formalizing the Naruto universe: characters, ranks, villages, teams, jutsu, and narrative arcs. Covers the three S-tier arcs from the Naruto Network Graph project." ;
+    dcterms:created     "2026-06-02"^^xsd:date ;
+    dcterms:creator     <https://sensemaking-ai.com/dagny> ;
+    owl:versionInfo     "starter" ;
+    rdfs:seeAlso        <https://docs.barbhs.com/naruto-network-graph/> .
+
+# =============================================================================
+# CLASS HIERARCHY
+# Design decisions documented below each class.
+# =============================================================================
+
+# ── Character ──────────────────────────────────────────────────────────────
+# rdfs:subClassOf schema:Person rather than foaf:Person because:
+# - Characters include canonical fictional persons (Naruto, Sasuke) as well as
+#   referenced historical figures within the fiction.
+# - schema:Person is more permissive and avoids FOAF's implicit "real person" connotation.
+# - foaf:Person is used for the resume graph (real people); using it here would
+#   conflate ontological contexts if the two graphs were ever merged.
+
+naruto:Character
+    a owl:Class ;
+    rdfs:subClassOf schema:Person ;
+    rdfs:label   "Character"@en ;
+    rdfs:comment "A named individual in the Naruto fiction — canonical, filler, or databook-only." .
+
+# ── Ninja ───────────────────────────────────────────────────────────────────
+# Not every Character is a Ninja (e.g., Teuchi the ramen chef). Ninja is the
+# class we care most about for the Naruto Network Graph use case.
+
+naruto:Ninja
+    a owl:Class ;
+    rdfs:subClassOf naruto:Character ;
+    rdfs:label   "Ninja"@en ;
+    rdfs:comment "A Character who is a trained ninja, affiliated with at least one village." .
+
+# ── NinjaRank ───────────────────────────────────────────────────────────────
+# NinjaRank is typed as a SKOS ConceptScheme, not an OWL class hierarchy.
+# The ranks (Genin, Chunin, Jonin, Kage) are concepts in a controlled vocabulary,
+# not a logical class hierarchy. A Jonin is not a "subtype of Chunin" in a
+# reasoning sense — they are distinct ranks in a classification scheme.
+# An individual ninja holds a rank as a role, not by class membership.
+# This is the SKOS-vs-OWL distinction from Submodule 1.3, applied here.
+
+naruto:NinjaRankScheme
+    a skos:ConceptScheme ;
+    skos:prefLabel "Ninja Rank Classification"@en ;
+    rdfs:comment   "The official Ninja ranking system in the Naruto universe." .
+
+naruto:Genin   a skos:Concept ; skos:inScheme naruto:NinjaRankScheme ; skos:prefLabel "Genin"@en ;   skos:notation "1" .
+naruto:Chunin  a skos:Concept ; skos:inScheme naruto:NinjaRankScheme ; skos:prefLabel "Chunin"@en ;  skos:notation "2" .
+naruto:Jonin   a skos:Concept ; skos:inScheme naruto:NinjaRankScheme ; skos:prefLabel "Jonin"@en ;   skos:notation "3" .
+naruto:SpecialJonin a skos:Concept ; skos:inScheme naruto:NinjaRankScheme ; skos:prefLabel "Special Jonin"@en ; skos:notation "3a" .
+naruto:Kage    a skos:Concept ; skos:inScheme naruto:NinjaRankScheme ; skos:prefLabel "Kage"@en ;    skos:notation "4" .
+naruto:ANBU    a skos:Concept ; skos:inScheme naruto:NinjaRankScheme ; skos:prefLabel "ANBU"@en ;    skos:notation "S" .
+
+# ── Village ─────────────────────────────────────────────────────────────────
+# subClassOf schema:Organization rather than creating a custom hierarchy.
+# The "village" concept in Naruto is both a political entity and a military
+# organization — schema:Organization covers both without over-specifying.
+
+naruto:Village
+    a owl:Class ;
+    rdfs:subClassOf schema:Organization ;
+    rdfs:label   "Village"@en ;
+    rdfs:comment "A hidden village (隠れ里, Kakure Sato) — a political and military unit in the Naruto universe." .
+
+# ── Team ────────────────────────────────────────────────────────────────────
+# Teams are small operational units within a village, typically 3-4 ninja
+# plus a Jonin-sensei. Subclass of schema:Organization (they are groups with
+# defined membership), not of naruto:Village (teams are not villages).
+
+naruto:Team
+    a owl:Class ;
+    rdfs:subClassOf schema:Organization ;
+    rdfs:label   "Team"@en ;
+    rdfs:comment "A ninja squad — typically 3 genin plus one Jonin-sensei." .
+
+# ── Jutsu ───────────────────────────────────────────────────────────────────
+# Jutsu has no schema.org or FOAF equivalent. Custom class.
+# Design question: is a specific Jutsu (e.g., Sharingan) a class (whose instances
+# are individual uses of the technique) or an individual?
+# Decision: treat as individuals (skos:Concept) in the controlled vocabulary sense.
+# A reasoner treating Jutsu as a class would infer that every ninja who hasJutsu
+# Sharingan is an instance of Sharingan — which is nonsense.
+# This is the "punning trap" from Submodule 2.2: don't use a class where a
+# named individual is the right modeling choice.
+
+naruto:Jutsu
+    a owl:Class ;
+    rdfs:label   "Jutsu"@en ;
+    rdfs:comment "A ninja technique. Individuals of this class are specific techniques; do not subclass Jutsu for individual named techniques." .
+
+# ── Arc ─────────────────────────────────────────────────────────────────────
+# Design decision: subClassOf schema:CreativeWork rather than schema:Event.
+# An Arc is a narrative unit in a manga/anime series — more a creative work
+# (with episodes, chapters) than an event (which implies a location and duration).
+# schema:TVSeries > schema:CreativeWorkSeason is the closest schema.org match,
+# but arc ≠ season in Naruto's publication structure.
+
+naruto:Arc
+    a owl:Class ;
+    rdfs:subClassOf schema:CreativeWork ;
+    rdfs:label   "Arc"@en ;
+    rdfs:comment "A narrative arc in the Naruto series, spanning one or more manga volumes or anime episodes." .
+
+# =============================================================================
+# OBJECT PROPERTIES
+# Domain and range declared. No restrictions in this starter scaffold.
+# Restrictions (cardinality, some/all values) are added in Exercise 2.3.
+# =============================================================================
+
+# ── senseiOf ────────────────────────────────────────────────────────────────
+naruto:senseiOf
+    a owl:ObjectProperty ;
+    rdfs:domain  naruto:Ninja ;
+    rdfs:range   naruto:Ninja ;
+    rdfs:label   "senseiOf"@en ;
+    rdfs:comment "Directed mentorship: the subject ninja teaches the object ninja." ;
+    owl:inverseOf naruto:studentOf .
+
+naruto:studentOf
+    a owl:ObjectProperty ;
+    rdfs:domain  naruto:Ninja ;
+    rdfs:range   naruto:Ninja ;
+    rdfs:label   "studentOf"@en ;
+    rdfs:comment "Inverse of senseiOf." ;
+    owl:inverseOf naruto:senseiOf .
+
+# ── memberOfTeam ─────────────────────────────────────────────────────────────
+naruto:memberOfTeam
+    a owl:ObjectProperty ;
+    rdfs:domain  naruto:Ninja ;
+    rdfs:range   naruto:Team ;
+    rdfs:label   "memberOfTeam"@en ;
+    rdfs:comment "The subject ninja belongs to the object team." .
+
+# ── memberOfVillage ──────────────────────────────────────────────────────────
+naruto:memberOfVillage
+    a owl:ObjectProperty ;
+    rdfs:domain  naruto:Ninja ;
+    rdfs:range   naruto:Village ;
+    rdfs:label   "memberOfVillage"@en ;
+    rdfs:comment "The subject ninja is affiliated with the object village." .
+
+# ── hasJutsu ─────────────────────────────────────────────────────────────────
+naruto:hasJutsu
+    a owl:ObjectProperty ;
+    rdfs:domain  naruto:Ninja ;
+    rdfs:range   naruto:Jutsu ;
+    rdfs:label   "hasJutsu"@en ;
+    rdfs:comment "The subject ninja can use the object jutsu technique." .
+
+# ── rivalOf ──────────────────────────────────────────────────────────────────
+# Declared symmetric. See Submodule 1.1 workbook Challenge C4 — this was
+# noted there but the inference was not visible to plain SPARQL. Running
+# HermiT over this ontology will materialize the symmetric triples.
+
+naruto:rivalOf
+    a owl:ObjectProperty ,
+      owl:SymmetricProperty ;
+    rdfs:domain  naruto:Ninja ;
+    rdfs:range   naruto:Ninja ;
+    rdfs:label   "rivalOf"@en ;
+    rdfs:comment "Mutual rivalry. Declared symmetric: if A rivalOf B, a reasoner derives B rivalOf A." .
+
+# ── familyOf ─────────────────────────────────────────────────────────────────
+# Symmetric but not transitive: familyOf(A,B) and familyOf(B,C) does not imply
+# familyOf(A,C) — family relationships don't compose transitively.
+# This is the "transitivity trap" warning from the Module 2 README.
+
+naruto:familyOf
+    a owl:ObjectProperty ,
+      owl:SymmetricProperty ;
+    rdfs:domain  naruto:Character ;
+    rdfs:range   naruto:Character ;
+    rdfs:label   "familyOf"@en ;
+    rdfs:comment "Family relationship. Symmetric but deliberately NOT transitive (avoids transitivity cascade)." .
+
+# ── hasRank ──────────────────────────────────────────────────────────────────
+# Range is skos:Concept (a rank in the NinjaRankScheme), not a naruto: class.
+# This enforces the SKOS-vs-OWL design decision documented under NinjaRank above.
+
+naruto:hasRank
+    a owl:ObjectProperty ;
+    rdfs:domain  naruto:Ninja ;
+    rdfs:range   skos:Concept ;
+    rdfs:label   "hasRank"@en ;
+    rdfs:comment "The ninja's rank in the NinjaRankScheme at a given canonical point. Time-varying; the ontology does not yet model rank changes across arcs." .
+
+# ── appearsInArc ──────────────────────────────────────────────────────────────
+naruto:appearsInArc
+    a owl:ObjectProperty ;
+    rdfs:domain  naruto:Character ;
+    rdfs:range   naruto:Arc ;
+    rdfs:label   "appearsInArc"@en ;
+    rdfs:comment "The character appears (with at least one speaking role or canonical fight) in this arc." .
+
+# =============================================================================
+# DATATYPE PROPERTIES
+# =============================================================================
+
+naruto:canonicalName
+    a owl:DatatypeProperty ;
+    rdfs:domain  naruto:Character ;
+    rdfs:range   xsd:string ;
+    rdfs:label   "canonicalName"@en ;
+    rdfs:comment "The character's name as written in the English Viz manga translation — the canonical reference." .
+
+naruto:villageCode
+    a owl:DatatypeProperty ;
+    rdfs:domain  naruto:Village ;
+    rdfs:range   xsd:string ;
+    rdfs:label   "villageCode"@en ;
+    rdfs:comment "Standard two-letter village code: KO (Konoha), SU (Suna), KI (Kiri), MO (Mori), KU (Kumo)." .
+
+# =============================================================================
+# EXAMPLE INDIVIDUALS
+# A small canonical dataset covering the three S-tier arcs.
+# Used by the Submodule 2.1 and 2.2 workbooks.
+# The full dataset lives in examples/chunin-exams-arc.ttl (Exercise 2.3).
+# =============================================================================
+
+# ── Villages ──────────────────────────────────────────────────────────────────
+naruto:VillageHiddenLeaf
+    a naruto:Village ;
+    naruto:villageCode "KO" ;
+    schema:name "Village Hidden in the Leaves"@en ,
+                "木ノ葉隠れの里"@ja ;
+    rdfs:label  "Konohagakure"@en .
+
+naruto:VillageHiddenSand
+    a naruto:Village ;
+    naruto:villageCode "SU" ;
+    schema:name "Village Hidden in the Sand"@en ,
+                "砂隠れの里"@ja ;
+    rdfs:label  "Sunagakure"@en .
+
+# ── Teams ─────────────────────────────────────────────────────────────────────
+naruto:Team7
+    a naruto:Team ;
+    schema:name "Team 7"@en ;
+    schema:memberOf naruto:VillageHiddenLeaf .
+
+naruto:Team8
+    a naruto:Team ;
+    schema:name "Team 8"@en ;
+    schema:memberOf naruto:VillageHiddenLeaf .
+
+naruto:TeamGuy
+    a naruto:Team ;
+    schema:name "Team Guy"@en ;
+    schema:memberOf naruto:VillageHiddenLeaf .
+
+# ── Jutsu ─────────────────────────────────────────────────────────────────────
+naruto:Sharingan
+    a naruto:Jutsu ;
+    schema:name    "Sharingan"@en , "写輪眼"@ja ;
+    rdfs:comment   "Uchiha clan kekkei genkai (bloodline limit). Grants genjutsu, copying, and future-sight abilities." .
+
+naruto:ShadowCloneJutsu
+    a naruto:Jutsu ;
+    schema:name    "Shadow Clone Jutsu"@en , "影分身の術"@ja ;
+    rdfs:comment   "Forbidden jutsu that creates solid clones sharing the user's chakra and memories." .
+
+naruto:Byakugan
+    a naruto:Jutsu ;
+    schema:name    "Byakugan"@en , "白眼"@ja ;
+    rdfs:comment   "Hyuga clan kekkei genkai. 360-degree vision, chakra pathway visibility." .
+
+naruto:SandManipulation
+    a naruto:Jutsu ;
+    schema:name    "Sand Manipulation"@en ;
+    rdfs:comment   "Gaara's unique ability to control sand autonomously." .
+
+naruto:EightTrigrams
+    a naruto:Jutsu ;
+    schema:name    "Eight Trigrams: Sixty-Four Palms"@en , "八卦六十四掌"@ja ;
+    rdfs:comment   "Hyuga clan taijutsu sealing chakra points with precise strikes." .
+
+# ── Arcs ──────────────────────────────────────────────────────────────────────
+naruto:ChunexamsArc
+    a naruto:Arc ;
+    schema:name    "Chunin Exams Arc"@en ;
+    schema:about   "naruto" ;
+    rdfs:comment   "Chapters 34–115 (manga); Episodes 20–67 (anime). Introduction of rival villages and the central tournament." .
+
+naruto:NarutoRetrievalArc
+    a naruto:Arc ;
+    schema:name    "Naruto Retrieval Arc"@en ;
+    rdfs:comment   "Chapters 172–238. Sasuke's defection and Naruto's pursuit. Introduction of the Sound Five." .
+
+naruto:PainAssaultArc
+    a naruto:Arc ;
+    schema:name    "Pain's Assault Arc"@en ;
+    rdfs:comment   "Chapters 413–453. Nagato / Pain attacks Konoha; Naruto's Six Paths Sage Mode debut." .
+
+# ── Characters (core cast) ────────────────────────────────────────────────────
+naruto:NarutoUzumaki
+    a naruto:Ninja ;
+    naruto:canonicalName      "Naruto Uzumaki" ;
+    schema:name               "Naruto Uzumaki"@en , "うずまきナルト"@ja ;
+    naruto:memberOfVillage    naruto:VillageHiddenLeaf ;
+    naruto:memberOfTeam       naruto:Team7 ;
+    naruto:hasRank            naruto:Genin ;
+    naruto:hasJutsu           naruto:ShadowCloneJutsu ;
+    naruto:rivalOf            naruto:SasukeUchiha ;
+    naruto:appearsInArc       naruto:ChunexamsArc , naruto:NarutoRetrievalArc , naruto:PainAssaultArc .
+
+naruto:SasukeUchiha
+    a naruto:Ninja ;
+    naruto:canonicalName      "Sasuke Uchiha" ;
+    schema:name               "Sasuke Uchiha"@en , "うちはサスケ"@ja ;
+    naruto:memberOfVillage    naruto:VillageHiddenLeaf ;
+    naruto:memberOfTeam       naruto:Team7 ;
+    naruto:hasRank            naruto:Genin ;
+    naruto:hasJutsu           naruto:Sharingan ;
+    naruto:appearsInArc       naruto:ChunexamsArc , naruto:NarutoRetrievalArc .
+
+naruto:SakuraHaruno
+    a naruto:Ninja ;
+    naruto:canonicalName      "Sakura Haruno" ;
+    schema:name               "Sakura Haruno"@en , "春野サクラ"@ja ;
+    naruto:memberOfVillage    naruto:VillageHiddenLeaf ;
+    naruto:memberOfTeam       naruto:Team7 ;
+    naruto:hasRank            naruto:Genin ;
+    naruto:appearsInArc       naruto:ChunexamsArc , naruto:NarutoRetrievalArc .
+
+naruto:KakashiHatake
+    a naruto:Ninja ;
+    naruto:canonicalName      "Kakashi Hatake" ;
+    schema:name               "Kakashi Hatake"@en , "はたけカカシ"@ja ;
+    naruto:memberOfVillage    naruto:VillageHiddenLeaf ;
+    naruto:hasRank            naruto:Jonin ;
+    naruto:hasJutsu           naruto:Sharingan , naruto:ShadowCloneJutsu ;
+    naruto:senseiOf           naruto:NarutoUzumaki ,
+                              naruto:SasukeUchiha ,
+                              naruto:SakuraHaruno ;
+    naruto:appearsInArc       naruto:ChunexamsArc , naruto:NarutoRetrievalArc , naruto:PainAssaultArc .
+
+naruto:HinataHyuga
+    a naruto:Ninja ;
+    naruto:canonicalName      "Hinata Hyuga" ;
+    schema:name               "Hinata Hyuga"@en , "日向ヒナタ"@ja ;
+    naruto:memberOfVillage    naruto:VillageHiddenLeaf ;
+    naruto:memberOfTeam       naruto:Team8 ;
+    naruto:hasRank            naruto:Genin ;
+    naruto:hasJutsu           naruto:Byakugan , naruto:EightTrigrams ;
+    naruto:rivalOf            naruto:NarutoUzumaki ;
+    naruto:appearsInArc       naruto:ChunexamsArc , naruto:PainAssaultArc .
+
+naruto:KurenaiYuhi
+    a naruto:Ninja ;
+    naruto:canonicalName      "Kurenai Yuhi" ;
+    schema:name               "Kurenai Yuhi"@en , "夕日紅"@ja ;
+    naruto:memberOfVillage    naruto:VillageHiddenLeaf ;
+    naruto:hasRank            naruto:Jonin ;
+    naruto:senseiOf           naruto:HinataHyuga ;
+    naruto:appearsInArc       naruto:ChunexamsArc .
+
+naruto:RockLee
+    a naruto:Ninja ;
+    naruto:canonicalName      "Rock Lee" ;
+    schema:name               "Rock Lee"@en , "ロック・リー"@ja ;
+    naruto:memberOfVillage    naruto:VillageHiddenLeaf ;
+    naruto:memberOfTeam       naruto:TeamGuy ;
+    naruto:hasRank            naruto:Genin ;
+    naruto:rivalOf            naruto:Gaara ;
+    naruto:appearsInArc       naruto:ChunexamsArc .
+
+naruto:Gaara
+    a naruto:Ninja ;
+    naruto:canonicalName      "Gaara" ;
+    schema:name               "Gaara"@en , "我愛羅"@ja ;
+    naruto:memberOfVillage    naruto:VillageHiddenSand ;
+    naruto:hasRank            naruto:Genin ;
+    naruto:hasJutsu           naruto:SandManipulation ;
+    naruto:appearsInArc       naruto:ChunexamsArc , naruto:PainAssaultArc .

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submodule 2.2 — OWL essentials · Sensemaking Semantic Web</title>
+<meta name="description" content="Classes, individuals, property characteristics, restrictions, and OWL profiles — with a Protégé walkthrough and SPARQL queries on the Naruto ontology.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal-deep:#0B4F4A;--teal-mid:#1E8076;--teal-light:#C6E2DD;
+  --coral:#D85A30;--coral-tint:#FAEAE2;
+  --charcoal:#1F2A2E;--slate:#5A6671;--slate-lt:#8A929A;
+  --cream:#FAF7F2;--white:#FFFFFF;--rule:#D8D2C6;--code-bg:#F2EDE3;
+  --green:#2A7040;--green-tint:#E4F1EA;--amber:#9A6B00;--amber-tint:#FDF6E3;
+  --indigo:#3A3A8A;--indigo-tint:#EEEEF8;
+  --font-serif:'EB Garamond',Georgia,serif;--font-sans:'IBM Plex Sans',system-ui,sans-serif;--font-mono:'IBM Plex Mono',Consolas,monospace;
+}
+*{box-sizing:border-box;}html{scroll-behavior:smooth;font-size:16px;}
+body{margin:0;background:var(--cream);color:var(--charcoal);font-family:var(--font-sans);line-height:1.65;-webkit-font-smoothing:antialiased;}
+.masthead{background:var(--teal-deep);color:var(--white);padding:3rem 1.5rem 3.5rem;border-bottom:5px solid var(--coral);}
+.masthead-inner{max-width:68rem;margin:0 auto;}
+.brand{font-size:.74rem;letter-spacing:.18em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:1.4rem;}
+.kicker{font-size:.74rem;letter-spacing:.14em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:.55rem;}
+h1{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2.8rem,7vw,5.2rem);color:var(--white);line-height:1.0;letter-spacing:-.025em;margin:0 0 .85rem;max-width:20ch;}
+.subtitle{color:var(--teal-light);font-size:clamp(1rem,2.5vw,1.18rem);line-height:1.55;max-width:46rem;margin:0 0 1.8rem;}
+.meta-row{display:flex;flex-wrap:wrap;gap:.45rem .85rem;}
+.meta-row span{border:1px solid rgba(198,226,221,.38);border-radius:999px;padding:.28rem .7rem;font-size:.8rem;color:var(--teal-light);}
+.fuseki-banner{padding:.65rem 1.5rem;font-size:.875rem;display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;}
+.fuseki-banner.checking{background:var(--amber-tint);color:var(--amber);}
+.fuseki-banner.connected{background:var(--green-tint);color:var(--green);}
+.fuseki-banner.offline{background:var(--coral-tint);color:var(--coral);}
+.fuseki-banner .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fuseki-banner.checking .dot{background:var(--amber);}
+.fuseki-banner.connected .dot{background:var(--green);}
+.fuseki-banner.offline .dot{background:var(--coral);}
+.fuseki-banner a{color:inherit;text-decoration:underline;}
+.fuseki-banner code{font-family:var(--font-mono);font-size:.8em;background:rgba(0,0,0,.08);padding:.1em .3em;border-radius:3px;}
+.quick-nav{position:sticky;top:0;z-index:20;background:rgba(250,247,242,.97);border-bottom:1px solid var(--rule);backdrop-filter:blur(4px);}
+.quick-nav-inner{max-width:68rem;margin:0 auto;padding:.65rem 1.5rem;display:flex;gap:.45rem;overflow-x:auto;scrollbar-width:none;}
+.quick-nav-inner::-webkit-scrollbar{display:none;}
+.quick-nav a{flex:0 0 auto;color:var(--charcoal);border:1px solid var(--rule);border-radius:999px;padding:.28rem .68rem;font-size:.76rem;white-space:nowrap;text-decoration:none;background:rgba(255,255,255,.4);transition:border-color .15s,color .15s;}
+.quick-nav a:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+main{max-width:68rem;margin:0 auto;padding:0 1.5rem 4rem;}
+section{padding:3.75rem 0;border-bottom:1px solid var(--rule);scroll-margin-top:3.5rem;}
+section:last-child{border-bottom:none;}
+.section-label{font-size:.7rem;letter-spacing:.2em;color:var(--coral);text-transform:uppercase;font-weight:600;margin-bottom:.85rem;}
+h2{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2rem,5vw,3.2rem);color:var(--charcoal);line-height:1.05;letter-spacing:-.015em;margin:0 0 1.1rem;}
+h3{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(1.35rem,3vw,1.9rem);color:var(--charcoal);margin:2.25rem 0 .65rem;}
+h3:first-of-type{margin-top:.4rem;}
+p{max-width:44rem;margin:0 0 1.05rem;font-size:1rem;}
+p.lead{font-size:1.1rem;line-height:1.6;}
+pre{font-family:var(--font-mono);font-size:.8rem;background:var(--code-bg);border-left:4px solid var(--teal-mid);border-radius:0 8px 8px 0;padding:1rem 1.1rem;overflow-x:auto;margin:.6rem 0 1.2rem;line-height:1.6;color:var(--charcoal);}
+code{font-family:var(--font-mono);font-size:.86em;background:var(--code-bg);padding:.1em .3em;border-radius:3px;}
+pre code{background:transparent;padding:0;font-size:inherit;}
+.kw{color:var(--teal-deep);font-weight:500;}.cm{color:var(--slate-lt);}
+.note,.tip,.payoff,.warn{max-width:44rem;margin:1.4rem 0;padding:.9rem 1.1rem .9rem 1.25rem;}
+.note,.tip{background:var(--coral-tint);border-left:4px solid var(--coral);}
+.payoff{background:var(--indigo-tint);border-left:4px solid var(--indigo);}
+.warn{background:#FFF8E6;border-left:4px solid var(--amber);}
+.note-title{display:block;font-size:.7rem;letter-spacing:.16em;font-weight:600;text-transform:uppercase;margin-bottom:.3rem;}
+.note .note-title,.tip .note-title{color:var(--coral);}
+.payoff .note-title{color:var(--indigo);}
+.warn .note-title{color:var(--amber);}
+.note p,.tip p,.payoff p,.warn p{margin:0;max-width:none;}
+ul.spaced{padding-left:1.2rem;margin:.5rem 0 1.1rem;max-width:44rem;}
+ul.spaced li{margin:.48rem 0;font-size:.97rem;}
+table{width:100%;border-collapse:collapse;margin:1.4rem 0;font-size:.92rem;max-width:44rem;}
+th,td{border-bottom:1px solid var(--rule);padding:.72rem .65rem;vertical-align:top;text-align:left;}
+th{color:var(--coral);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;font-weight:600;}
+/* Profile grid */
+.profile-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.6rem;margin:1.2rem 0 1.6rem;max-width:52rem;}
+.profile-card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:.75rem .85rem;}
+.profile-name{font-family:var(--font-mono);font-size:.82rem;font-weight:500;color:var(--teal-deep);margin-bottom:.3rem;}
+.profile-card p{font-size:.82rem;margin:0;color:var(--slate);max-width:none;}
+/* Protégé walkthrough */
+.protege-section{max-width:44rem;margin:1.5rem 0;}
+.protege-section>summary{font-family:var(--font-sans);font-size:.9rem;font-weight:600;color:var(--indigo);cursor:pointer;padding:.75rem 1rem;background:var(--indigo-tint);border:1px solid #C4C4E4;border-radius:8px;list-style:none;display:flex;align-items:center;gap:.5rem;user-select:none;}
+.protege-section>summary::before{content:"▶";font-size:.6rem;color:var(--indigo);transition:transform .2s;}
+.protege-section[open]>summary::before{transform:rotate(90deg);}
+.protege-section>summary::-webkit-details-marker{display:none;}
+.protege-body{padding:1rem 0 .25rem;}
+.protege-step{margin-bottom:1.25rem;border:1px solid var(--rule);border-radius:8px;overflow:hidden;}
+.protege-step-header{display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;background:var(--white);cursor:pointer;list-style:none;user-select:none;}
+.protege-step-header::-webkit-details-marker{display:none;}
+.step-num{font-family:var(--font-mono);font-size:.75rem;font-weight:500;background:var(--indigo);color:var(--white);border-radius:5px;padding:.18rem .42rem;flex-shrink:0;}
+.step-title{font-weight:600;font-size:.94rem;color:var(--charcoal);flex:1;}
+.step-expand{font-size:.72rem;color:var(--slate-lt);flex-shrink:0;}
+details.protege-step[open] .step-expand{display:none;}
+.step-body{padding:.75rem 1rem 1rem;border-top:1px solid var(--rule);background:var(--cream);}
+.step-body p{font-size:.9rem;max-width:none;margin:0 0 .65rem;}
+.step-body p:last-child{margin-bottom:0;}
+.step-body ol{padding-left:1.3rem;margin:.35rem 0 .65rem;}
+.step-body ol li{font-size:.9rem;margin:.35rem 0;}
+.screenshot-placeholder{border:2px dashed var(--rule);border-radius:6px;padding:.75rem 1rem;margin:.75rem 0;background:rgba(255,255,255,.5);font-size:.82rem;color:var(--slate-lt);font-style:italic;}
+.screenshot-placeholder strong{color:var(--slate);font-style:normal;}
+/* Query cards */
+.query-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin:1.5rem 0;overflow:hidden;}
+.query-header{display:flex;align-items:flex-start;gap:.9rem;padding:1rem 1.15rem .85rem;border-bottom:1px solid var(--rule);}
+.query-num{font-family:var(--font-mono);font-size:.76rem;font-weight:500;color:var(--white);background:var(--teal-mid);border-radius:6px;padding:.22rem .48rem;flex-shrink:0;margin-top:.1rem;}
+.query-meta{flex:1;min-width:0;}
+.query-q{font-weight:600;font-size:.98rem;color:var(--charcoal);margin-bottom:.22rem;}
+.query-c{font-size:.81rem;color:var(--slate);}
+.btn-fuseki{flex-shrink:0;display:inline-block;font-size:.76rem;font-weight:500;color:var(--teal-mid);border:1px solid var(--teal-light);border-radius:999px;padding:.26rem .72rem;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s;}
+.btn-fuseki:hover{background:var(--teal-light);border-color:var(--teal-mid);}
+.query-body{position:relative;}
+.query-body pre{margin:0;border-radius:0;border-left:none;border-bottom:1px solid var(--rule);}
+.copy-btn{position:absolute;top:.6rem;right:.6rem;background:var(--cream);border:1px solid var(--rule);border-radius:5px;padding:.2rem .52rem;font-family:var(--font-sans);font-size:.72rem;color:var(--slate);cursor:pointer;z-index:2;transition:border-color .15s,color .15s;}
+.copy-btn:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+.query-footer{padding:.7rem 1.15rem;display:flex;flex-direction:column;gap:.45rem;}
+details.panel summary{font-size:.83rem;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:.28rem 0;list-style:none;display:flex;align-items:center;gap:.4rem;user-select:none;}
+details.panel summary::before{content:"▶";font-size:.58rem;color:var(--coral);transition:transform .2s;}
+details.panel[open] summary::before{transform:rotate(90deg);}
+details.panel summary::-webkit-details-marker{display:none;}
+.panel-body{padding:.65rem 0 .25rem 1.2rem;}
+.panel-body p{font-size:.9rem;max-width:none;margin:0 0 .52rem;}
+.panel-body p:last-child{margin-bottom:0;}
+.panel-body pre{font-size:.77rem;margin:.35rem 0 .65rem;}
+.expected-out{background:var(--code-bg);border-radius:4px;padding:.38rem .65rem;font-family:var(--font-mono);font-size:.78rem;color:var(--charcoal);margin-bottom:.55rem;line-height:1.5;}
+.branch{border-left:4px solid var(--teal-mid);background:var(--white);padding:.82rem 1.15rem;margin:.6rem 0 1.3rem;max-width:44rem;}
+.branch h4{font-family:var(--font-sans);font-size:.88rem;font-weight:600;color:var(--teal-deep);margin:0 0 .3rem;}
+.branch p{margin:0;font-size:.9rem;max-width:none;}
+.branch a{color:var(--teal-mid);}
+.resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;margin:1.3rem 0;}
+.resource-card{background:rgba(255,255,255,.45);border:1px solid var(--rule);border-radius:14px;padding:1.1rem;}
+.resource-card h4{font-family:var(--font-sans);font-size:.7rem;letter-spacing:.14em;font-weight:600;text-transform:uppercase;color:var(--coral);margin:0 0 .5rem;}
+.resource-card h5{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:1.08rem;color:var(--charcoal);margin:0 0 .4rem;}
+.resource-card a{color:var(--teal-mid);text-decoration:underline;}
+.resource-card p{font-size:.87rem;margin:0;color:var(--slate);max-width:none;}
+.coming-soon{font-size:.72rem;color:var(--slate-lt);font-style:italic;}
+footer{max-width:68rem;margin:0 auto;padding:2rem 1.5rem 3rem;border-top:1px solid var(--rule);color:var(--slate);font-size:.84rem;}
+footer a{color:var(--teal-mid);text-decoration:underline;}
+footer p{margin:0 0 .4rem;max-width:none;}
+@media(max-width:820px){.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.profile-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:640px){.resource-grid{grid-template-columns:1fr;}.profile-grid{grid-template-columns:1fr;}.query-header{flex-wrap:wrap;}.btn-fuseki{order:3;}main{padding-left:1rem;padding-right:1rem;}.masthead{padding:2rem 1rem 2.5rem;}}
+@media print{.masthead{background:white;color:black;border-bottom:2px solid black;padding:.5rem 0;}h1{color:black;font-size:26pt;}.quick-nav,.fuseki-banner,.btn-fuseki,.copy-btn{display:none!important;}main,footer,.masthead-inner{max-width:none;padding-left:0;padding-right:0;}pre{background:#f5f5f5;border-left:2px solid #888;font-size:7.5pt;page-break-inside:avoid;}.query-card,.resource-card,.protege-step{break-inside:avoid;border:1px solid #ccc;}details{display:block;}details summary{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sensemaking Semantic Web</div>
+    <div class="kicker">Submodule 2.2 · Modeling</div>
+    <h1>OWL essentials.</h1>
+    <p class="subtitle">Classes, individuals, property characteristics, and restrictions. The five OWL profiles and the traps that look right and behave badly — punning, transitivity cascades, and sameAs collapse.</p>
+    <div class="meta-row">
+      <span>Module 2 · Weeks 4–6</span>
+      <span>Requires Protégé + Fuseki</span>
+      <span>~2.5 hours hands-on</span>
+      <span>OWL · HermiT · restrictions · profiles</span>
+    </div>
+  </div>
+</header>
+
+<div id="fuseki-banner" class="fuseki-banner checking">
+  <span class="dot"></span>Checking for Fuseki at localhost:3030…
+</div>
+
+<nav class="quick-nav">
+  <div class="quick-nav-inner">
+    <a href="#from-rdfs">01 · From RDFS to OWL</a>
+    <a href="#classes">02 · Classes and individuals</a>
+    <a href="#properties">03 · Property characteristics</a>
+    <a href="#restrictions">04 · Restrictions</a>
+    <a href="#profiles">05 · OWL profiles</a>
+    <a href="#traps">06 · The traps</a>
+    <a href="#protege">07 · Protégé walkthrough</a>
+    <a href="#lab">08 · Query lab</a>
+    <a href="#resources">09 · Resources</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- 01 -->
+<section id="from-rdfs">
+  <div class="section-label">01 · From RDFS to OWL</div>
+  <h2>RDFS gives you inheritance. OWL gives you shape.</h2>
+  <p class="lead">RDFS lets you declare that Ninja is a subclass of Character, and that senseiOf has domain Ninja. A reasoner derives new class memberships from these rules. OWL adds the ability to say not just <em>what kind of thing something is</em>, but <em>what it must have</em>, <em>what it can only be</em>, and <em>what combinations are impossible</em>.</p>
+  <p>RDFS: "Every Ninja is a Character." OWL restriction: "Every Ninja must belong to at least one Village." These are different kinds of statements. The first is an inheritance rule. The second is a shape constraint — a restriction on what a thing must look like to count as a member of the class. Restrictions are where ontology design judgment actually lives.</p>
+
+  <div class="payoff">
+    <span class="note-title">The key shift</span>
+    <p>RDFS is schema as inheritance. OWL is schema as shape. RDFS says what things are related to. OWL says what things must have. The Naruto ontology uses both: RDFS for the class hierarchy (Ninja → Character → schema:Person), OWL for the property characteristics (rivalOf is symmetric), and — once you add them in Exercise 2.3 — OWL restrictions for constraints (a Ninja must have a Village).</p>
+  </div>
+
+  <div class="branch">
+    <h4>Prerequisite</h4>
+    <p>This submodule builds directly on the RDFS concepts from Submodule 2.1. The starter ontology (<code>naruto-ontology-starter.ttl</code>) already has class hierarchy and property declarations. The Protégé walkthrough in this submodule adds OWL restrictions — load the same file first.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="classes">
+  <div class="section-label">02 · Classes and individuals</div>
+  <h2>The TBox / ABox distinction.</h2>
+
+  <p>OWL distinguishes two layers of an ontology:</p>
+  <ul class="spaced">
+    <li><strong>TBox (Terminological Box)</strong> — the schema layer. Class declarations, property declarations, restrictions. Things that are always true about the domain. <code>naruto:Ninja rdfs:subClassOf naruto:Character</code> is a TBox statement.</li>
+    <li><strong>ABox (Assertional Box)</strong> — the instance layer. Individual facts. <code>naruto:NarutoUzumaki a naruto:Ninja</code> is an ABox statement.</li>
+  </ul>
+
+  <p>In OWL, <em>named individuals</em> are explicitly declared members of the ABox: <code>naruto:NarutoUzumaki a owl:NamedIndividual</code> (implicit in OWL when you assert any class membership). The distinction matters because OWL reasoning operates on the relationship between TBox rules and ABox facts to derive new ABox facts.</p>
+
+  <h3>The Unique Name Assumption is not default in OWL</h3>
+  <p>In a relational database, two different IDs are always different things. OWL does not assume this by default. Two different IRIs might refer to the same individual unless you explicitly assert <code>owl:differentFrom</code> or <code>owl:AllDifferent</code>. This is one reason that queries returning "all distinct pairs" must use FILTER conditions — the reasoner might otherwise conclude that two apparently different individuals are the same.</p>
+
+  <div class="warn">
+    <span class="note-title">The punning trap</span>
+    <p>OWL 2 allows "punning" — using the same IRI as both a class and an individual. <code>naruto:Genin</code> in the starter ontology is a <code>skos:Concept</code> (an individual in the ABox). If you also tried to use <code>naruto:Genin</code> as a class (so that Genin ninja would be instances of Genin), the reasoner would have to treat the same IRI as both a class and an individual simultaneously. OWL 2 permits this but it produces confusing inferences. The design decision in the starter ontology — use SKOS for ranks rather than OWL classes — avoids this trap entirely. This is why NinjaRank uses <code>skos:Concept</code>, not <code>owl:Class</code>.</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="properties">
+  <div class="section-label">03 · Property characteristics</div>
+  <h2>What you declare about a property determines what fires.</h2>
+
+  <p>OWL properties carry characteristics that tell the reasoner how to behave when it encounters triples using that property.</p>
+
+  <table>
+    <thead>
+      <tr><th>Characteristic</th><th>Declares</th><th>Reasoner derives</th><th>Naruto example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>owl:SymmetricProperty</code></td><td>A P B ↔ B P A</td><td>the reverse triple</td><td><code>naruto:rivalOf</code></td></tr>
+      <tr><td><code>owl:TransitiveProperty</code></td><td>A P B, B P C → A P C</td><td>the transitive closure</td><td>(none — see traps section)</td></tr>
+      <tr><td><code>owl:FunctionalProperty</code></td><td>A P B, A P C → B = C</td><td>identity of objects</td><td>useful for unique keys</td></tr>
+      <tr><td><code>owl:InverseFunctionalProperty</code></td><td>A P C, B P C → A = B</td><td>identity of subjects</td><td>useful for unique identifiers</td></tr>
+      <tr><td><code>owl:AsymmetricProperty</code></td><td>A P B → NOT(B P A)</td><td>a consistency violation if broken</td><td><code>naruto:senseiOf</code> could be asymmetric</td></tr>
+      <tr><td><code>owl:inverseOf</code></td><td>P inverse Q</td><td>reverse direction triple</td><td><code>senseiOf</code> / <code>studentOf</code></td></tr>
+    </tbody>
+  </table>
+
+  <p>In <code>naruto-ontology-starter.ttl</code>, only <code>owl:SymmetricProperty</code> and <code>owl:inverseOf</code> are used. Submodule 2.1 demonstrated both through Protégé. Exercise 2.3 asks you to consider whether any additional characteristics belong in the published ontology.</p>
+</section>
+
+<!-- 04 -->
+<section id="restrictions">
+  <div class="section-label">04 · Restrictions</div>
+  <h2>Shaping what a class member must look like.</h2>
+
+  <p>OWL restrictions constrain what can belong to a class. A restriction on a class C says: to be a C, an individual must satisfy this constraint on some property. Two fundamental restriction types:</p>
+
+  <ul class="spaced">
+    <li><strong><code>owl:someValuesFrom</code></strong> — existential restriction: "at least one value of this property must be of this type." A Ninja must have at least one memberOfVillage value that is a Village.</li>
+    <li><strong><code>owl:allValuesFrom</code></strong> — universal restriction: "every value of this property must be of this type." If a Ninja has any hasJutsu value, it must be a Jutsu. (Note: this does not require having any jutsu — it just constrains what jutsu values are permitted.)</li>
+  </ul>
+
+<pre><span class="cm"># Existential restriction: every Ninja must be in at least one village</span>
+naruto:Ninja rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty naruto:memberOfVillage ;
+    owl:someValuesFrom naruto:Village
+] .
+
+<span class="cm"># Cardinality restriction: a Team must have at least one member</span>
+naruto:Team rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty naruto:memberOfTeam ;
+    owl:minCardinality "1"^^xsd:nonNegativeInteger
+] .</pre>
+
+  <p>These restrictions are intentionally <em>not</em> in the starter ontology. The Module 2 README says: "resist adding restrictions until you have data to validate against — every premature restriction is a future bug." Exercise 2.3 is where you add them after working through the data and confirming they hold.</p>
+
+  <div class="note">
+    <span class="note-title">Restrictions under the open-world assumption</span>
+    <p>An OWL existential restriction does not cause a reasoner to reject Gaara just because he has no <code>memberOfVillage</code> triple — under the open-world assumption, the information is simply missing, not contradicted. SHACL (Submodule 2.3) is the mechanism for closed-world validation that <em>will</em> reject Gaara if village membership is required. OWL restrictions and SHACL serve different purposes: OWL restrictions support inference, SHACL shapes support validation.</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section id="profiles">
+  <div class="section-label">05 · OWL profiles</div>
+  <h2>Five profiles, four tradeoffs.</h2>
+
+  <p>OWL Full is the most expressive profile — it allows any RDF graph to also be an OWL ontology. But it is undecidable: no algorithm can always compute all its inferences in finite time. The four tractable profiles each carve out a subset of OWL Full that guarantees decidability, at the cost of expressiveness.</p>
+
+  <div class="profile-grid">
+    <div class="profile-card">
+      <div class="profile-name">OWL EL</div>
+      <p>Polynomial-time reasoning. Designed for large biomedical ontologies (SNOMED CT uses it). Supports existential restrictions; no universal restrictions, no cardinality.</p>
+    </div>
+    <div class="profile-card">
+      <div class="profile-name">OWL QL</div>
+      <p>Query rewriting; reasoning in LOGSPACE. Optimized for conjunctive query answering over large ABoxes. No existential restrictions in the TBox.</p>
+    </div>
+    <div class="profile-card">
+      <div class="profile-name">OWL RL</div>
+      <p>Rule-based reasoning; polynomial-time. Maps well onto rule engines and SQL. Good for data integration when reasoning needs to scale.</p>
+    </div>
+    <div class="profile-card">
+      <div class="profile-name">OWL DL</div>
+      <p>Description logic. The "standard" expressive profile. Decidable but EXPTIME-complete in the worst case. What most Protégé tutorials use. HermiT implements OWL DL.</p>
+    </div>
+    <div class="profile-card">
+      <div class="profile-name">OWL Full</div>
+      <p>Maximum expressiveness. Includes all of RDFS plus all of OWL. Undecidable. Rarely used in production. Mentioned because it explains why DL exists.</p>
+    </div>
+  </div>
+
+  <p>The Naruto ontology is designed to stay within OWL DL. Keeping it out of OWL Full means not mixing metaclass and class usage (punning carefully), not allowing arbitrary SPARQL rules as restrictions, and not creating circular class definitions that defeat termination. HermiT can reason over it.</p>
+
+  <p>For production systems at scale, EL is the practical choice — Google's Knowledge Graph and the life sciences industry both use EL-profile ontologies. DL is the right choice for a learning project where you want to see the full range of inference behavior.</p>
+</section>
+
+<!-- 06 -->
+<section id="traps">
+  <div class="section-label">06 · The traps</div>
+  <h2>Where OWL surprises careful designers.</h2>
+
+  <ul class="spaced">
+    <li>
+      <strong>The transitivity trap.</strong> Declaring any property transitive triggers the reasoner to compute a transitive closure. On a large graph — or one that becomes large — this can be O(n³) or worse. The Naruto ontology deliberately avoids transitive properties on <code>naruto:familyOf</code> even though family relationships are <em>conceptually</em> transitive, because the reasoning cost outweighs the benefit. Before declaring transitivity, ask: what does the full transitive closure of this property look like, and how large could it get?
+    </li>
+    <li>
+      <strong><code>owl:sameAs</code> collapse.</strong> <code>owl:sameAs</code> asserts that two IRIs refer to the same individual — and a reasoner merges all their properties. If you assert <code>naruto:NarutoUzumaki owl:sameAs wikidata:Q25362</code>, every triple about the Wikidata item transfers to your Naruto individual and vice versa. This includes Wikidata's <code>schema:description</code>, its image, its Wikipedia link, and anything else. Unless you actually want full property merging, use <code>skos:exactMatch</code> (Submodule 1.3) which asserts conceptual equivalence without property inheritance.
+    </li>
+    <li>
+      <strong>Open-world reasoning surprises.</strong> If you declare <code>naruto:Ninja owl:someValuesFrom naruto:Village</code>, a reasoner does not conclude that Ninja who lack a village triple are invalid. It concludes there must be <em>some</em> village somewhere that they belong to, possibly unasserted. This "existential introduction" can cause unexpected inferences downstream. SHACL (Submodule 2.3) is the answer.
+    </li>
+    <li>
+      <strong>Annotation properties vs. object properties.</strong> OWL distinguishes <code>owl:AnnotationProperty</code> (metadata, not used in reasoning) from <code>owl:ObjectProperty</code> (used in reasoning). <code>rdfs:label</code>, <code>rdfs:comment</code>, and <code>dcterms:description</code> are annotation properties. If you use them as object properties in restrictions, the reasoner will ignore the restriction. Always check whether a property is an annotation property before writing a restriction over it.
+    </li>
+  </ul>
+</section>
+
+<!-- 07 -->
+<section id="protege">
+  <div class="section-label">07 · Protégé walkthrough</div>
+  <h2>Add a restriction and watch HermiT fire.</h2>
+  <p>This walkthrough adds one OWL restriction to the starter ontology in Protégé, runs HermiT, and observes what changes. Keep the starter TTL open from Submodule 2.1, or reload it.</p>
+
+  <details class="protege-section">
+    <summary>Protégé walkthrough — open to expand all steps</summary>
+    <div class="protege-body">
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">1</span>
+          <span class="step-title">Confirm the starter ontology is loaded and reasoner is off</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p>In Protégé, open <code>naruto-ontology-starter.ttl</code> if not already open. Stop any running reasoner: <strong>Reasoner → Stop Reasoner</strong>. Working with the reasoner off lets you see the difference clearly when you start it after adding the restriction.</p>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> Protégé with the starter ontology loaded. Status bar shows no active reasoner. Classes tab is visible with the naruto: hierarchy.</div>
+        </div>
+      </details>
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">2</span>
+          <span class="step-title">Add an existential restriction to naruto:Ninja</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p>In the <strong>Classes</strong> tab, select <code>naruto:Ninja</code>. In the <strong>Description</strong> panel on the right, find the <strong>SubClass Of</strong> section. Click the <strong>+</strong> (Add superclass) button.</p>
+          <p>In the expression editor, type: <code>naruto:memberOfVillage some naruto:Village</code></p>
+          <p>Press Enter or click OK. The restriction should appear in the SubClass Of list under <code>naruto:Ninja</code>. Protégé renders the Manchester Syntax form: <code>memberOfVillage some Village</code>.</p>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> Classes tab, naruto:Ninja selected. Description panel shows SubClass Of section with two items: "naruto:Character" and the new restriction "naruto:memberOfVillage some naruto:Village".</div>
+        </div>
+      </details>
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">3</span>
+          <span class="step-title">Run HermiT and observe consistency</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p><strong>Reasoner → HermiT → Start Reasoner</strong>. Wait for the status bar to show "Reasoner: Synchronized."</p>
+          <p>If the ontology is consistent, Protégé shows no error messages. Good — all eight ninja in the starter data do have <code>naruto:memberOfVillage</code> triples, so the restriction is satisfied by the existing data.</p>
+          <p>Now look at the Individuals tab for <code>naruto:Gaara</code>. Under the inferred property assertions, you should see his village membership. Under asserted assertions, he already has it explicitly. No surprise here — but note that if Gaara were missing his village triple, the reasoner would not reject him; it would assume there exists <em>some</em> village he belongs to (open-world assumption, existential introduction).</p>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> Reasoner status bar showing "Synchronized." No red ontology node in the class hierarchy (which would indicate inconsistency).</div>
+        </div>
+      </details>
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">4</span>
+          <span class="step-title">Deliberately introduce an inconsistency</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p>Stop the reasoner. In the Individuals tab, select any ninja. Add a property assertion: <code>naruto:memberOfVillage naruto:Jutsu</code> — intentionally using the wrong range type.</p>
+          <p>Now start HermiT again. The reasoner should flag the ontology as inconsistent — because you declared <code>naruto:memberOfVillage rdfs:range naruto:Village</code>, and <code>naruto:Jutsu</code> is not a Village (and there is no path by which it could become one).</p>
+          <p>In the Class hierarchy panel, if the ontology is inconsistent, you may see <code>owl:Nothing</code> appearing as a superclass of everything — indicating the reasoner concluded the ontology is unsatisfiable. Undo the change (<strong>Edit → Undo</strong>) and restart the reasoner to restore consistency.</p>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> Classes tab with reasoner active showing an inconsistency. Class hierarchy shows "owl:Nothing" highlighted or an error banner indicating the ontology is inconsistent.</div>
+        </div>
+      </details>
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">5</span>
+          <span class="step-title">Save the extended ontology</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p>After undoing the inconsistency: <strong>File → Save As</strong>. Save as <code>naruto-ontology-restricted.ttl</code> in the same artifacts folder. Do not overwrite the starter file — you will use the starter in its pristine form for Submodule 2.3 comparisons.</p>
+          <p>Inspect the saved TTL. The restriction should appear as a blank-node-based anonymous class expression, which is the Turtle serialization of an OWL restriction. It is valid but verbose — this is what the OWL "anonymous class" pattern looks like in serialized form.</p>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> The saved naruto-ontology-restricted.ttl open in a text editor, showing the anonymous class expression for the memberOfVillage restriction under naruto:Ninja.</div>
+        </div>
+      </details>
+
+    </div>
+  </details>
+</section>
+
+<!-- 08 -->
+<section id="lab">
+  <div class="section-label">08 · Query lab</div>
+  <h2>Five queries — schema inspection and reasoning patterns.</h2>
+
+  <!-- q01 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q01</span>
+      <div class="query-meta">
+        <div class="query-q">Which properties have OWL characteristics declared?</div>
+        <div class="query-c">Pattern: introspecting OWL property declarations · querying the TBox</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q01"><span class="kw">PREFIX</span> rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+<span class="kw">PREFIX</span> owl:  &lt;http://www.w3.org/2002/07/owl#&gt;
+
+<span class="kw">SELECT</span> ?property ?label ?characteristic <span class="kw">WHERE</span> {
+  ?property a ?type ; rdfs:label ?label .
+  <span class="kw">VALUES</span> ?type {
+    owl:ObjectProperty
+    owl:DatatypeProperty
+    owl:AnnotationProperty
+  }
+  <span class="kw">VALUES</span> ?characteristic {
+    owl:SymmetricProperty
+    owl:TransitiveProperty
+    owl:FunctionalProperty
+    owl:AsymmetricProperty
+    owl:InverseFunctionalProperty
+  }
+  ?property a ?characteristic .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?label) = "en" || <span class="kw">LANG</span>(?label) = "")
+}
+<span class="kw">ORDER BY</span> ?label</pre>
+      <button class="copy-btn" onclick="copyQuery('q01',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">2 rows · familyOf / owl:SymmetricProperty · rivalOf / owl:SymmetricProperty</div>
+          <p>Both symmetric properties are detected by querying the TBox. The VALUES block is used here as a compact IN-list — enumerating the OWL characteristic types we care about. The reasoner fires these characteristics on ABox triples; this query just reads the declarations.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. <code>owl:inverseOf</code> is not a "characteristic" in the same sense — it is a property-to-property relationship. How would you write a query to find all inverse property pairs? (Hint: <code>?p owl:inverseOf ?q</code> as a triple pattern.)</p>
+          <p>2. If you add <code>owl:AsymmetricProperty</code> to <code>naruto:senseiOf</code> (a sensei cannot also be a student of the same person), what would a reasoner do if both <code>:A naruto:senseiOf :B</code> AND <code>:B naruto:senseiOf :A</code> were asserted? How does this differ from a SHACL constraint?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q02 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q02</span>
+      <div class="query-meta">
+        <div class="query-q">Which ninja are Jonin-rank, and who do they teach?</div>
+        <div class="query-c">Pattern: rank as SKOS concept · OPTIONAL for students · class property traversal</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q02"><span class="kw">PREFIX</span> skos:   &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="kw">SELECT</span> ?senseiName ?studentName <span class="kw">WHERE</span> {
+  ?sensei naruto:hasRank naruto:Jonin ;
+          naruto:canonicalName ?senseiName .
+  <span class="kw">OPTIONAL</span> {
+    ?sensei naruto:senseiOf ?student .
+    ?student naruto:canonicalName ?studentName .
+  }
+}
+<span class="kw">ORDER BY</span> ?senseiName</pre>
+      <button class="copy-btn" onclick="copyQuery('q02',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">4 rows · Kakashi Hatake (×3 students) · Kurenai Yuhi / Hinata Hyuga</div>
+          <p>The rank filter uses a fixed IRI — <code>naruto:Jonin</code> — rather than a string label. This is more precise than <code>FILTER (?rankLabel = "Jonin")</code> because it does not depend on how the label is spelled or what language is active. IRIs as values in FILTER and VALUES are a best practice for controlled vocabulary lookups.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. With RDFS reasoning and <code>naruto:studentOf owl:inverseOf naruto:senseiOf</code>, you could instead query <code>?student naruto:studentOf ?sensei</code> and get the same results. Try it against the raw data — does it return rows? Why not?</p>
+          <p>2. The OWL restriction you added in the Protégé walkthrough (Ninja someValuesFrom Village) means Jonin are also Ninja and therefore also constrained to have a village. Does this show up differently when you add the village to the SELECT?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q03 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q03</span>
+      <div class="query-meta">
+        <div class="query-q">Which ninja appear in all three arcs?</div>
+        <div class="query-c">Pattern: GROUP BY · HAVING COUNT = 3 · arc count as a qualification</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q03"><span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="kw">SELECT</span> ?name (<span class="kw">COUNT</span>(?arc) <span class="kw">AS</span> ?arcCount) <span class="kw">WHERE</span> {
+  ?ninja naruto:canonicalName   ?name ;
+         naruto:appearsInArc    ?arc .
+}
+<span class="kw">GROUP BY</span> ?name
+<span class="kw">HAVING</span> (<span class="kw">COUNT</span>(?arc) = 3)
+<span class="kw">ORDER BY</span> ?name</pre>
+      <button class="copy-btn" onclick="copyQuery('q03',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">3 rows · Kakashi Hatake / 3 · Naruto Uzumaki / 3 · (possibly Gaara / 3 depending on Pain's Assault arc data)</div>
+          <p>This is the "narrative centrality" query — identifying characters whose stories span all three S-tier arcs in the dataset. The ontology makes this possible because arc appearances are modeled as explicit triples. In a plain co-appearance graph, you would need episode-level data and a separate aggregation step.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Change HAVING to <code>&gt;= 2</code>. Who appears now? What does "appears in 2+ arcs" tell you about narrative importance?</p>
+          <p>2. Add village to the result: join <code>?ninja naruto:memberOfVillage ?v</code> and <code>?v rdfs:label ?village</code>. Does this change the GROUP BY? You must add <code>?village</code> to the GROUP BY clause — why?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q04 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q04</span>
+      <div class="query-meta">
+        <div class="query-q">CONSTRUCT: materialize the symmetric closure of rivalOf.</div>
+        <div class="query-c">Pattern: CONSTRUCT · symmetric inference without a reasoner · explicit materialization</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q04"><span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="kw">CONSTRUCT</span> {
+  ?a naruto:rivalOf ?b .
+  ?b naruto:rivalOf ?a .
+}
+<span class="kw">WHERE</span> {
+  ?a naruto:rivalOf ?b .
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('q04',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">4 triples (Turtle) · Naruto rivalOf Sasuke · Sasuke rivalOf Naruto · Gaara rivalOf Rock Lee · Rock Lee rivalOf Gaara</div>
+          <p>Switch Fuseki to Turtle format. The CONSTRUCT produces both directions for each asserted pair — exactly what HermiT would derive from the <code>owl:SymmetricProperty</code> declaration. The 2-triple template (both directions) is a pattern for materializing symmetric closure without a reasoner in any store.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Hinata is listed as <code>naruto:rivalOf naruto:NarutoUzumaki</code>. Run this CONSTRUCT. Does Naruto appear with Hinata as a rival? Verify this is correct given the one-directional assertion in the TTL.</p>
+          <p>2. If you loaded these materialized triples back into Fuseki with SPARQL INSERT DATA, what would happen the next time you ran this CONSTRUCT? Would you get duplicates?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q05 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q05</span>
+      <div class="query-meta">
+        <div class="query-q">Which jutsu are shared by more than one ninja?</div>
+        <div class="query-c">Pattern: GROUP BY on shared property values · HAVING COUNT · the "shared knowledge" query</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q05"><span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="kw">SELECT</span> ?jutsuName (<span class="kw">COUNT</span>(?ninja) <span class="kw">AS</span> ?ninjaCount)
+       (<span class="kw">GROUP_CONCAT</span>(?name; separator=", ") <span class="kw">AS</span> ?ninjaNames)
+<span class="kw">WHERE</span> {
+  ?ninja naruto:hasJutsu   ?jutsu ;
+         naruto:canonicalName ?name .
+  ?jutsu schema:name ?jutsuName .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?jutsuName) = "en")
+}
+<span class="kw">GROUP BY</span> ?jutsuName
+<span class="kw">HAVING</span> (<span class="kw">COUNT</span>(?ninja) &gt; 1)
+<span class="kw">ORDER BY</span> <span class="kw">DESC</span>(?ninjaCount)</pre>
+      <button class="copy-btn" onclick="copyQuery('q05',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">2 rows · Shadow Clone Jutsu / 2 / "Kakashi Hatake, Naruto Uzumaki" · Sharingan / 2 / "Kakashi Hatake, Sasuke Uchiha"</div>
+          <p>GROUP_CONCAT produces a comma-separated list of ninja names per jutsu — useful for display without requiring the calling application to aggregate. This is a value-add over the plain co-appearance graph: the ontology models hasJutsu as a typed property, making jutsu-level grouping trivial in SPARQL.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Byakugan appears once (Hinata). The EightTrigrams jutsu also appears once. If you added Neji Hyuga with Byakugan in Exercise 2.3, how would this query's results change?</p>
+          <p>2. Kakashi copied the Sharingan from Obito — he is not an Uchiha, which is the clan whose kekkei genkai it is. Would you model this distinction in the ontology? What property or class would carry the "inherited vs. native" distinction?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- 09 -->
+<section id="resources">
+  <div class="section-label">09 · Resources</div>
+  <h2>Reading and next steps.</h2>
+
+  <div class="resource-grid">
+    <article class="resource-card">
+      <h4>Primary reading</h4>
+      <h5>Allemang et al. — Ch 7–8</h5>
+      <p>Chapter 7 introduces OWL DL; Chapter 8 covers modeling patterns including n-ary relations and time-indexed situations. Read before Exercise 2.3.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Specification</h4>
+      <h5><a href="https://www.w3.org/TR/owl2-primer/">W3C OWL 2 Primer</a></h5>
+      <p>The most readable entry point to OWL 2. Section 4 (property characteristics) and Section 5 (restrictions) are the most relevant for this submodule.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Profiles deep-dive</h4>
+      <h5><a href="https://www.w3.org/TR/owl2-profiles/">W3C OWL 2 Profiles</a></h5>
+      <p>Formal definitions of EL, QL, RL, and DL. The introductory section is enough; the formal grammar is reference material.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Starter data</h4>
+      <h5><a href="../artifacts/naruto-ontology/naruto-ontology-starter.ttl">naruto-ontology-starter.ttl</a></h5>
+      <p>The base file for Protégé walkthroughs in 2.1 and 2.2. Exercise 2.3 extends this into the 1.0.0 release with restrictions, SHACL shapes, and a populated example dataset.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Next submodule</h4>
+      <h5><a href="2-3-ontology-design.html">Submodule 2.3 — Ontology design</a></h5>
+      <p>Design methodology, SHACL for closed-world validation, and REUSE.md practice. The primary project — naruto-ontology-1.0.0.ttl — is Exercise 2.3.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Prior submodule</h4>
+      <h5><a href="2-1-rdfs-class-hierarchy.html">Submodule 2.1 — RDFS</a></h5>
+      <p>If the TBox / ABox distinction or the property characteristics are unclear, this submodule covers the RDFS foundations that OWL builds on.</p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Submodule 2.2 workbook · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Written content: CC BY 4.0 · Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+<script>
+(function checkFuseki(){var b=document.getElementById('fuseki-banner');if(!window.fetch){b.className='fuseki-banner checking';b.innerHTML='<span class="dot"></span>Check Fuseki manually: <a href="http://localhost:3030/" target="_blank" rel="noopener">localhost:3030 ↗</a>';return;}fetch('http://localhost:3030/',{mode:'no-cors',cache:'no-store'}).then(function(){b.className='fuseki-banner connected';b.innerHTML='<span class="dot"></span>Fuseki running — <a href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener">open SPARQL editor ↗</a>';}).catch(function(){b.className='fuseki-banner offline';b.innerHTML='<span class="dot"></span>Fuseki offline — start: <code>fuseki-server --config=fuseki/config.ttl</code> then reload.';});})();
+function openFuseki(e,btn){e.preventDefault();var c=btn.closest('.query-card'),t=c.querySelector('pre[id]').textContent,u=btn.getAttribute('href');function o(){window.open(u,'_blank','noopener,noreferrer');}function f(){var x=btn.textContent;btn.textContent='Copied — paste in Fuseki ↗';btn.style.borderColor='var(--teal-mid)';setTimeout(function(){btn.textContent=x;btn.style.borderColor='';},2500);}navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(function(){f();o();}).catch(function(){lc(t,null);o();}):lc(t,null),o();}
+function copyQuery(id,btn){var t=document.getElementById(id).textContent;navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(function(){fb(btn);}).catch(function(){lc(t,btn);}):lc(t,btn);}
+function lc(t,btn){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';document.body.appendChild(a);a.focus();a.select();try{document.execCommand('copy');if(btn)fb(btn);}catch(e){}document.body.removeChild(a);}
+function fb(btn){var x=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=x;},1600);}
+</script>
+</body>
+</html>

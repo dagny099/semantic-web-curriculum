@@ -62,6 +62,8 @@ sensemaking-ai/semantic-web-curriculum/
 
 **Submodules vs. exercises — these are not the same thing.** Each module contains roughly 3 submodules, each covering a major topic area (approximately one week of content). Submodules are the conceptual groupings; exercises are the hands-on tasks. A single submodule may have 1-2 associated exercises, or none if it is reading-heavy. Submodule materials (interactive workbooks, reading companions, synthesis HTMLs) live in `submodules/` and are named `M-S-topic-name.ext` where M = module number and S = submodule number (e.g. `1-2-sparql-basics.html`). See SYLLABUS.md for the topic each submodule covers.
 
+**Submodule workbook pages serve as the primary hub for each submodule.** Each submodule has one main HTML page that combines: conceptual content (the "why" and "what"), hands-on exercises (Fuseki query cards and/or Protégé walkthrough steps), and a resources section linking to supplementary materials. Supplementary files (synthesis docs, reading companions, cheatsheets) are linked FROM the workbook, not the other way around. Protégé step-by-step sections use collapsible `<details>/<summary>` elements so the page length stays manageable. References to planned-but-not-yet-created materials are permitted with a "(coming soon)" note.
+
 **Module READMEs follow the Module 1 template exactly.** Same sections, same order: scope → reading → exercises → primary project → pain points → deliverables → notes → checklist → "when you're done" test → navigation footer. When asked to create or update a module README, mirror Module 1's structure.
 
 ## Naming conventions
