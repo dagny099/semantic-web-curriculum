@@ -91,25 +91,34 @@ Roughly 2-3 hours before Module 1 begins:
 
 **Goal:** Read and write Turtle fluently, run basic SPARQL queries against multiple endpoints (local + Wikidata), and articulate clearly why RDF differs from JSON or property graphs.
 
-### What I'll actually learn
+### Submodule structure
 
-The conceptual core of RDF: knowledge as triples `(subject, predicate, object)` where subjects and predicates are URIs and objects are URIs or literals. The four serialization formats and when each is used. The basic SPARQL query forms: SELECT, ASK, CONSTRUCT, DESCRIBE. The vocabulary landscape: FOAF, Dublin Core, SKOS, schema.org.
+Each module contains three submodules — roughly one per week — that group related concepts and their associated exercises. Submodule materials (workbooks, reading companions) live in `modules/01-foundations/submodules/` and follow the naming pattern `1-S-topic-name.ext`.
 
-I'll also learn the conceptual difference between RDF and labeled property graphs (LPG) — Neo4j, my existing tool — which is the most practically important comparison I can make as a consultant.
+---
 
-### Required reading
+### Submodule 1.1 — RDF as a data model *(Week 1)*
 
+**What I'll actually learn:** The conceptual core of RDF: knowledge as triples `(subject, predicate, object)` where subjects and predicates are URIs and objects are URIs or literals. The four serialization formats and when each is used. The most practically important comparison I can make as a consultant: RDF vs. labeled property graphs (LPG) — Neo4j, my existing tool.
+
+**Reading:**
 - Allemang et al. — Chapters 1-3 (RDF foundations, RDFS)
 - [W3C RDF 1.1 Primer](https://www.w3.org/TR/rdf11-primer/)
 - [W3C Turtle spec](https://www.w3.org/TR/turtle/) (skim, then reference)
+
+**Exercise 1.2 — Hand-write a tiny graph (1 hour)**
+A `.ttl` file modeling myself and three projects using FOAF + custom namespace. Load into Fuseki. Three SELECT queries.
+
+**Submodule materials:** `1-1-rdf-vs-lpg.html`, `1-1-workbook-naruto.html`, `1-1-workbook-mythology.html`, `1-1-reading-companion.pdf` *(exist)*
+
+---
+
+### Submodule 1.2 — SPARQL basics *(Week 2)*
+
+**What I'll actually learn:** The four SPARQL query forms: SELECT, ASK, CONSTRUCT, DESCRIBE. Querying public endpoints (Wikidata) and a local Fuseki instance. Reading and writing basic graph patterns, FILTER, OPTIONAL.
+
+**Reading:**
 - DuCharme — Chapters 1-2
-
-### Optional deeper reading
-
-- Hogan et al. — Sections 3-4 (data models, querying): [kgbook.org](https://kgbook.org/)
-- Tim Berners-Lee — [Linked Data design note](https://www.w3.org/DesignIssues/LinkedData.html)
-
-### Hands-on exercises
 
 **Exercise 1.1 — Wikidata orientation (1 hour)**
 Use the [Wikidata Query Service](https://query.wikidata.org/) helper UI:
@@ -118,13 +127,24 @@ Use the [Wikidata Query Service](https://query.wikidata.org/) helper UI:
 - All people who studied at MIT with a Wikipedia article
 - All ESCO occupations whose label contains "data scientist"
 
-**Exercise 1.2 — Hand-write a tiny graph (1 hour)**
-A `.ttl` file modeling myself and three projects using FOAF + custom namespace. Load into Fuseki. Three SELECT queries.
+**Submodule materials:** *(not yet developed)*
+
+---
+
+### Submodule 1.3 — Vocabulary landscape and primary project *(Week 3)*
+
+**What I'll actually learn:** The vocabulary landscape: FOAF, Dublin Core, SKOS, schema.org. The discipline of reuse-before-define. Where ESCO/SKOS integration makes RDF's interoperability story concrete.
+
+**Optional deeper reading:**
+- Hogan et al. — Sections 3-4 (data models, querying): [kgbook.org](https://kgbook.org/)
+- Tim Berners-Lee — [Linked Data design note](https://www.w3.org/DesignIssues/LinkedData.html)
 
 **Exercise 1.3 — Resume Graph Explorer slice (3-4 hours)** *(primary project)*
 
 **Exercise 1.4 — Naruto Graph Turtle slice (2-3 hours)**
 One arc (Chunin Exams) from the [Naruto Network Graph](https://docs.barbhs.com/naruto-network-graph/), ~20 character nodes plus canonical relationships in Turtle. Three SPARQL queries matching ones already run in Neo4j. Compare ergonomics.
+
+**Submodule materials:** *(not yet developed)*
 
 ### The pain perspective
 

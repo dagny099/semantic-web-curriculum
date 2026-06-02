@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The four query forms — Sub-module 1.2 · Sensemaking Semantic Web</title>
+<meta name="description" content="How SPARQL works: the endpoint model, the four query forms (SELECT, ASK, CONSTRUCT, DESCRIBE), and three live Wikidata queries to run right now.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-deep: #0B4F4A;
+    --teal-mid: #1E8076;
+    --teal-light: #C6E2DD;
+    --coral: #D85A30;
+    --coral-tint: #FAEAE2;
+    --charcoal: #1F2A2E;
+    --slate: #5A6671;
+    --slate-light: #8A929A;
+    --cream: #FAF7F2;
+    --white: #FFFFFF;
+    --rule: #D8D2C6;
+    --code-bg: #F2EDE3;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    margin: 0; padding: 0;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    color: var(--charcoal);
+    background: var(--cream);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .masthead {
+    background: var(--teal-deep);
+    color: var(--white);
+    padding: 3rem 2rem 2.5rem;
+  }
+  .masthead::after {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    background: var(--coral);
+    margin-top: 1.5rem;
+  }
+  .masthead-inner { max-width: 68rem; margin: 0 auto; }
+  .brand { font-size: 0.72rem; letter-spacing: 0.22em; color: var(--teal-light); text-transform: uppercase; margin-bottom: 1rem; font-weight: 500; }
+  h1 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500; font-style: italic;
+    font-size: 3rem; line-height: 1.1;
+    margin: 0 0 0.5rem; letter-spacing: -0.015em;
+  }
+  .subtitle { font-size: 1.05rem; color: var(--teal-light); letter-spacing: 0.02em; max-width: 42rem; }
+
+  .container { max-width: 56rem; margin: 0 auto; padding: 2.5rem 2rem 1rem; }
+
+  nav.quick-nav {
+    display: flex; flex-wrap: wrap; gap: 1.25rem 2rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 3rem;
+    font-size: 0.78rem;
+  }
+  nav.quick-nav a {
+    color: var(--slate); text-decoration: none;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 500; transition: color 0.15s ease;
+  }
+  nav.quick-nav a:hover { color: var(--coral); }
+
+  section { margin-bottom: 4rem; scroll-margin-top: 1.5rem; }
+  .section-label {
+    font-size: 0.7rem; letter-spacing: 0.22em; color: var(--coral);
+    text-transform: uppercase; font-weight: 500; margin-bottom: 0.75rem;
+  }
+  h2 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500; font-style: italic;
+    font-size: 2.15rem; color: var(--charcoal);
+    margin: 0 0 1rem; letter-spacing: -0.01em; line-height: 1.15;
+  }
+  h3 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 600;
+    color: var(--charcoal); margin: 1.75rem 0 0.6rem;
+    letter-spacing: 0.005em;
+  }
+  h3:first-of-type { margin-top: 0.5rem; }
+
+  p { margin: 0.4rem 0 1rem; font-size: 1rem; max-width: 44rem; }
+  p.lede { font-size: 1.08rem; color: var(--slate); max-width: 44rem; }
+
+  pre, code { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 0.82rem; }
+  pre {
+    background: var(--code-bg); padding: 0.9rem 1.1rem;
+    border-radius: 3px; overflow-x: auto;
+    margin: 0.6rem 0 1.4rem; line-height: 1.65;
+    color: var(--charcoal); border-left: 3px solid var(--teal-mid);
+  }
+  p code, li code, td code, h3 code {
+    background: var(--code-bg); padding: 0.1em 0.35em;
+    border-radius: 3px; font-size: 0.88em; color: var(--charcoal);
+  }
+  .comment { color: var(--slate-light); }
+  .kw { color: var(--teal-deep); font-weight: 500; }
+
+  .tip {
+    background: var(--coral-tint); border-left: 3px solid var(--coral);
+    padding: 0.85rem 1.1rem 0.95rem; margin: 1.25rem 0 1.5rem;
+    font-size: 0.94rem; color: var(--charcoal); max-width: 44rem;
+  }
+  .tip-label {
+    font-size: 0.68rem; letter-spacing: 0.18em; color: var(--coral);
+    text-transform: uppercase; font-weight: 600; margin-bottom: 0.35rem; display: block;
+  }
+  .tip p { margin: 0; max-width: none; }
+
+  ul.spaced { padding-left: 1.2rem; margin: 0.6rem 0 1.2rem; max-width: 44rem; }
+  ul.spaced li { margin: 0.55rem 0; font-size: 0.98rem; }
+  ul.spaced li strong { color: var(--charcoal); font-weight: 600; }
+
+  a.inline {
+    color: var(--teal-mid); text-decoration: underline;
+    text-decoration-color: var(--teal-light);
+    text-underline-offset: 2px; text-decoration-thickness: 1px;
+  }
+  a.inline:hover { color: var(--coral); text-decoration-color: var(--coral); }
+
+  figure { margin: 1.5rem 0 2rem; max-width: 100%; }
+  figure svg { display: block; width: 100%; height: auto; background: var(--white); border: 1px solid var(--rule); border-radius: 3px; }
+  figcaption { font-size: 0.85rem; color: var(--slate); margin-top: 0.75rem; max-width: 44rem; line-height: 1.5; }
+
+  /* Four query form cards */
+  .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.2rem 0 1.6rem; max-width: 44rem; }
+  .form-card { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 1rem; }
+  .form-card .form-name { font-size: 0.7rem; letter-spacing: 0.18em; font-weight: 600; color: var(--coral); text-transform: uppercase; margin-bottom: 0.35rem; }
+  .form-card .form-returns { font-size: 0.78rem; color: var(--slate); margin-bottom: 0.5rem; }
+  .form-card p { font-size: 0.9rem; margin: 0; max-width: none; }
+
+  /* Wikidata query cards */
+  .wikidata-card { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; margin: 1.4rem 0; overflow: hidden; }
+  .wikidata-header { padding: 0.85rem 1.1rem 0.7rem; border-bottom: 1px solid var(--rule); display: flex; align-items: flex-start; gap: 0.85rem; }
+  .wikidata-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; font-weight: 500; color: var(--white); background: var(--teal-mid); border-radius: 5px; padding: 0.2rem 0.45rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .wikidata-q { font-weight: 600; font-size: 0.97rem; color: var(--charcoal); margin-bottom: 0.2rem; }
+  .wikidata-note { font-size: 0.8rem; color: var(--slate); }
+  .wikidata-body pre { margin: 0; border-radius: 0; border-left: none; border-bottom: 1px solid var(--rule); }
+  .wikidata-footer { padding: 0.6rem 1.1rem; font-size: 0.84rem; color: var(--slate); }
+  .wikidata-footer a { color: var(--teal-mid); }
+
+  ol.resources { list-style: none; padding: 0; margin: 1rem 0 1.5rem; max-width: 44rem; counter-reset: list-counter; }
+  ol.resources li { margin-bottom: 1.1rem; padding-left: 1.5rem; position: relative; font-size: 0.95rem; counter-increment: list-counter; }
+  ol.resources li::before { content: counter(list-counter) "."; position: absolute; left: 0; color: var(--coral); font-weight: 600; font-size: 0.85rem; top: 0.1rem; }
+  ol.resources li .res-title { font-weight: 600; color: var(--charcoal); }
+  ol.resources li .res-note { color: var(--slate); display: block; margin-top: 0.2rem; }
+
+  .branch { border-left: 3px solid var(--teal-mid); background: var(--white); padding: 0.9rem 1.2rem; margin: 0.6rem 0 1.4rem; max-width: 44rem; }
+  .branch h3 { margin: 0 0 0.4rem; color: var(--teal-deep); }
+  .branch p { margin: 0; font-size: 0.95rem; }
+
+  .section-rule { border: none; height: 1px; background: var(--rule); margin: 0 0 3.5rem 0; }
+
+  footer { border-top: 1px solid var(--rule); padding: 2rem 0 3rem; margin-top: 3rem; color: var(--slate); font-size: 0.85rem; }
+  footer p { margin: 0.4rem 0; max-width: none; }
+  footer a { color: var(--teal-mid); }
+
+  @media (max-width: 760px) {
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.75rem; }
+    .container { padding: 2rem 1.25rem 0.5rem; }
+    .masthead { padding: 2.25rem 1.25rem 2rem; }
+    pre { font-size: 0.78rem; padding: 0.7rem 0.85rem; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    body { background: white; color: black; font-size: 10pt; line-height: 1.45; }
+    .masthead { background: white; color: black; border-bottom: 2px solid black; padding: 0.5rem 0 0.75rem; }
+    .masthead::after { display: none; }
+    .masthead h1 { color: black; font-size: 22pt; }
+    .brand, .subtitle { color: #444; }
+    .container { padding: 0.5rem 0; max-width: none; }
+    nav.quick-nav { display: none; }
+    h2 { font-size: 14pt; page-break-after: avoid; }
+    h3 { font-size: 10.5pt; page-break-after: avoid; }
+    pre { background: #f5f5f5 !important; color: black; page-break-inside: avoid; font-size: 8pt; padding: 0.4rem 0.6rem; border-left: 2px solid #888; }
+    .tip, .branch, .form-card, .wikidata-card { background: #f5f5f5 !important; border: 1px solid #ccc; page-break-inside: avoid; }
+    a { color: black !important; text-decoration: none; }
+    .kw { color: #333; }
+    .comment { color: #777; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sub-module 1.2</div>
+    <h1>The four query forms</h1>
+    <div class="subtitle">How SPARQL works: the endpoint model, SELECT / ASK / CONSTRUCT / DESCRIBE, and three queries you can run right now on Wikidata.</div>
+  </div>
+</header>
+
+<div class="container">
+
+<nav class="quick-nav" aria-label="Section navigation">
+  <a href="#why">Why SPARQL</a>
+  <a href="#endpoint">The endpoint</a>
+  <a href="#anatomy">Query anatomy</a>
+  <a href="#forms">Four forms</a>
+  <a href="#wikidata">On Wikidata</a>
+  <a href="#pain">Pain points</a>
+  <a href="#next">Next</a>
+  <a href="#resources">Resources</a>
+</nav>
+
+<!-- ===================== 01 Why SPARQL ===================== -->
+<section id="why">
+  <div class="section-label">01 · Why a graph needs its own query language</div>
+  <h2>SQL thinks in tables. SPARQL thinks in patterns.</h2>
+
+  <p class="lede">A relational database stores rows and columns. SQL joins them. An RDF store keeps triples — subject, predicate, object. SPARQL matches patterns against those triples the way a regular expression matches text: flexible, composable, and ignorant of storage layout.</p>
+
+  <p>The conceptual move is straightforward. A SPARQL graph pattern is a set of triple templates where any position can be a variable or a fixed term. The engine finds every assignment of values to variables that makes all templates simultaneously true against the data. That is the entire core idea. Everything else — filtering, aggregating, sorting, constructing new graphs — is built on top of that matching step.</p>
+
+  <p>Where SQL asks "give me all rows from the Orders table where customer_id = 42," SPARQL asks "give me every <code>?subject</code> that has a <code>foaf:knows</code> predicate to at least one <code>?object</code> whose name matches 'Alice.'" The difference is not just syntax. RDF has no schema that predetermines which predicates a node might have. SPARQL's pattern matching is the only way to navigate that open-ended structure.</p>
+
+  <h3>The pattern-matching intuition</h3>
+
+  <p>A triple pattern is a template with one or more variables. Wrap a set of them in a WHERE clause and the engine finds every combination of values that matches all of them at once:</p>
+
+<pre><span class="kw">SELECT</span> ?name ?jutsu
+<span class="kw">WHERE</span> {
+  ?ninja a             sensemaking:Ninja ;
+         schema:name   ?name ;
+         sensemaking:hasJutsu ?jutsu .
+}</pre>
+
+  <p>Three triple patterns. The engine binds <code>?ninja</code>, <code>?name</code>, and <code>?jutsu</code> to every combination in the graph that satisfies all three simultaneously. A ninja with two jutsu appears twice — one row per jutsu. This is not a flaw; it is how triple-pattern matching works, and it matters when you use OPTIONAL.</p>
+
+  <div class="tip">
+    <span class="tip-label">Coming from Neo4j</span>
+    <p>SPARQL triple patterns map roughly to Cypher's <code>MATCH</code> clause. The key difference: Cypher's graph model lets you put properties on edges (<code>-[:KNOWS {since: 2020}]-&gt;</code>). In SPARQL, "since 2020" requires a separate triple — either a new node (event-class pattern) or RDF-star annotation. That is the same trade-off as Sub-module 1.1.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 02 The endpoint ===================== -->
+<section id="endpoint">
+  <div class="section-label">02 · The endpoint model</div>
+  <h2>A SPARQL endpoint is just an HTTP service.</h2>
+
+  <p>You write a query in a <code>.rq</code> file (or a text box). You POST it to an endpoint URL. The endpoint returns results — a table of variable bindings for SELECT, a boolean for ASK, a new RDF graph for CONSTRUCT or DESCRIBE. The protocol is standard; the results format is negotiated via HTTP content-type headers.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing a SPARQL query being sent via HTTP POST to either a local Fuseki endpoint or the public Wikidata endpoint, and results being returned">
+      <!-- Query box -->
+      <rect x="20" y="50" width="160" height="80" rx="8" fill="#FAF7F2" stroke="#D8D2C6" stroke-width="1.5"/>
+      <text x="100" y="76" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" font-weight="600" fill="#1F2A2E">Your query</text>
+      <text x="100" y="94" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="9" fill="#5A6671">SELECT ?name WHERE</text>
+      <text x="100" y="108" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="9" fill="#5A6671">{ ?x schema:name ?name }</text>
+
+      <!-- Arrow: query to endpoint -->
+      <line x1="180" y1="90" x2="250" y2="90" stroke="#1E8076" stroke-width="1.8" marker-end="url(#arr-teal)"/>
+      <text x="215" y="82" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="9" fill="#1E8076">HTTP POST</text>
+
+      <!-- Endpoints split -->
+      <!-- Local Fuseki -->
+      <rect x="255" y="25" width="180" height="55" rx="8" fill="#C6E2DD" stroke="#1E8076" stroke-width="1.5"/>
+      <text x="345" y="48" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" font-weight="600" fill="#0B4F4A">Local Fuseki</text>
+      <text x="345" y="64" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="9" fill="#0B4F4A">localhost:3030</text>
+
+      <!-- Wikidata -->
+      <rect x="255" y="100" width="180" height="55" rx="8" fill="#FAEAE2" stroke="#D85A30" stroke-width="1.5"/>
+      <text x="345" y="123" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" font-weight="600" fill="#D85A30">Wikidata</text>
+      <text x="345" y="139" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="9" fill="#D85A30">query.wikidata.org</text>
+
+      <!-- Arrows from query to both endpoints -->
+      <line x1="182" y1="80" x2="253" y2="55" stroke="#1E8076" stroke-width="1.5" marker-end="url(#arr-teal)"/>
+      <line x1="182" y1="100" x2="253" y2="125" stroke="#D85A30" stroke-width="1.5" marker-end="url(#arr-coral)"/>
+
+      <!-- Arrow: results back -->
+      <line x1="436" y1="52" x2="536" y2="75" stroke="#1E8076" stroke-width="1.8" marker-end="url(#arr-teal)"/>
+      <line x1="436" y1="127" x2="536" y2="105" stroke="#D85A30" stroke-width="1.8" marker-end="url(#arr-coral)"/>
+
+      <!-- Results box -->
+      <rect x="538" y="50" width="145" height="80" rx="8" fill="#FAF7F2" stroke="#D8D2C6" stroke-width="1.5"/>
+      <text x="610" y="73" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" font-weight="600" fill="#1F2A2E">Results</text>
+      <text x="610" y="91" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="9" fill="#5A6671">table / boolean /</text>
+      <text x="610" y="105" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="9" fill="#5A6671">RDF graph</text>
+
+      <defs>
+        <marker id="arr-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1E8076"/>
+        </marker>
+        <marker id="arr-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#D85A30"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>The same query syntax works against any SPARQL-compliant endpoint. What changes is the data behind it and any endpoint-specific extensions — Wikidata's <code>SERVICE wikibase:label</code> is the most common example.</figcaption>
+  </figure>
+
+  <h3>The two endpoints you'll use most</h3>
+
+  <p><strong>Local Fuseki</strong> runs on your machine at <code>localhost:3030</code>. Fast, private, no rate limits. Data you load is yours to query — the Naruto and mythology datasets from the starter kit, your own Turtle files. This is the workbook environment.</p>
+
+  <p><strong>Wikidata's query service</strong> at <code>query.wikidata.org</code> is a public, read-only SPARQL endpoint over one of the largest structured knowledge graphs on the web. No account needed. Rate-limited (queries must complete in 60 seconds). Wikidata uses the standard SPARQL protocol with a few proprietary extensions — most importantly <code>SERVICE wikibase:label</code>, which resolves human-readable labels for any entity. Section 5 has three runnable queries.</p>
+
+  <div class="tip">
+    <span class="tip-label">Why Wikidata uses Q-numbers</span>
+    <p>Wikidata identifies entities by opaque IRIs like <code>wd:Q49108</code> (MIT). Human-readable labels are separate <code>rdfs:label</code> values — often dozens of them in different languages. The <code>SERVICE wikibase:label</code> extension picks the right one automatically. It is a convenience wrapper, not part of the SPARQL standard.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 03 Query anatomy ===================== -->
+<section id="anatomy">
+  <div class="section-label">03 · Query anatomy</div>
+  <h2>Every SELECT query has the same four parts.</h2>
+
+  <p>A SELECT query broken into its named components:</p>
+
+<pre><span class="comment">① PREFIX declarations — short aliases for full IRIs</span>
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="comment">② SELECT clause — which variables to project into the result table</span>
+<span class="kw">SELECT</span> ?name ?teamName
+
+<span class="comment">③ WHERE clause — graph pattern that must match</span>
+<span class="kw">WHERE</span> {
+  ?ninja a sensemaking:Ninja ;
+         schema:name ?name ;
+         sensemaking:memberOfTeam ?team .
+  ?team schema:name ?teamName .
+}
+
+<span class="comment">④ Solution modifiers — post-processing on the matched rows</span>
+<span class="kw">ORDER BY</span> ?teamName ?name
+<span class="kw">LIMIT</span> 50</pre>
+
+  <h3>① PREFIX declarations</h3>
+  <p>PREFIX lines define short aliases so you can write <code>schema:name</code> instead of <code>&lt;https://schema.org/name&gt;</code>. They are purely syntactic — not stored, not inferred, not shared between queries. Every query that needs an IRI must declare its own PREFIX for it. The curriculum's standard prefix block is the starting point for every file.</p>
+
+  <h3>② SELECT clause</h3>
+  <p>Lists the variables to include in the result table. Use <code>SELECT *</code> to project all bound variables. Use <code>SELECT DISTINCT</code> to remove duplicate rows — useful when the same combination appears through multiple matching paths. You can also compute expressions: <code>SELECT (COUNT(?ninja) AS ?total)</code>.</p>
+
+  <h3>③ WHERE clause</h3>
+  <p>The graph pattern. Each line inside <code>WHERE { }</code> is a triple pattern — subject, predicate, object, where any position can be a variable (<code>?x</code>) or a fixed term (IRI or literal). All triple patterns in the same block must match simultaneously for a row to appear in results. OPTIONAL patterns relax this: <code>OPTIONAL { ?ninja sensemaking:hasJutsu ?j }</code> keeps the ninja in results even if they have no jutsu — <code>?j</code> is simply unbound for those rows.</p>
+
+  <h3>④ Solution modifiers</h3>
+  <p>Applied after the pattern matching, in this order: <code>GROUP BY</code> (aggregate into groups) → <code>HAVING</code> (filter on aggregated values) → <code>ORDER BY</code> (sort) → <code>OFFSET</code> / <code>LIMIT</code> (paginate). You can use all, some, or none.</p>
+
+  <div class="tip">
+    <span class="tip-label">The semicolon shorthand</span>
+    <p>Multiple predicates for the same subject can be chained with semicolons: <code>?ninja schema:name ?name ; sensemaking:hasJutsu ?jutsu .</code> is equivalent to two separate triple patterns with the same subject. This is Turtle syntax carried into SPARQL WHERE clauses — same rule, same effect.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 04 Four forms ===================== -->
+<section id="forms">
+  <div class="section-label">04 · The four query forms</div>
+  <h2>Same language, four different outputs.</h2>
+
+  <p class="lede">The WHERE clause works identically across all four forms. What changes is what the query does with the matched solutions.</p>
+
+  <div class="form-grid">
+    <div class="form-card">
+      <div class="form-name">SELECT</div>
+      <div class="form-returns">Returns a table of variable bindings</div>
+      <p>The everyday form. Each matched solution becomes one row; each projected variable becomes one column. Most SPARQL tooling defaults to showing SELECT results as a table or JSON object.</p>
+    </div>
+    <div class="form-card">
+      <div class="form-name">ASK</div>
+      <div class="form-returns">Returns true or false</div>
+      <p>Tests whether any solution to the WHERE clause exists. Faster than <code>SELECT ... LIMIT 1</code> and more readable when existence is the only question. Use it for validation, guards, and assertions.</p>
+    </div>
+    <div class="form-card">
+      <div class="form-name">CONSTRUCT</div>
+      <div class="form-returns">Returns a new RDF graph</div>
+      <p>Maps matched solutions onto a triple template to produce new triples. Use it to derive inferred relationships, transform data between vocabularies, or materialize a view of the graph for external consumption.</p>
+    </div>
+    <div class="form-card">
+      <div class="form-name">DESCRIBE</div>
+      <div class="form-returns">Returns all known facts about a URI</div>
+      <p>Returns an RDF graph containing everything the endpoint knows about one or more resources. What "everything" means is implementation-defined — Fuseki returns all triples where the URI appears as subject. Good for exploration; less useful when you need a precise result shape.</p>
+    </div>
+  </div>
+
+  <h3>SELECT in depth</h3>
+
+  <p>The most important thing to understand about SELECT is how solution cardinality works. Each row in the result represents one way of satisfying all the triple patterns simultaneously. If a ninja has two jutsu, the same ninja appears twice — once per jutsu. If you want one row per ninja, you have two options: aggregate with <code>COUNT</code>/<code>GROUP_CONCAT</code>, or remove the jutsu triple pattern and accept that jutsu data isn't in this query.</p>
+
+<pre><span class="comment"># Returns N rows — one per (ninja, jutsu) combination</span>
+<span class="kw">SELECT</span> ?name ?jutsuLabel <span class="kw">WHERE</span> {
+  ?ninja schema:name ?name ;
+         sensemaking:hasJutsu ?j .
+  ?j skos:prefLabel ?jutsuLabel .
+}
+
+<span class="comment"># Returns one row per ninja, jutsu concatenated</span>
+<span class="kw">SELECT</span> ?name (<span class="kw">GROUP_CONCAT</span>(?jutsuLabel; separator=", ") <span class="kw">AS</span> ?jutsu)
+<span class="kw">WHERE</span> {
+  ?ninja schema:name ?name .
+  <span class="kw">OPTIONAL</span> { ?ninja sensemaking:hasJutsu ?j . ?j skos:prefLabel ?jutsuLabel . }
+}
+<span class="kw">GROUP BY</span> ?name</pre>
+
+  <h3>ASK in depth</h3>
+
+  <p>ASK is an assertion, not a lookup. The most important thing to know about it: a result of <code>false</code> does not mean the thing does not exist. Under the open-world assumption, it means the pattern was not satisfied by data in this endpoint at this moment. "No data asserting X" is not the same as "X is false."</p>
+
+<pre><span class="comment"># true if any ninja has the Sharingan in this dataset</span>
+<span class="kw">ASK</span>
+<span class="kw">WHERE</span> {
+  ?ninja sensemaking:hasJutsu sensemaking:Sharingan .
+}
+
+<span class="comment"># false — but that means only "not asserted here"</span>
+<span class="kw">ASK</span>
+<span class="kw">WHERE</span> {
+  ?ninja sensemaking:hasJutsu sensemaking:FireStyleJutsu .
+}</pre>
+
+  <h3>CONSTRUCT in depth</h3>
+
+  <p>CONSTRUCT takes a template — triples with variable positions — and fills it in for each matched solution. The result is a new RDF graph, not a table. In Fuseki, switch the result format dropdown to Turtle to read it.</p>
+
+<pre><span class="comment"># Infer "colleague" from shared team membership</span>
+<span class="kw">CONSTRUCT</span> {
+  ?a sensemaking:colleagueOf ?b .
+}
+<span class="kw">WHERE</span> {
+  ?a sensemaking:memberOfTeam ?team .
+  ?b sensemaking:memberOfTeam ?team .
+  <span class="kw">FILTER</span> (<span class="kw">STR</span>(?a) &lt; <span class="kw">STR</span>(?b))
+}</pre>
+
+  <p>CONSTRUCT is how you materialize inferred triples that a reasoner would derive — useful when you want to precompute results for performance, or when you're transforming data from one vocabulary to another without running a full reasoner.</p>
+
+  <h3>DESCRIBE in depth</h3>
+
+  <p>DESCRIBE is the most exploratory form. Give it a URI and it returns whatever the endpoint considers "relevant" about that resource. Fuseki's default is all triples where the URI is the subject. Some endpoints include incoming triples too (triples where the URI is the object).</p>
+
+<pre><span class="comment"># Everything the endpoint knows about Kakashi</span>
+<span class="kw">DESCRIBE</span> sensemaking:KakashiHatake
+
+<span class="comment"># DESCRIBE also accepts WHERE clauses</span>
+<span class="kw">DESCRIBE</span> ?ninja
+<span class="kw">WHERE</span> {
+  ?ninja sensemaking:senseiOf sensemaking:NarutoUzumaki .
+}</pre>
+
+  <p>DESCRIBE is most useful when you do not yet know what predicates a resource has — it is the "tell me everything" query. Once you know the shape of the data, SELECT is almost always clearer and more precise.</p>
+
+  <div class="tip">
+    <span class="tip-label">Which form to use</span>
+    <p>Default to SELECT. Use ASK when you need a boolean check. Use CONSTRUCT when you need to produce new triples or transform data. Use DESCRIBE when exploring unknown data — find out what predicates exist, then write a targeted SELECT.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 05 Wikidata ===================== -->
+<section id="wikidata">
+  <div class="section-label">05 · Three Wikidata queries</div>
+  <h2>Real data, public endpoint, no setup.</h2>
+
+  <p>These three queries run against Wikidata's public SPARQL endpoint at <a class="inline" href="https://query.wikidata.org/" target="_blank" rel="noopener">query.wikidata.org</a>. Copy each one, paste it into the query editor, click Run. Each one also matches an exercise from Exercise 1.1.</p>
+
+  <p>Wikidata uses <code>wd:</code> for entity IRIs (<code>wd:Q49108</code> = MIT) and <code>wdt:</code> for property IRIs (<code>wdt:P69</code> = "educated at"). The <code>SERVICE wikibase:label</code> block is a Wikidata extension that resolves human-readable labels — without it you see raw IRIs. These conventions are Wikidata-specific; standard SPARQL endpoints do not have them.</p>
+
+  <div class="wikidata-card">
+    <div class="wikidata-header">
+      <span class="wikidata-num">WQ1</span>
+      <div>
+        <div class="wikidata-q">Books written by Adrian Tchaikovsky, most recent first</div>
+        <div class="wikidata-note">Pattern: SELECT · single property · ORDER BY year · OPTIONAL for date</div>
+      </div>
+    </div>
+    <div class="wikidata-body">
+<pre><span class="kw">PREFIX</span> wd:  &lt;http://www.wikidata.org/entity/&gt;
+<span class="kw">PREFIX</span> wdt: &lt;http://www.wikidata.org/prop/direct/&gt;
+<span class="kw">PREFIX</span> wikibase: &lt;http://wikiba.se/ontology#&gt;
+<span class="kw">PREFIX</span> bd:  &lt;http://www.bigdata.com/rdf#&gt;
+
+<span class="kw">SELECT</span> ?book ?bookLabel ?pubYear <span class="kw">WHERE</span> {
+  ?book wdt:P50 wd:Q21050585 .  <span class="comment"># P50 = author; Q21050585 = Tchaikovsky</span>
+  <span class="kw">OPTIONAL</span> {
+    ?book wdt:P577 ?pubDate .
+    <span class="kw">BIND</span>(<span class="kw">YEAR</span>(?pubDate) <span class="kw">AS</span> ?pubYear)
+  }
+  <span class="kw">SERVICE</span> wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+  }
+}
+<span class="kw">ORDER BY</span> <span class="kw">DESC</span>(?pubYear)</pre>
+    </div>
+    <div class="wikidata-footer">
+      Notice: <code>?bookLabel</code> is never defined in the WHERE clause — the label SERVICE populates it automatically from the <code>?book</code> IRI. Also notice OPTIONAL for <code>?pubYear</code>: some items lack a publication date, so without OPTIONAL they would drop from the results entirely.
+    </div>
+  </div>
+
+  <div class="wikidata-card">
+    <div class="wikidata-header">
+      <span class="wikidata-num">WQ2</span>
+      <div>
+        <div class="wikidata-q">People who studied at MIT and have a Wikipedia article</div>
+        <div class="wikidata-note">Pattern: two triple patterns · sitelinks filter · LIMIT</div>
+      </div>
+    </div>
+    <div class="wikidata-body">
+<pre><span class="kw">PREFIX</span> wd:  &lt;http://www.wikidata.org/entity/&gt;
+<span class="kw">PREFIX</span> wdt: &lt;http://www.wikidata.org/prop/direct/&gt;
+<span class="kw">PREFIX</span> wikibase: &lt;http://wikiba.se/ontology#&gt;
+<span class="kw">PREFIX</span> bd:  &lt;http://www.bigdata.com/rdf#&gt;
+<span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+
+<span class="kw">SELECT</span> ?person ?personLabel <span class="kw">WHERE</span> {
+  ?person wdt:P69 wd:Q49108 .   <span class="comment"># P69 = educated at; Q49108 = MIT</span>
+  ?article schema:about ?person ;
+           schema:inLanguage "en" ;
+           schema:isPartOf &lt;https://en.wikipedia.org/&gt; .
+  <span class="kw">SERVICE</span> wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+  }
+}
+<span class="kw">ORDER BY</span> ?personLabel
+<span class="kw">LIMIT</span> 30</pre>
+    </div>
+    <div class="wikidata-footer">
+      The Wikipedia article check uses schema.org triples that Wikidata maintains about Wikipedia sitelinks — not a Wikidata-specific extension. This is schema.org reused as RDF, which is the interoperability story from Sub-module 1.1 in a different context.
+    </div>
+  </div>
+
+  <div class="wikidata-card">
+    <div class="wikidata-header">
+      <span class="wikidata-num">WQ3</span>
+      <div>
+        <div class="wikidata-q">Occupations in Wikidata whose English label contains "data"</div>
+        <div class="wikidata-note">Pattern: FILTER with CONTAINS · LANG filter · rdfs:label</div>
+      </div>
+    </div>
+    <div class="wikidata-body">
+<pre><span class="kw">PREFIX</span> wd:   &lt;http://www.wikidata.org/entity/&gt;
+<span class="kw">PREFIX</span> wdt:  &lt;http://www.wikidata.org/prop/direct/&gt;
+<span class="kw">PREFIX</span> rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+
+<span class="kw">SELECT</span> ?occ ?label <span class="kw">WHERE</span> {
+  ?occ wdt:P31 wd:Q28640 ;      <span class="comment"># P31 = instance of; Q28640 = occupation</span>
+       rdfs:label ?label .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?label) = "en")
+  <span class="kw">FILTER</span> (<span class="kw">CONTAINS</span>(<span class="kw">LCASE</span>(?label), "data"))
+}
+<span class="kw">ORDER BY</span> ?label</pre>
+    </div>
+    <div class="wikidata-footer">
+      This query uses standard SPARQL's <code>rdfs:label</code> with a LANG filter rather than the label SERVICE — both approaches work on Wikidata. Notice LCASE() before CONTAINS(): without it, "Data scientist" and "data scientist" are different strings. Case normalization is a common SPARQL defensive pattern.
+    </div>
+  </div>
+
+  <div class="tip">
+    <span class="tip-label">When the Wikidata endpoint times out</span>
+    <p>Wikidata queries must complete in 60 seconds. Complex patterns without LIMIT, or patterns that hit very large sets (all people, all items), will time out. Always add a LIMIT clause when exploring. The helper UI at query.wikidata.org shows example queries for common domains — modify those rather than starting from scratch.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 06 Pain points ===================== -->
+<section id="pain">
+  <div class="section-label">06 · Pain points</div>
+  <h2>Where SPARQL surprises developers.</h2>
+
+  <ul class="spaced">
+    <li>
+      <strong>The LANG tag trap.</strong> If a resource has multilingual labels — <code>schema:name "Olympians"@en, "Caelestes"@la</code> — a query that binds <code>?name</code> to that predicate without a LANG filter returns two rows per resource. Aggregations double. Counts are wrong. Always add <code>FILTER (LANG(?name) = "en")</code> when the data has language-tagged literals and you only want one language. The workbook drills this repeatedly.
+    </li>
+    <li>
+      <strong>OPTIONAL is a left join, not an existence check.</strong> <code>OPTIONAL { ?ninja sensemaking:hasJutsu ?j }</code> keeps the ninja in the result with <code>?j</code> unbound if they have no jutsu. But if they have two jutsu, they appear twice — once per jutsu. Row multiplication is the most common OPTIONAL surprise. Use <code>GROUP_CONCAT</code> or restructure to avoid it.
+    </li>
+    <li>
+      <strong>Blank nodes are opaque.</strong> Blank node identifiers (<code>_:b0</code>) in query results cannot be referenced in subsequent queries. If your data uses blank nodes for intermediate structure (anonymous Employment events, reification nodes), you will see them in DESCRIBE output but cannot construct further patterns from them without going through their connecting predicates first.
+    </li>
+    <li>
+      <strong>Plain SPARQL does not see OWL inferences.</strong> If your ontology declares <code>sensemaking:rivalOf</code> as <code>owl:SymmetricProperty</code>, a plain SPARQL query against the raw data sees only explicitly asserted triples. The symmetric inverse is not there unless you either materialize it with CONSTRUCT, enable an OWL-aware reasoner, or add both directions to the data. Module 3 covers the reasoning layer. For now: what SPARQL sees is what is in the store, nothing more.
+    </li>
+    <li>
+      <strong>Endpoint availability is not guaranteed.</strong> Wikidata's public endpoint goes down, rate-limits heavy queries, and has occasional schema changes. Design applications to handle failures. For the curriculum, always have a local Fuseki fallback.
+    </li>
+  </ul>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 07 Next ===================== -->
+<section id="next">
+  <div class="section-label">07 · Next</div>
+  <h2>What to do with this.</h2>
+
+  <div class="branch">
+    <h3>If you are working through the curriculum</h3>
+    <p>The Sub-module 1.2 workbook (<code>1-2-workbook-naruto.html</code> or the mythology variant) has five queries that go beyond the 1.1 workbook: DESCRIBE, UNION, property paths, FILTER NOT EXISTS, and VALUES. Start Fuseki first, then work through each query card before opening the "Think about this" prompts. Prediction before execution is the habit that makes SPARQL stick.</p>
+  </div>
+
+  <div class="branch">
+    <h3>If you want to go deeper now</h3>
+    <p>DuCharme's <em>Learning SPARQL</em> chapters 1–2 cover the foundations with more examples than this page has room for. The W3C SPARQL 1.1 spec's overview section is denser but authoritative on edge cases. And the Wikidata query service helper UI has dozens of working example queries to study and modify.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 08 Resources ===================== -->
+<section id="resources">
+  <div class="section-label">08 · Resources</div>
+  <h2>Curated links.</h2>
+
+  <ol class="resources">
+    <li>
+      <span class="res-title">DuCharme — <em>Learning SPARQL</em> (2nd ed., 2013), Chapters 1–2.</span>
+      <span class="res-note">The canonical reference for the curriculum. Clear, example-driven, honest about edge cases. <a class="inline" href="https://www.learningsparql.com/">learningsparql.com</a> has companion examples; the author's blog at <a class="inline" href="https://www.bobdc.com/blog/">bobdc.com</a> tracks current SPARQL and KG developments.</span>
+    </li>
+    <li>
+      <span class="res-title">W3C — SPARQL 1.1 Query Language specification.</span>
+      <span class="res-note">Authoritative on every edge case. Not a tutorial, but essential for when you hit something surprising. The Grammar section is also the clearest complete description of query syntax. <a class="inline" href="https://www.w3.org/TR/sparql11-query/">w3.org/TR/sparql11-query/</a></span>
+    </li>
+    <li>
+      <span class="res-title">Wikidata Query Service — <a class="inline" href="https://query.wikidata.org/">query.wikidata.org</a></span>
+      <span class="res-note">Public SPARQL endpoint over the largest open knowledge graph. The built-in example library is the fastest way to learn Wikidata's naming conventions. Open an example, modify it, break it deliberately, fix it.</span>
+    </li>
+    <li>
+      <span class="res-title">Allemang, Hendler &amp; Gandon — <em>Semantic Web for the Working Ontologist</em> (3rd ed.), Chapters 1–3.</span>
+      <span class="res-note">Not a SPARQL tutorial, but provides the mental model that makes SPARQL make sense: why the triple is the only primitive, why open-world reasoning changes what queries mean.</span>
+    </li>
+    <li>
+      <span class="res-title"><a class="inline" href="../README.md">Module 1 README</a> — exercise list and primary project hook.</span>
+      <span class="res-note">If you have not yet started Exercise 1.3 (Resume Graph RDF slice), this is the moment. The SPARQL queries you have been running on Naruto and mythology data map directly to the three queries in the exercise — same patterns, your own resume data.</span>
+    </li>
+  </ol>
+</section>
+
+<footer>
+  <p>Sub-module 1.2 · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Licensed CC BY 4.0. Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+</div>
+
+</body>
+</html>

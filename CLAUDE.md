@@ -50,6 +50,7 @@ sensemaking-ai/semantic-web-curriculum/
 ├── modules/
 │   └── 0N-name/
 │       ├── README.md      # Module overview (follows Module 1's template)
+│       ├── submodules/    # Learning materials for each submodule (HTML workbooks, PDFs)
 │       ├── exercises/     # Numbered exercise files
 │       ├── notes/         # week-NN.md synthesis notes
 │       └── artifacts/     # Published or in-progress work
@@ -58,6 +59,8 @@ sensemaking-ai/semantic-web-curriculum/
     ├── tools.md
     └── public-kgs.md
 ```
+
+**Submodules vs. exercises — these are not the same thing.** Each module contains roughly 3 submodules, each covering a major topic area (approximately one week of content). Submodules are the conceptual groupings; exercises are the hands-on tasks. A single submodule may have 1-2 associated exercises, or none if it is reading-heavy. Submodule materials (interactive workbooks, reading companions, synthesis HTMLs) live in `submodules/` and are named `M-S-topic-name.ext` where M = module number and S = submodule number (e.g. `1-2-sparql-basics.html`). See SYLLABUS.md for the topic each submodule covers.
 
 **Module READMEs follow the Module 1 template exactly.** Same sections, same order: scope → reading → exercises → primary project → pain points → deliverables → notes → checklist → "when you're done" test → navigation footer. When asked to create or update a module README, mirror Module 1's structure.
 
@@ -71,6 +74,7 @@ sensemaking-ai/semantic-web-curriculum/
 | Blog post drafts | dated slug | `2026-06-22-lpg-vs-rdf-resume-graphs.md` |
 | Diagrams | lowercase, hyphens | `module-2-class-hierarchy.svg` |
 | Ontology namespaces | one per project | `https://sensemaking-ai.com/ns/naruto#` |
+| Submodule materials | `M-S-topic-name.ext` | `1-2-sparql-basics.html`, `1-1-reading-companion.pdf` |
 
 ## Turtle / RDF conventions
 
@@ -105,22 +109,34 @@ sensemaking-ai/semantic-web-curriculum/
 - Primary project: Resume Graph Explorer RDF slice (because ESCO/SKOS is real semantic web interop)
 - Secondary: Naruto Graph Turtle slice
 - Keep examples runnable on Wikidata when possible (no setup friction)
+- **Submodule 1.1** — RDF as a data model: triples, URIs, literals, serialization formats, RDF vs LPG *(materials exist)*
+- **Submodule 1.2** — SPARQL basics: SELECT, ASK, CONSTRUCT, DESCRIBE; querying Wikidata and local Fuseki
+- **Submodule 1.3** — Vocabulary landscape and primary project: FOAF, Dublin Core, SKOS, schema.org; Resume Graph RDF slice
 
 ### When working on Module 2 (Modeling)
 - Primary project: Naruto ontology v1.0
 - The Naruto domain is the *primary* canvas because its categorical structure (ranks, villages, jutsu, arcs) is unusually rich
 - Optional secondary: career narrative ontology for Resume Graph
 - All ontologies must include REUSE.md documenting which external vocabularies are used
+- **Submodule 2.1** — RDFS: subclass, subproperty, domain, range; class hierarchy basics
+- **Submodule 2.2** — OWL: classes, individuals, object/datatype properties, restrictions, OWL profiles
+- **Submodule 2.3** — Ontology design practice: Protégé workflow, design decisions, Naruto ontology primary project
 
 ### When working on Module 3 (Reasoning)
 - Primary project A: Naruto reification (Itachi's revealed-late backstory is the canonical teaching example for contested provenance)
 - Primary project B: Resume skill inference (where OWL property characteristics shine)
 - This is the hardest module; pacing materials should be calmer, more deliberate
+- **Submodule 3.1** — Inferencing: RDFS and OWL reasoning, running HermiT in Protégé
+- **Submodule 3.2** — Reification: four approaches (classical, n-ary, named graphs, RDF-star), PROV-O; Naruto project
+- **Submodule 3.3** — SHACL and vocabulary alignment: constraint shapes, owl:sameAs vs skos:exactMatch; Resume skill inference
 
 ### When working on Module 4 (Shipping)
 - Capstone unifies TwinKit Semantic v2.0 framework + Naruto Knowledge Graph as demo dataset
 - Deploys to either HuggingFace Spaces or Dagny's existing EC2 infrastructure (alongside Uptime Kuma)
 - Eval honesty matters — document where hybrid retrieval is *worse* than vector-only, not just where it's better
+- **Submodule 4.1** — SPARQL UPDATE: INSERT, DELETE, CONSTRUCT-into-graph, transactional considerations
+- **Submodule 4.2** — Federation and deployment: SERVICE keyword, triplestore options, versioning, EC2 setup
+- **Submodule 4.3** — LLM + KG integration: GraphRAG patterns, hybrid retrieval, TwinKit Semantic capstone
 
 ## Publishing workflow
 

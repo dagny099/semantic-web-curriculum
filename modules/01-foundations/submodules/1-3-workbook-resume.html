@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submodule 1.3 workbook — Resume Graph · Sensemaking Semantic Web</title>
+<meta name="description" content="Five SPARQL queries on a resume RDF graph: FOAF person facts, employment history, ESCO/SKOS skill interop, Dublin Core metadata, and skill-level filtering.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal-deep: #0B4F4A; --teal-mid: #1E8076; --teal-light: #C6E2DD;
+  --coral: #D85A30; --coral-tint: #FAEAE2;
+  --charcoal: #1F2A2E; --slate: #5A6671; --slate-lt: #8A929A;
+  --cream: #FAF7F2; --white: #FFFFFF; --rule: #D8D2C6; --code-bg: #F2EDE3;
+  --green: #2A7040; --green-tint: #E4F1EA;
+  --amber: #9A6B00; --amber-tint: #FDF6E3;
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --font-sans:  'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:  'IBM Plex Mono', Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { margin: 0; background: var(--cream); color: var(--charcoal); font-family: var(--font-sans); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+
+.masthead { background: var(--teal-deep); color: var(--white); padding: 3rem 1.5rem 3.5rem; border-bottom: 5px solid var(--coral); }
+.masthead-inner { max-width: 68rem; margin: 0 auto; }
+.brand  { font-size: .74rem; letter-spacing: .18em; color: var(--teal-light); text-transform: uppercase; font-weight: 600; margin-bottom: 1.4rem; }
+.kicker { font-size: .74rem; letter-spacing: .14em; color: var(--teal-light); text-transform: uppercase; font-weight: 600; margin-bottom: .55rem; }
+h1 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(2.8rem, 7vw, 5.2rem); color: var(--white); line-height: 1.0; letter-spacing: -.025em; margin: 0 0 .85rem; max-width: 18ch; }
+.subtitle { color: var(--teal-light); font-size: clamp(1rem, 2.5vw, 1.18rem); line-height: 1.55; max-width: 46rem; margin: 0 0 1.8rem; }
+.meta-row { display: flex; flex-wrap: wrap; gap: .45rem .85rem; }
+.meta-row span { border: 1px solid rgba(198,226,221,.38); border-radius: 999px; padding: .28rem .7rem; font-size: .8rem; color: var(--teal-light); }
+
+.fuseki-banner { padding: .65rem 1.5rem; font-size: .875rem; display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
+.fuseki-banner.checking  { background: var(--amber-tint); color: var(--amber); }
+.fuseki-banner.connected { background: var(--green-tint);  color: var(--green); }
+.fuseki-banner.offline   { background: var(--coral-tint);  color: var(--coral); }
+.fuseki-banner .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.fuseki-banner.checking  .dot { background: var(--amber); }
+.fuseki-banner.connected .dot { background: var(--green); }
+.fuseki-banner.offline   .dot { background: var(--coral); }
+.fuseki-banner a    { color: inherit; text-decoration: underline; }
+.fuseki-banner code { font-family: var(--font-mono); font-size: .8em; background: rgba(0,0,0,.08); padding: .1em .3em; border-radius: 3px; }
+
+.quick-nav { position: sticky; top: 0; z-index: 20; background: rgba(250,247,242,.97); border-bottom: 1px solid var(--rule); backdrop-filter: blur(4px); }
+.quick-nav-inner { max-width: 68rem; margin: 0 auto; padding: .65rem 1.5rem; display: flex; gap: .45rem; overflow-x: auto; scrollbar-width: none; }
+.quick-nav-inner::-webkit-scrollbar { display: none; }
+.quick-nav a { flex: 0 0 auto; color: var(--charcoal); border: 1px solid var(--rule); border-radius: 999px; padding: .28rem .68rem; font-size: .76rem; white-space: nowrap; text-decoration: none; background: rgba(255,255,255,.4); transition: border-color .15s, color .15s; }
+.quick-nav a:hover { border-color: var(--teal-mid); color: var(--teal-deep); }
+
+main { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem 4rem; }
+section { padding: 3.75rem 0; border-bottom: 1px solid var(--rule); scroll-margin-top: 3.5rem; }
+section:last-child { border-bottom: none; }
+.section-label { font-size: .7rem; letter-spacing: .2em; color: var(--coral); text-transform: uppercase; font-weight: 600; margin-bottom: .85rem; }
+h2 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(2rem, 5vw, 3.2rem); color: var(--charcoal); line-height: 1.05; letter-spacing: -.015em; margin: 0 0 1.1rem; }
+h3 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(1.35rem, 3vw, 1.9rem); color: var(--charcoal); margin: 2.25rem 0 .65rem; }
+h3:first-of-type { margin-top: .4rem; }
+p { max-width: 44rem; margin: 0 0 1.05rem; font-size: 1rem; }
+p.lead { font-size: 1.1rem; line-height: 1.6; }
+
+pre { font-family: var(--font-mono); font-size: .8rem; background: var(--code-bg); border-left: 4px solid var(--teal-mid); border-radius: 0 8px 8px 0; padding: 1rem 1.1rem; overflow-x: auto; margin: .6rem 0 1.2rem; line-height: 1.6; color: var(--charcoal); }
+code { font-family: var(--font-mono); font-size: .86em; background: var(--code-bg); padding: .1em .3em; border-radius: 3px; }
+pre code { background: transparent; padding: 0; font-size: inherit; }
+.kw { color: var(--teal-deep); font-weight: 500; }
+.cm { color: var(--slate-lt); }
+
+.note, .tip, .mental-shift { max-width: 44rem; margin: 1.4rem 0; padding: .9rem 1.1rem .9rem 1.25rem; background: var(--coral-tint); border-left: 4px solid var(--coral); }
+.note-title { display: block; font-size: .7rem; letter-spacing: .16em; font-weight: 600; color: var(--coral); text-transform: uppercase; margin-bottom: .3rem; }
+.note p, .tip p, .mental-shift p { margin: 0; max-width: none; }
+
+/* Vocab tag pills on query cards */
+.vocab-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .35rem; }
+.vocab-tag { font-size: .7rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: .15rem .45rem; border-radius: 999px; }
+.vocab-tag.foaf    { background: #E4F1EA; color: #1E6040; }
+.vocab-tag.schema  { background: #E8EEF8; color: #2A4080; }
+.vocab-tag.skos    { background: #F5ECE8; color: #8B3A20; }
+.vocab-tag.dcterms { background: #EDE8F5; color: #4A2A80; }
+.vocab-tag.sensemaking { background: #C6E2DD; color: #0B4F4A; }
+
+.data-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.3rem 0; align-items: start; }
+.anno-note { background: var(--white); border: 1px solid var(--rule); border-radius: 8px; padding: .85rem 1rem; font-size: .9rem; color: var(--slate); }
+.anno-note strong { color: var(--charcoal); }
+
+.query-card { background: var(--white); border: 1px solid var(--rule); border-radius: 12px; margin: 1.5rem 0; overflow: hidden; }
+.query-header { display: flex; align-items: flex-start; gap: .9rem; padding: 1rem 1.15rem .85rem; border-bottom: 1px solid var(--rule); }
+.query-num { font-family: var(--font-mono); font-size: .76rem; font-weight: 500; color: var(--white); background: var(--teal-mid); border-radius: 6px; padding: .22rem .48rem; flex-shrink: 0; margin-top: .1rem; }
+.query-meta { flex: 1; min-width: 0; }
+.query-q { font-weight: 600; font-size: .98rem; color: var(--charcoal); margin-bottom: .22rem; }
+.query-c { font-size: .81rem; color: var(--slate); }
+.btn-fuseki { flex-shrink: 0; display: inline-block; font-size: .76rem; font-weight: 500; color: var(--teal-mid); border: 1px solid var(--teal-light); border-radius: 999px; padding: .26rem .72rem; text-decoration: none; white-space: nowrap; transition: background .15s, border-color .15s; }
+.btn-fuseki:hover { background: var(--teal-light); border-color: var(--teal-mid); }
+.query-body { position: relative; }
+.query-body pre { margin: 0; border-radius: 0; border-left: none; border-bottom: 1px solid var(--rule); }
+.copy-btn { position: absolute; top: .6rem; right: .6rem; background: var(--cream); border: 1px solid var(--rule); border-radius: 5px; padding: .2rem .52rem; font-family: var(--font-sans); font-size: .72rem; color: var(--slate); cursor: pointer; z-index: 2; transition: border-color .15s, color .15s; }
+.copy-btn:hover { border-color: var(--teal-mid); color: var(--teal-deep); }
+.query-footer { padding: .7rem 1.15rem; display: flex; flex-direction: column; gap: .45rem; }
+
+details.panel summary { font-size: .83rem; font-weight: 600; color: var(--teal-deep); cursor: pointer; padding: .28rem 0; list-style: none; display: flex; align-items: center; gap: .4rem; user-select: none; }
+details.panel summary::before { content: "▶"; font-size: .58rem; color: var(--coral); transition: transform .2s; }
+details.panel[open] summary::before { transform: rotate(90deg); }
+details.panel summary::-webkit-details-marker { display: none; }
+.panel-body { padding: .65rem 0 .25rem 1.2rem; }
+.panel-body p { font-size: .9rem; max-width: none; margin: 0 0 .52rem; }
+.panel-body p:last-child { margin-bottom: 0; }
+.panel-body pre { font-size: .77rem; margin: .35rem 0 .65rem; }
+.expected-out { background: var(--code-bg); border-radius: 4px; padding: .38rem .65rem; font-family: var(--font-mono); font-size: .78rem; color: var(--charcoal); margin-bottom: .55rem; line-height: 1.5; }
+
+.challenge-card { background: var(--white); border: 1px solid var(--rule); border-radius: 12px; margin: 1.4rem 0; overflow: hidden; }
+.challenge-header { display: flex; align-items: center; gap: .85rem; padding: .85rem 1.15rem; border-bottom: 1px solid var(--rule); }
+.challenge-num { font-family: var(--font-mono); font-size: .76rem; font-weight: 500; background: var(--coral); color: var(--white); border-radius: 6px; padding: .22rem .48rem; flex-shrink: 0; }
+.challenge-title { font-weight: 600; font-size: .97rem; }
+.challenge-body { padding: .85rem 1.15rem; }
+.challenge-body p { font-size: .92rem; max-width: none; margin: 0 0 .65rem; }
+
+.branch { border-left: 4px solid var(--teal-mid); background: var(--white); padding: .82rem 1.15rem; margin: .6rem 0 1.3rem; max-width: 44rem; }
+.branch h4 { font-family: var(--font-sans); font-size: .88rem; font-weight: 600; color: var(--teal-deep); margin: 0 0 .3rem; }
+.branch p { margin: 0; font-size: .9rem; max-width: none; }
+.branch a { color: var(--teal-mid); }
+
+.resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .85rem; margin: 1.3rem 0; }
+.resource-card { background: rgba(255,255,255,.45); border: 1px solid var(--rule); border-radius: 14px; padding: 1.1rem; }
+.resource-card h4 { font-family: var(--font-sans); font-size: .7rem; letter-spacing: .14em; font-weight: 600; text-transform: uppercase; color: var(--coral); margin: 0 0 .5rem; }
+.resource-card h5 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: 1.08rem; color: var(--charcoal); margin: 0 0 .4rem; }
+.resource-card a { color: var(--teal-mid); text-decoration: underline; }
+.resource-card p { font-size: .87rem; margin: 0; color: var(--slate); max-width: none; }
+
+footer { max-width: 68rem; margin: 0 auto; padding: 2rem 1.5rem 3rem; border-top: 1px solid var(--rule); color: var(--slate); font-size: .84rem; }
+footer a { color: var(--teal-mid); text-decoration: underline; }
+footer p { margin: 0 0 .4rem; max-width: none; }
+
+@media (max-width: 820px) { .resource-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 640px) {
+  .data-pair { grid-template-columns: 1fr; }
+  .resource-grid { grid-template-columns: 1fr; }
+  .query-header { flex-wrap: wrap; }
+  .btn-fuseki { order: 3; }
+  main { padding-left: 1rem; padding-right: 1rem; }
+  .masthead { padding: 2rem 1rem 2.5rem; }
+}
+@media print {
+  .masthead { background: white; color: black; border-bottom: 2px solid black; padding: .5rem 0; }
+  h1 { color: black; font-size: 26pt; }
+  .brand, .kicker, .subtitle, .meta-row { color: #444; }
+  .quick-nav, .fuseki-banner, .btn-fuseki, .copy-btn { display: none !important; }
+  main, footer, .masthead-inner { max-width: none; padding-left: 0; padding-right: 0; }
+  section { padding: .3in 0; }
+  pre { background: #f5f5f5; border-left: 2px solid #888; font-size: 7.5pt; page-break-inside: avoid; }
+  .query-card, .challenge-card, .resource-card { break-inside: avoid; border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ MASTHEAD ══════════ -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sensemaking Semantic Web</div>
+    <div class="kicker">Submodule 1.3 · Foundations</div>
+    <h1>The Resume Graph Explorer.</h1>
+    <p class="subtitle">Five SPARQL queries on a real-shaped resume graph — FOAF for the person, Dublin Core for the document, schema.org for organizations, SKOS for skills, and the ESCO interop query that makes it all matter. Load resume-001.ttl into Fuseki before starting.</p>
+    <div class="meta-row">
+      <span>Module 1 · Weeks 1–3</span>
+      <span>Requires Fuseki + resume-001.ttl</span>
+      <span>~90 min hands-on</span>
+      <span>FOAF · dcterms · schema.org · SKOS · ESCO</span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════ FUSEKI STATUS ══════════ -->
+<div id="fuseki-banner" class="fuseki-banner checking">
+  <span class="dot"></span>
+  Checking for Fuseki at localhost:3030…
+</div>
+
+<!-- ══════════ STICKY NAV ══════════ -->
+<nav class="quick-nav" aria-label="Section navigation">
+  <div class="quick-nav-inner">
+    <a href="#setup">01 · Setup</a>
+    <a href="#data">02 · The data</a>
+    <a href="#lab">03 · Query lab</a>
+    <a href="#challenges">04 · Challenges</a>
+    <a href="#exercise">05 · Exercise 1.3</a>
+    <a href="#resources">06 · Resources</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════
+     01 · SETUP
+══════════════════════════════════════════════ -->
+<section id="setup">
+  <div class="section-label">01 · Setup</div>
+  <h2>This workbook is different.</h2>
+  <p class="lead">The 1.1 and 1.2 workbooks used pre-loaded narrative datasets (Naruto, mythology) to teach query patterns. This workbook uses a resume graph — the same shape of data that Exercise 1.3 asks you to build for your own career history. The vocabulary choices in the queries here are the vocabulary choices you will make in that exercise.</p>
+  <p>The workbook queries against <code>resume-001.ttl</code>, a sample resume for Alex Rivera — the same fictional person introduced in the 1.1 synthesis document. Load it into Fuseki before running any query.</p>
+
+  <div class="branch">
+    <h4>Loading resume-001.ttl into Fuseki</h4>
+    <p>From the starter-kit root: <code>fuseki-server --config=fuseki/config.ttl</code>. In the Fuseki UI, upload <code>modules/01-foundations/artifacts/resume-graph/ttl/resume-001.ttl</code> to the <code>mythology</code> dataset (or a new <code>resume</code> dataset — update the query links accordingly). The queries use the base IRI <code>https://sensemaking-ai.com/resume/alex-rivera/001/</code> — verify the file loaded by running <code>SELECT * WHERE { ?s ?p ?o } LIMIT 10</code> and checking that results appear.</p>
+  </div>
+
+  <div class="tip">
+    <span class="note-title">Note on prefixes</span>
+    <p>This workbook uses five vocabulary prefixes: <code>foaf:</code>, <code>dcterms:</code>, <code>schema:</code>, <code>skos:</code>, and <code>sensemaking:</code>. Every query declares all five. You will use this same prefix block in Exercise 1.3.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     02 · THE DATA
+══════════════════════════════════════════════ -->
+<section id="data">
+  <div class="section-label">02 · The data: vocabulary by vocabulary</div>
+  <h2>Each section of the file uses a different vocabulary.</h2>
+  <p>Read <code>resume-001.ttl</code> before running queries. Three things to understand before the query lab begins.</p>
+
+  <div class="data-pair">
+    <div>
+<pre><span class="cm"># Dublin Core describes the document</span>
+&lt;https://sensemaking-ai.com/resume/alex-rivera/001&gt;
+    a sensemaking:Resume ;
+    dcterms:title   "Alex Rivera — Resume" ;
+    dcterms:created "2024-11-01"^^xsd:date ;
+    dcterms:language "en" ;
+    foaf:primaryTopic &lt;person&gt; .
+
+<span class="cm"># FOAF describes the person</span>
+&lt;person&gt;
+    a foaf:Person ;
+    foaf:name "Alex Rivera" ;
+    foaf:mbox &lt;mailto:alex@example.com&gt; ;
+    schema:jobTitle "Data Scientist" .</pre>
+    </div>
+    <div class="anno-note">
+      <strong>Document ≠ person.</strong> The resume document and the person it describes are two distinct nodes with different vocabularies. <code>dcterms:</code> describes the document (when created, what language, what it is about). <code>foaf:Person</code> describes the human being. <code>foaf:primaryTopic</code> connects them. q04 queries the document node; q01 queries the person node. They are different subjects in the graph.
+    </div>
+  </div>
+
+  <div class="data-pair">
+    <div>
+<pre><span class="cm"># Employment: a first-class event node</span>
+&lt;emp1&gt;
+    a sensemaking:Employment ;
+    sensemaking:employer  &lt;org_riverbend&gt; ;
+    sensemaking:role      "Junior Data Analyst" ;
+    sensemaking:startDate "2020-01-15"^^xsd:date ;
+    sensemaking:endDate   "2022-06-30"^^xsd:date .
+
+<span class="cm"># Organization: schema.org</span>
+&lt;org_riverbend&gt;
+    a schema:Organization ;
+    schema:name "Riverbend Analytics" .</pre>
+    </div>
+    <div class="anno-note">
+      <strong>Employment as an event.</strong> Because RDF cannot put properties on edges, employment (with a role, start date, and end date) must become its own node. The custom <code>sensemaking:Employment</code> class carries the relationship-level facts. This is the design forced by the data model — the same pattern you will use in Exercise 1.3 when you model your own career history. Query q02 traverses these nodes.
+    </div>
+  </div>
+
+  <div class="data-pair">
+    <div>
+<pre><span class="cm"># Skills: SKOS concepts linked to ESCO</span>
+&lt;skill_python&gt;
+    a skos:Concept ;
+    skos:prefLabel  "Python (programming language)"@en ;
+    skos:exactMatch &lt;esco_python&gt; ;
+    sensemaking:skillLevel "advanced" .
+
+<span class="cm"># ESCO stub shows the broader hierarchy</span>
+&lt;esco_python&gt;
+    a skos:Concept ;
+    skos:prefLabel "use a scripting language: Python"@en ;
+    skos:broader   &lt;esco_programming_languages&gt; .</pre>
+    </div>
+    <div class="anno-note">
+      <strong>ESCO stubs make the interop query runnable locally.</strong> In a production graph, <code>skos:exactMatch</code> would point to real ESCO IRIs — and the broader hierarchy would be in ESCO's published dataset, not inline here. The stubs in <code>resume-001.ttl</code> mirror the real ESCO structure so q03 works without loading a 200MB vocabulary dataset. The query pattern is identical to what would run against live ESCO.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     03 · QUERY LAB
+══════════════════════════════════════════════ -->
+<section id="lab">
+  <div class="section-label">03 · Query lab</div>
+  <h2>Five queries, five vocabularies.</h2>
+  <p>Each query demonstrates how one or more of the vocabularies in <code>resume-001.ttl</code> are accessed in SPARQL. The colored tags show which vocabulary each query primarily exercises.</p>
+
+  <!-- ── q01 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q01</span>
+      <div class="query-meta">
+        <div class="query-q">Who is Alex Rivera and what are his basic facts?</div>
+        <div class="query-c">Pattern: FOAF person facts · OPTIONAL for optional properties</div>
+        <div class="vocab-tags">
+          <span class="vocab-tag foaf">foaf</span>
+          <span class="vocab-tag schema">schema.org</span>
+        </div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q01"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> dcterms:     &lt;http://purl.org/dc/terms/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT</span> ?name ?email ?jobTitle <span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          foaf:name ?name .
+  <span class="kw">OPTIONAL</span> { ?person foaf:mbox ?email . }
+  <span class="kw">OPTIONAL</span> { ?person schema:jobTitle ?jobTitle . }
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('q01',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">1 row · name: "Alex Rivera" · email: mailto:alex@example.com · jobTitle: "Data Scientist"</div>
+          <p>OPTIONAL for both email and jobTitle: if the file were missing those triples, the person would still appear with those columns unbound. The query structure tells you the data is optional even when it is present — a modeling signal that these facts may not exist for every person in a larger dataset.</p>
+          <p>Notice: <code>foaf:mbox</code> takes a <code>mailto:</code> URI, not a plain string. The bound value is the full IRI, not just the address string. To get the address as a string you would use <code>STR(?email)</code> or <code>REPLACE(STR(?email), "mailto:", "")</code>.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Add <code>foaf:givenName</code> and <code>foaf:familyName</code> to the OPTIONAL block. Do they appear? Check <code>resume-001.ttl</code> to verify they are asserted.</p>
+          <p>2. Remove both OPTIONAL blocks and make email and jobTitle required triple patterns. What changes? Does the person still appear?</p>
+          <p>3. The resume document node (<code>https://sensemaking-ai.com/resume/alex-rivera/001</code>) is also in the graph. Add a second pattern to the WHERE clause that retrieves the document's <code>dcterms:title</code>. What does the result look like when you join person facts and document facts in the same query?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q02 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q02</span>
+      <div class="query-meta">
+        <div class="query-q">What is Alex's employment history, in chronological order?</div>
+        <div class="query-c">Pattern: traversing Employment event nodes · OPTIONAL for current job · ORDER BY date</div>
+        <div class="vocab-tags">
+          <span class="vocab-tag sensemaking">sensemaking</span>
+          <span class="vocab-tag schema">schema.org</span>
+        </div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q02"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> dcterms:     &lt;http://purl.org/dc/terms/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT</span> ?orgName ?role ?start ?end <span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          sensemaking:hasEmployment ?emp .
+  ?emp sensemaking:employer  ?org ;
+       sensemaking:role      ?role ;
+       sensemaking:startDate ?start .
+  ?org schema:name ?orgName .
+  <span class="kw">OPTIONAL</span> { ?emp sensemaking:endDate ?end . }
+}
+<span class="kw">ORDER BY</span> ?start</pre>
+      <button class="copy-btn" onclick="copyQuery('q02',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">2 rows · Riverbend Analytics / Junior Data Analyst / 2020-01-15 / 2022-06-30 · Northwind Health / Data Scientist / 2022-07-01 / (unbound — current job)</div>
+          <p>The current job (Northwind) has no <code>sensemaking:endDate</code> triple — it is ongoing. OPTIONAL keeps that row in the result with <code>?end</code> unbound. Without OPTIONAL, the current job disappears from the result entirely. This is a common data modeling convention: no end date means the role is current.</p>
+          <p>Notice the two-hop traversal: person → Employment event → Organization. Each hop is a triple pattern. The Employment event node earns its existence by carrying the role and dates — properties that cannot live on an edge in RDF.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Add education to the results using UNION: <code>UNION { ?person sensemaking:hasEducation ?edu . ?edu sensemaking:institution ?org . ?edu sensemaking:degree ?role . ?edu sensemaking:startDate ?start . ?org schema:name ?orgName . OPTIONAL { ?edu sensemaking:endDate ?end . } }</code>. Do all three records (two jobs, one degree) appear?</p>
+          <p>2. Add <code>schema:description</code> to the SELECT via OPTIONAL. Does the description appear for both jobs? What LANG filter behavior do you expect if descriptions had language tags?</p>
+          <p>3. Filter to only jobs that have ended: <code>FILTER (BOUND(?end))</code>. Who appears? What does BOUND() check?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q03 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q03</span>
+      <div class="query-meta">
+        <div class="query-q">What are Alex's skills and their broader ESCO domains?</div>
+        <div class="query-c">Pattern: SKOS interop · exactMatch/broader property path · the key payoff query</div>
+        <div class="vocab-tags">
+          <span class="vocab-tag skos">SKOS</span>
+          <span class="vocab-tag sensemaking">sensemaking</span>
+        </div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q03"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> dcterms:     &lt;http://purl.org/dc/terms/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT</span> ?skillLabel ?level ?domainLabel <span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          sensemaking:hasSkill ?skill .
+  ?skill skos:prefLabel ?skillLabel ;
+         sensemaking:skillLevel ?level ;
+         skos:exactMatch/skos:broader ?domain .
+  ?domain skos:prefLabel ?domainLabel .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?skillLabel) = "en")
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?domainLabel) = "en")
+}
+<span class="kw">ORDER BY</span> ?level ?skillLabel</pre>
+      <button class="copy-btn" onclick="copyQuery('q03',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">3 rows · "machine learning" / intermediate / "data science and analytics" · "Python..." / advanced / "programming languages and scripting" · "SQL..." / advanced / "database management and querying"</div>
+          <p>The path <code>skos:exactMatch/skos:broader</code> chains two predicates: from the local skill concept to the ESCO stub via exactMatch, then from the ESCO stub to its broader category. This is the interop query from the 1.1 synthesis document, now running on real data.</p>
+          <p>In a production graph with the full ESCO dataset loaded, the same query reaches the actual European occupational taxonomy — ~14,000 skill concepts organized into a hierarchy. The query pattern does not change; only the data behind <code>skos:exactMatch</code> changes (local stubs vs. live ESCO IRIs).</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Extend the path to two hops of broader: <code>skos:exactMatch/skos:broader/skos:broader</code>. What do the domain labels become? (They should reach <code>ICT skills</code> — the top-level ESCO category in the stubs.)</p>
+          <p>2. Change to <code>skos:exactMatch/skos:broader+</code> (one-or-more hops of broader). How many rows appear now? For each skill, what is the chain of broader categories returned?</p>
+          <p>3. Remove the LANG filters. How does the row count change? Open <code>resume-001.ttl</code> and check the language tags on <code>skos:prefLabel</code> values — all are tagged <code>@en</code>, so the filter should not change results here. When would it matter?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q04 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q04</span>
+      <div class="query-meta">
+        <div class="query-q">What does the resume document say about itself?</div>
+        <div class="query-c">Pattern: Dublin Core document metadata · distinguishing document from person</div>
+        <div class="vocab-tags">
+          <span class="vocab-tag dcterms">dcterms</span>
+          <span class="vocab-tag foaf">foaf</span>
+        </div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q04"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> dcterms:     &lt;http://purl.org/dc/terms/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT</span> ?title ?created ?modified ?language ?personName <span class="kw">WHERE</span> {
+  ?doc a sensemaking:Resume ;
+       dcterms:title    ?title ;
+       dcterms:created  ?created ;
+       dcterms:language ?language ;
+       foaf:primaryTopic ?person .
+  ?person foaf:name ?personName .
+  <span class="kw">OPTIONAL</span> { ?doc dcterms:modified ?modified . }
+}
+</pre>
+      <button class="copy-btn" onclick="copyQuery('q04',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">1 row · title: "Alex Rivera — Resume" · created: 2024-11-01 · modified: 2025-08-15 · language: "en" · personName: "Alex Rivera"</div>
+          <p><code>foaf:primaryTopic</code> connects the document to the person it is about. This query demonstrates that document and person are separate nodes: the document's <code>dcterms:created</code> date is when the document was created, not when Alex was born or when he started working. Keeping these distinct is why the document/person split exists.</p>
+          <p>This distinction becomes critical in Module 3 (provenance and reification): to say "this claim about Alex comes from resume version 001, created 2024-11-01," you need the document as a separate, citable node.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Change the query to DESCRIBE the document node (<code>DESCRIBE ?doc WHERE { ?doc a sensemaking:Resume . }</code>). Compare the DESCRIBE output to the SELECT output — what extra triples appear?</p>
+          <p>2. Add a second triple pattern: <code>?doc dcterms:subject ?subject</code> as an OPTIONAL. Does <code>?subject</code> bind? Check <code>resume-001.ttl</code> — is <code>dcterms:subject</code> asserted on the document?</p>
+          <p>3. What would you put in <code>dcterms:creator</code> for this document — the IRI for Alex Rivera (the person the resume is about) or an IRI for the person who submitted the resume? Are they always the same? What does this tell you about the vocabulary design decision?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q05 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q05</span>
+      <div class="query-meta">
+        <div class="query-q">Which of Alex's skills are at "advanced" level, with their ESCO labels?</div>
+        <div class="query-c">Pattern: FILTER on skill level · SKOS prefLabel · combining sensemaking and SKOS</div>
+        <div class="vocab-tags">
+          <span class="vocab-tag skos">SKOS</span>
+          <span class="vocab-tag sensemaking">sensemaking</span>
+        </div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q05"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> dcterms:     &lt;http://purl.org/dc/terms/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT</span> ?localLabel ?escoLabel ?level <span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          sensemaking:hasSkill ?skill .
+  ?skill skos:prefLabel   ?localLabel ;
+         sensemaking:skillLevel ?level ;
+         skos:exactMatch  ?esco .
+  ?esco  skos:prefLabel   ?escoLabel .
+  <span class="kw">FILTER</span> (?level = "advanced")
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?localLabel) = "en")
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?escoLabel) = "en")
+}
+<span class="kw">ORDER BY</span> ?localLabel</pre>
+      <button class="copy-btn" onclick="copyQuery('q05',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">2 rows · "Python (programming language)" / "use a scripting language: Python" / advanced · "SQL (structured query language)" / "query databases using SQL" / advanced</div>
+          <p>Notice that the local skill label and the ESCO label are different — deliberately. The resume uses a shorter, colloquial label ("Python") while ESCO uses a more precise, action-verb label ("use a scripting language: Python"). Both are correct; they serve different audiences. The <code>skos:exactMatch</code> link asserts they refer to the same concept without forcing either label to change.</p>
+          <p>Machine learning is "intermediate" and does not appear. Change the FILTER to <code>?level = "intermediate"</code> to confirm.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Remove the FILTER on level. All three skills appear. Change the SELECT to include <code>?level</code> and sort by <code>DESC(?level)</code> — what ordering does string sort give "advanced" vs "intermediate"? Is alphabetical sort on skill level meaningful?</p>
+          <p>2. Add <code>skos:altLabel</code> to the SELECT for both the local skill and the ESCO concept. What do you expect? Check <code>resume-001.ttl</code> — which concepts have <code>skos:altLabel</code> triples?</p>
+          <p>3. Change the query to use ASK: is there at least one skill at "advanced" level with an ESCO link? What does a <code>true</code> result tell you, and what can it not tell you under the open-world assumption?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════
+     04 · MODIFICATION CHALLENGES
+══════════════════════════════════════════════ -->
+<section id="challenges">
+  <div class="section-label">04 · Modification challenges</div>
+  <h2>Four things to build.</h2>
+  <p>These challenges extend the query patterns toward what Exercise 1.3 will ask you to do with your own resume data. Write each query before opening the solution.</p>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C1</span>
+      <span class="challenge-title">Find all organizations mentioned anywhere in the resume</span>
+    </div>
+    <div class="challenge-body">
+      <p>Alex's resume mentions three organizations: Riverbend Analytics (employer), Northwind Health (employer), and Midstate University (school). Write a single query that returns all three organization names using UNION — one branch for employers, one for educational institutions. Return distinct names sorted alphabetically.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected:</strong> 3 rows — Midstate University, Northwind Health, Riverbend Analytics.</p>
+<pre><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT DISTINCT</span> ?orgName <span class="kw">WHERE</span> {
+  ?person a foaf:Person .
+  {
+    ?person sensemaking:hasEmployment ?emp .
+    ?emp sensemaking:employer ?org .
+  }
+  <span class="kw">UNION</span>
+  {
+    ?person sensemaking:hasEducation ?edu .
+    ?edu sensemaking:institution ?org .
+  }
+  ?org schema:name ?orgName .
+}
+<span class="kw">ORDER BY</span> ?orgName</pre>
+          <p>This UNION pattern — "find things that are either employers OR educational institutions" — is directly reusable in Exercise 1.3. When you add your own history, both branches return results from the same query without duplicating code.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C2</span>
+      <span class="challenge-title">Find skills whose ESCO broader category is "ICT skills"</span>
+    </div>
+    <div class="challenge-body">
+      <p>The ESCO stub hierarchy in <code>resume-001.ttl</code> has two levels of <code>skos:broader</code> between each skill and the top-level "ICT skills" concept. Use <code>skos:exactMatch/skos:broader+</code> to find all of Alex's skills that eventually reach the "ICT skills" concept, regardless of how many hops it takes. Return skill labels and how many hops away ICT skills is.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected:</strong> All three skills reach "ICT skills" via two hops. A simpler version without the hop count:</p>
+<pre><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT DISTINCT</span> ?skillLabel <span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          sensemaking:hasSkill ?skill .
+  ?skill skos:prefLabel ?skillLabel ;
+         skos:exactMatch/skos:broader+ ?top .
+  ?top skos:prefLabel "ICT skills"@en .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?skillLabel) = "en")
+}
+<span class="kw">ORDER BY</span> ?skillLabel</pre>
+          <p>The <code>skos:broader+</code> path finds the top concept at any depth. In the full ESCO dataset, some skills are many levels deep. This pattern is how you query SKOS hierarchies without knowing the depth in advance.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C3</span>
+      <span class="challenge-title">CONSTRUCT a simplified skills profile graph</span>
+    </div>
+    <div class="challenge-body">
+      <p>Use CONSTRUCT to generate a new RDF graph containing only the person-to-ESCO-domain triples — stripping out the intermediate skill nodes. The output should be triples of the form: <code>&lt;person&gt; sensemaking:hasSkillDomain &lt;domain&gt;</code>. This is vocabulary transformation — deriving a simplified view from the full graph.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected:</strong> 3 triples — one per skill, each linking the person directly to the ESCO domain concept, bypassing the intermediate skill node.</p>
+<pre><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">CONSTRUCT</span> {
+  ?person sensemaking:hasSkillDomain ?domain .
+}
+<span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          sensemaking:hasSkill ?skill .
+  ?skill skos:exactMatch/skos:broader ?domain .
+}</pre>
+          <p>Switch Fuseki's result format to Turtle to read the output. CONSTRUCT is how you produce derived graphs — the same mechanism that lets a reasoner materialize inferred triples. Here you are doing it explicitly rather than declaring it as a rule.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C4</span>
+      <span class="challenge-title">Identify consecutive job transitions</span>
+    </div>
+    <div class="challenge-body">
+      <p>Write a query that finds pairs of jobs where one ended before the other began. Return the previous employer name, next employer name, and the gap between end and start dates. This is Exercise 1.3's third query — the consecutive-transition query that the Module 1 README describes.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected:</strong> 1 row — Riverbend Analytics → Northwind Health, transition from 2022-06-30 to 2022-07-01 (one day gap).</p>
+<pre><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT</span> ?prevOrg ?nextOrg ?endDate ?startDate <span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          sensemaking:hasEmployment ?e1 , ?e2 .
+  <span class="kw">FILTER</span> (?e1 != ?e2)
+  ?e1 sensemaking:employer  ?prev ;
+      sensemaking:endDate   ?endDate .
+  ?e2 sensemaking:employer  ?next ;
+      sensemaking:startDate ?startDate .
+  ?prev schema:name ?prevOrg .
+  ?next schema:name ?nextOrg .
+  <span class="kw">FILTER</span> (?endDate &lt; ?startDate)
+}
+<span class="kw">ORDER BY</span> ?endDate</pre>
+          <p>The self-join (<code>hasEmployment ?e1 , ?e2</code>) binds two different employment nodes for the same person. <code>FILTER (?e1 != ?e2)</code> prevents the same employment pairing with itself. Then FILTER on dates selects only pairs where one ended before the other began. This is the canonical SPARQL consecutive-transition pattern.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════
+     05 · EXERCISE 1.3 BRIDGE
+══════════════════════════════════════════════ -->
+<section id="exercise">
+  <div class="section-label">05 · Bridge to Exercise 1.3</div>
+  <h2>Now build it for your own resume.</h2>
+  <p>Exercise 1.3 asks you to take a representative subset of your own career history and produce a Turtle file using the same vocabulary decisions you just queried. <code>resume-001.ttl</code> is the template. The five queries in this workbook are the three queries the exercise asks you to write — plus two more.</p>
+
+  <div class="branch">
+    <h4>The exercise asks for three specific queries</h4>
+    <p>All jobs in chronological order (q02 pattern) · All skills with ESCO codes (q03 pattern) · All transitions between consecutive jobs (C4 pattern). Run all three against Alex Rivera's data first to confirm you understand the query structure, then adapt them to your own data.</p>
+  </div>
+
+  <div class="branch">
+    <h4>What changes when you use your own data</h4>
+    <p>The IRIs in your file will use your own namespace (e.g., <code>&lt;https://sensemaking-ai.com/ns/dagny#&gt;</code> if building Dagny's graph). The vocabulary choices remain the same. Skills are still <code>skos:Concept</code> with <code>skos:exactMatch</code> to ESCO. Employers are still <code>schema:Organization</code>. The document node still gets <code>dcterms:</code> metadata. The patterns are stable; the data changes.</p>
+  </div>
+
+  <p>The Module 1 README has the full exercise steps. The ESCO portal at <a href="https://esco.ec.europa.eu/en/classification/skill_main" target="_blank" rel="noopener">esco.ec.europa.eu</a> lets you search for skill concept IRIs by label — copy the full IRI for each skill you want to link and use it in your <code>skos:exactMatch</code> triple.</p>
+</section>
+
+<!-- ══════════════════════════════════════════
+     06 · RESOURCES
+══════════════════════════════════════════════ -->
+<section id="resources">
+  <div class="section-label">06 · Curated resources</div>
+  <h2>Five good next reads.</h2>
+
+  <div class="resource-grid">
+    <article class="resource-card">
+      <h4>Synthesis doc</h4>
+      <h5><a href="1-3-vocabulary-landscape.html">Sub-module 1.3 synthesis</a></h5>
+      <p>The reading companion for this workbook. Covers all four vocabularies — FOAF, Dublin Core, SKOS, schema.org — plus ESCO interop and the reuse-before-define decision table.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Sample data</h4>
+      <h5><a href="../artifacts/resume-graph/ttl/resume-001.ttl">resume-001.ttl</a></h5>
+      <p>The Turtle file for this workbook. Read it alongside the queries. The inline comments explain each vocabulary choice. Use it as the structural template for Exercise 1.3.</p>
+    </article>
+    <article class="resource-card">
+      <h4>ESCO skill search</h4>
+      <h5><a href="https://esco.ec.europa.eu/en/classification/skill_main">ESCO Classification</a></h5>
+      <p>Browse and search ESCO skill concepts by label. Find the IRI for any skill you want to link in your own resume graph. The full dataset is also downloadable as RDF.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Module exercise</h4>
+      <h5><a href="../README.md">Module 1 README</a></h5>
+      <p>Exercise 1.3 steps in full: which neo4j data to export, how to structure the Turtle file, which three SPARQL queries to write, and what to commit to the repo.</p>
+    </article>
+    <article class="resource-card">
+      <h4>SKOS reference</h4>
+      <h5><a href="https://www.w3.org/TR/skos-reference/">W3C SKOS Reference</a></h5>
+      <p>Section 8 (mapping properties) covers exactMatch, closeMatch, and broadMatch — the terms that distinguish "same concept" from "similar concept" when linking to external vocabularies.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Prior workbooks</h4>
+      <h5><a href="1-2-workbook-naruto.html">1.2 Naruto workbook</a></h5>
+      <p>If the UNION and property path patterns in C1 and C2 felt shaky, the 1.2 workbooks drill those patterns extensively on simpler data. Return there before Exercise 1.3 if needed.</p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Submodule 1.3 workbook · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Written content: CC BY 4.0 · Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+<script>
+(function checkFuseki() {
+  var banner = document.getElementById('fuseki-banner');
+  if (!window.fetch) { banner.className = 'fuseki-banner checking'; banner.innerHTML = '<span class="dot"></span>Check Fuseki manually: <a href="http://localhost:3030/" target="_blank" rel="noopener">localhost:3030 ↗</a>'; return; }
+  fetch('http://localhost:3030/', { mode: 'no-cors', cache: 'no-store' })
+    .then(function () { banner.className = 'fuseki-banner connected'; banner.innerHTML = '<span class="dot"></span>Fuseki running — <a href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener">open SPARQL editor at localhost:3030 ↗</a> &nbsp;·&nbsp; Copy a query below, paste it there, run it.'; })
+    .catch(function () { banner.className = 'fuseki-banner offline'; banner.innerHTML = '<span class="dot"></span>Fuseki not detected — start from starter-kit root: <code>fuseki-server --config=fuseki/config.ttl</code> &nbsp;—&nbsp; then reload this page.'; });
+})();
+
+function openFuseki(e, btn) {
+  e.preventDefault();
+  var card = btn.closest('.query-card');
+  var text = card.querySelector('pre[id]').textContent;
+  var url  = btn.getAttribute('href');
+  function doOpen() { window.open(url, '_blank', 'noopener,noreferrer'); }
+  function flash() { var orig = btn.textContent; btn.textContent = 'Copied — paste in Fuseki ↗'; btn.style.borderColor = 'var(--teal-mid)'; setTimeout(function() { btn.textContent = orig; btn.style.borderColor = ''; }, 2500); }
+  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(function() { flash(); doOpen(); }).catch(function() { legacyCopy(text, null); doOpen(); }); }
+  else { legacyCopy(text, null); doOpen(); }
+}
+
+function copyQuery(id, btn) {
+  var text = document.getElementById(id).textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(function () { flashBtn(btn); }).catch(function () { legacyCopy(text, btn); }); }
+  else { legacyCopy(text, btn); }
+}
+
+function legacyCopy(text, btn) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); if (btn) flashBtn(btn); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+function flashBtn(btn) { var orig = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function () { btn.textContent = orig; }, 1600); }
+</script>
+
+</body>
+</html>

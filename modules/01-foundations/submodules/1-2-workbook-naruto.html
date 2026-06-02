@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submodule 1.2 workbook — SPARQL deeper · Naruto · Sensemaking Semantic Web</title>
+<meta name="description" content="Five SPARQL queries going beyond the basics: DESCRIBE, UNION, property paths, FILTER NOT EXISTS, and VALUES — on the Naruto dataset.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal-deep: #0B4F4A;
+  --teal-mid:  #1E8076;
+  --teal-light:#C6E2DD;
+  --coral:     #D85A30;
+  --coral-tint:#FAEAE2;
+  --charcoal:  #1F2A2E;
+  --slate:     #5A6671;
+  --slate-lt:  #8A929A;
+  --cream:     #FAF7F2;
+  --white:     #FFFFFF;
+  --rule:      #D8D2C6;
+  --code-bg:   #F2EDE3;
+  --green:     #2A7040;
+  --green-tint:#E4F1EA;
+  --amber:     #9A6B00;
+  --amber-tint:#FDF6E3;
+  --font-serif:'EB Garamond', Georgia, serif;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { margin: 0; background: var(--cream); color: var(--charcoal); font-family: var(--font-sans); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+
+.masthead { background: var(--teal-deep); color: var(--white); padding: 3rem 1.5rem 3.5rem; border-bottom: 5px solid var(--coral); }
+.masthead-inner { max-width: 68rem; margin: 0 auto; }
+.brand  { font-size: .74rem; letter-spacing: .18em; color: var(--teal-light); text-transform: uppercase; font-weight: 600; margin-bottom: 1.4rem; }
+.kicker { font-size: .74rem; letter-spacing: .14em; color: var(--teal-light); text-transform: uppercase; font-weight: 600; margin-bottom: .55rem; }
+h1 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(2.8rem, 7vw, 5.2rem); color: var(--white); line-height: 1.0; letter-spacing: -.025em; margin: 0 0 .85rem; max-width: 16ch; }
+.subtitle { color: var(--teal-light); font-size: clamp(1rem, 2.5vw, 1.18rem); line-height: 1.55; max-width: 46rem; margin: 0 0 1.8rem; }
+.meta-row { display: flex; flex-wrap: wrap; gap: .45rem .85rem; }
+.meta-row span { border: 1px solid rgba(198,226,221,.38); border-radius: 999px; padding: .28rem .7rem; font-size: .8rem; color: var(--teal-light); }
+
+.domain-nav { background: var(--white); border-bottom: 1px solid var(--rule); padding: .45rem 1.5rem; display: flex; align-items: center; gap: .75rem; font-size: .8rem; }
+.domain-label { text-transform: uppercase; letter-spacing: .14em; font-size: .68rem; font-weight: 600; color: var(--slate-lt); }
+.domain-nav a { color: var(--teal-mid); text-decoration: none; padding-bottom: 1px; border-bottom: 1px solid transparent; transition: border-color .15s; }
+.domain-nav a:hover { border-bottom-color: var(--teal-mid); }
+.domain-nav a.active { color: var(--charcoal); font-weight: 600; border-bottom: 2px solid var(--coral); }
+
+.fuseki-banner { padding: .65rem 1.5rem; font-size: .875rem; display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
+.fuseki-banner.checking  { background: var(--amber-tint); color: var(--amber); }
+.fuseki-banner.connected { background: var(--green-tint);  color: var(--green); }
+.fuseki-banner.offline   { background: var(--coral-tint);  color: var(--coral); }
+.fuseki-banner .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.fuseki-banner.checking  .dot { background: var(--amber); }
+.fuseki-banner.connected .dot { background: var(--green); }
+.fuseki-banner.offline   .dot { background: var(--coral); }
+.fuseki-banner a    { color: inherit; text-decoration: underline; }
+.fuseki-banner code { font-family: var(--font-mono); font-size: .8em; background: rgba(0,0,0,.08); padding: .1em .3em; border-radius: 3px; }
+
+.quick-nav { position: sticky; top: 0; z-index: 20; background: rgba(250,247,242,.97); border-bottom: 1px solid var(--rule); backdrop-filter: blur(4px); }
+.quick-nav-inner { max-width: 68rem; margin: 0 auto; padding: .65rem 1.5rem; display: flex; gap: .45rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.quick-nav-inner::-webkit-scrollbar { display: none; }
+.quick-nav a { flex: 0 0 auto; color: var(--charcoal); border: 1px solid var(--rule); border-radius: 999px; padding: .28rem .68rem; font-size: .76rem; white-space: nowrap; text-decoration: none; background: rgba(255,255,255,.4); transition: border-color .15s, color .15s; }
+.quick-nav a:hover { border-color: var(--teal-mid); color: var(--teal-deep); }
+
+main { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem 4rem; }
+section { padding: 3.75rem 0; border-bottom: 1px solid var(--rule); scroll-margin-top: 3.5rem; }
+section:last-child { border-bottom: none; }
+.section-label { font-size: .7rem; letter-spacing: .2em; color: var(--coral); text-transform: uppercase; font-weight: 600; margin-bottom: .85rem; }
+h2 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(2rem, 5vw, 3.2rem); color: var(--charcoal); line-height: 1.05; letter-spacing: -.015em; margin: 0 0 1.1rem; }
+h3 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(1.35rem, 3vw, 1.9rem); color: var(--charcoal); margin: 2.25rem 0 .65rem; }
+h3:first-of-type { margin-top: .4rem; }
+p { max-width: 44rem; margin: 0 0 1.05rem; font-size: 1rem; }
+p.lead { font-size: 1.1rem; line-height: 1.6; }
+
+pre { font-family: var(--font-mono); font-size: .8rem; background: var(--code-bg); border-left: 4px solid var(--teal-mid); border-radius: 0 8px 8px 0; padding: 1rem 1.1rem; overflow-x: auto; margin: .6rem 0 1.2rem; line-height: 1.6; color: var(--charcoal); tab-size: 2; }
+code { font-family: var(--font-mono); font-size: .86em; background: var(--code-bg); padding: .1em .3em; border-radius: 3px; }
+pre code { background: transparent; padding: 0; font-size: inherit; }
+.kw { color: var(--teal-deep); font-weight: 500; }
+.cm { color: var(--slate-lt); }
+
+.note, .tip, .mental-shift { max-width: 44rem; margin: 1.4rem 0; padding: .9rem 1.1rem .9rem 1.25rem; background: var(--coral-tint); border-left: 4px solid var(--coral); }
+.note-title { display: block; font-size: .7rem; letter-spacing: .16em; font-weight: 600; color: var(--coral); text-transform: uppercase; margin-bottom: .3rem; }
+.note p, .tip p, .mental-shift p { margin: 0; max-width: none; }
+
+.data-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.3rem 0; align-items: start; }
+.anno-note { background: var(--white); border: 1px solid var(--rule); border-radius: 8px; padding: .85rem 1rem; font-size: .9rem; color: var(--slate); }
+.anno-note strong { color: var(--charcoal); }
+
+.query-card { background: var(--white); border: 1px solid var(--rule); border-radius: 12px; margin: 1.5rem 0; overflow: hidden; }
+.query-header { display: flex; align-items: flex-start; gap: .9rem; padding: 1rem 1.15rem .85rem; border-bottom: 1px solid var(--rule); }
+.query-num { font-family: var(--font-mono); font-size: .76rem; font-weight: 500; color: var(--white); background: var(--teal-mid); border-radius: 6px; padding: .22rem .48rem; flex-shrink: 0; margin-top: .1rem; }
+.query-meta { flex: 1; min-width: 0; }
+.query-q { font-weight: 600; font-size: .98rem; color: var(--charcoal); margin-bottom: .22rem; }
+.query-c { font-size: .81rem; color: var(--slate); }
+.btn-fuseki { flex-shrink: 0; display: inline-block; font-size: .76rem; font-weight: 500; color: var(--teal-mid); border: 1px solid var(--teal-light); border-radius: 999px; padding: .26rem .72rem; text-decoration: none; white-space: nowrap; transition: background .15s, border-color .15s; }
+.btn-fuseki:hover { background: var(--teal-light); border-color: var(--teal-mid); }
+.query-body { position: relative; }
+.query-body pre { margin: 0; border-radius: 0; border-left: none; border-bottom: 1px solid var(--rule); }
+.copy-btn { position: absolute; top: .6rem; right: .6rem; background: var(--cream); border: 1px solid var(--rule); border-radius: 5px; padding: .2rem .52rem; font-family: var(--font-sans); font-size: .72rem; color: var(--slate); cursor: pointer; z-index: 2; transition: border-color .15s, color .15s; }
+.copy-btn:hover { border-color: var(--teal-mid); color: var(--teal-deep); }
+.query-footer { padding: .7rem 1.15rem; display: flex; flex-direction: column; gap: .45rem; }
+
+details.panel summary { font-size: .83rem; font-weight: 600; color: var(--teal-deep); cursor: pointer; padding: .28rem 0; list-style: none; display: flex; align-items: center; gap: .4rem; user-select: none; }
+details.panel summary::before { content: "▶"; font-size: .58rem; color: var(--coral); transition: transform .2s; }
+details.panel[open] summary::before { transform: rotate(90deg); }
+details.panel summary::-webkit-details-marker { display: none; }
+.panel-body { padding: .65rem 0 .25rem 1.2rem; }
+.panel-body p { font-size: .9rem; max-width: none; margin: 0 0 .52rem; }
+.panel-body p:last-child { margin-bottom: 0; }
+.panel-body pre { font-size: .77rem; margin: .35rem 0 .65rem; }
+.expected-out { background: var(--code-bg); border-radius: 4px; padding: .38rem .65rem; font-family: var(--font-mono); font-size: .78rem; color: var(--charcoal); margin-bottom: .55rem; line-height: 1.5; }
+
+.challenge-card { background: var(--white); border: 1px solid var(--rule); border-radius: 12px; margin: 1.4rem 0; overflow: hidden; }
+.challenge-header { display: flex; align-items: center; gap: .85rem; padding: .85rem 1.15rem; border-bottom: 1px solid var(--rule); }
+.challenge-num { font-family: var(--font-mono); font-size: .76rem; font-weight: 500; background: var(--coral); color: var(--white); border-radius: 6px; padding: .22rem .48rem; flex-shrink: 0; }
+.challenge-title { font-weight: 600; font-size: .97rem; }
+.challenge-body { padding: .85rem 1.15rem; }
+.challenge-body p { font-size: .92rem; max-width: none; margin: 0 0 .65rem; }
+
+.branch { border-left: 4px solid var(--teal-mid); background: var(--white); padding: .82rem 1.15rem; margin: .6rem 0 1.3rem; max-width: 44rem; }
+.branch h4 { font-family: var(--font-sans); font-size: .88rem; font-weight: 600; color: var(--teal-deep); margin: 0 0 .3rem; }
+.branch p { margin: 0; font-size: .9rem; max-width: none; }
+.branch a { color: var(--teal-mid); }
+
+ul.spaced { padding-left: 1.2rem; margin: .5rem 0 1.1rem; max-width: 44rem; }
+ul.spaced li { margin: .48rem 0; font-size: .97rem; }
+
+.resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .85rem; margin: 1.3rem 0; }
+.resource-card { background: rgba(255,255,255,.45); border: 1px solid var(--rule); border-radius: 14px; padding: 1.1rem; }
+.resource-card h4 { font-family: var(--font-sans); font-size: .7rem; letter-spacing: .14em; font-weight: 600; text-transform: uppercase; color: var(--coral); margin: 0 0 .5rem; }
+.resource-card h5 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: 1.08rem; color: var(--charcoal); margin: 0 0 .4rem; }
+.resource-card a { color: var(--teal-mid); text-decoration: underline; text-underline-offset: 2px; }
+.resource-card p { font-size: .87rem; margin: 0; color: var(--slate); max-width: none; }
+
+footer { max-width: 68rem; margin: 0 auto; padding: 2rem 1.5rem 3rem; border-top: 1px solid var(--rule); color: var(--slate); font-size: .84rem; }
+footer a { color: var(--teal-mid); text-decoration: underline; }
+footer p { margin: 0 0 .4rem; max-width: none; }
+
+@media (max-width: 820px) { .resource-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 640px) {
+  .data-pair { grid-template-columns: 1fr; }
+  .resource-grid { grid-template-columns: 1fr; }
+  .query-header { flex-wrap: wrap; }
+  .btn-fuseki { order: 3; }
+  main { padding-left: 1rem; padding-right: 1rem; }
+  .masthead { padding: 2rem 1rem 2.5rem; }
+}
+@media print {
+  .masthead { background: white; color: black; border-bottom: 2px solid black; padding: .5rem 0; }
+  h1 { color: black; font-size: 26pt; max-width: none; }
+  .brand, .kicker, .subtitle, .meta-row { color: #444; }
+  .quick-nav, .fuseki-banner, .btn-fuseki, .copy-btn { display: none !important; }
+  main, footer, .masthead-inner { max-width: none; padding-left: 0; padding-right: 0; }
+  section { padding: .3in 0; }
+  pre { background: #f5f5f5; border-left: 2px solid #888; font-size: 7.5pt; page-break-inside: avoid; white-space: pre-wrap; }
+  .query-card, .challenge-card, .resource-card { break-inside: avoid; border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ MASTHEAD ══════════ -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sensemaking Semantic Web</div>
+    <div class="kicker">Submodule 1.2 · Foundations</div>
+    <h1>SPARQL, deeper.</h1>
+    <p class="subtitle">Five query patterns beyond the basics: DESCRIBE, UNION, property paths, FILTER NOT EXISTS, and VALUES — all on the Naruto dataset. Start Fuseki before you begin.</p>
+    <div class="meta-row">
+      <span>Module 1 · Weeks 1–3</span>
+      <span>Requires Fuseki + starter kit</span>
+      <span>~90 min hands-on</span>
+      <span>DESCRIBE · UNION · paths · VALUES</span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════ DOMAIN NAV ══════════ -->
+<div class="domain-nav">
+  <span class="domain-label">Dataset</span>
+  <a href="1-2-workbook-naruto.html" class="active">Naruto</a>
+  <a href="1-2-workbook-mythology.html">Greek mythology</a>
+</div>
+
+<!-- ══════════ FUSEKI STATUS ══════════ -->
+<div id="fuseki-banner" class="fuseki-banner checking">
+  <span class="dot"></span>
+  Checking for Fuseki at localhost:3030…
+</div>
+
+<!-- ══════════ STICKY NAV ══════════ -->
+<nav class="quick-nav" aria-label="Section navigation">
+  <div class="quick-nav-inner">
+    <a href="#prereq">01 · Prerequisites</a>
+    <a href="#data">02 · The data</a>
+    <a href="#lab">03 · Query lab</a>
+    <a href="#challenges">04 · Challenges</a>
+    <a href="#resources">05 · Resources</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════
+     01 · PREREQUISITES
+══════════════════════════════════════════════ -->
+<section id="prereq">
+  <div class="section-label">01 · Prerequisites</div>
+  <h2>This picks up where 1.1 left off.</h2>
+  <p class="lead">The five query patterns here — DESCRIBE, UNION, property paths, FILTER NOT EXISTS, VALUES — build on the SELECT, GROUP BY, ASK, OPTIONAL, and CONSTRUCT patterns in the 1.1 workbook. If those patterns still feel uncertain, work through the 1.1 workbook before continuing here.</p>
+  <p>The dataset is the same: <code>data/example.ttl</code> loaded into Fuseki's <code>mythology</code> dataset. Eight ninja, three teams, two villages, several jutsu, sensei–student and rival relationships. The <code>sensemaking:</code> prefix is bound to <code>https://sensemaking-ai.com/ns/example#</code>. If you are not sure what data is in the file, open it in a text editor before running queries — prediction before execution is the habit.</p>
+
+  <div class="branch">
+    <h4>Loading the Naruto data</h4>
+    <p>From the starter-kit root: <code>fuseki-server --config=fuseki/config.ttl</code>. In the Fuseki UI, ensure the <code>mythology</code> dataset is loaded with <code>data/example.ttl</code>. All five queries below use the <code>sensemaking:</code> prefix bound to <code>https://sensemaking-ai.com/ns/example#</code> — they will not return results against the mythology dataset.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     02 · THE DATA
+══════════════════════════════════════════════ -->
+<section id="data">
+  <div class="section-label">02 · The data: three patterns to notice</div>
+  <h2>Read the file before running queries.</h2>
+  <p>Three patterns in <code>example.ttl</code> that become relevant in this workbook's queries. You saw them in the 1.1 workbook too — but the queries here ask them in new ways.</p>
+
+  <div class="data-pair">
+    <div>
+<pre><span class="cm"># senseiOf: directed, not declared symmetric</span>
+sensemaking:KakashiHatake
+    sensemaking:senseiOf
+        sensemaking:NarutoUzumaki ,
+        sensemaking:SasukeUchiha ,
+        sensemaking:SakuraHaruno .
+
+sensemaking:KurenaiYuhi
+    sensemaking:senseiOf
+        sensemaking:HinataHyuga .</pre>
+    </div>
+    <div class="anno-note">
+      <strong>senseiOf is one-directional.</strong> The file states who teaches whom, but does not also state who is a student of whom. Query q02 uses UNION to find both sensei and students in a single result. Query q03 uses a property path to chain senseiOf into a team lookup in a single step.
+    </div>
+  </div>
+
+  <div class="data-pair">
+    <div>
+<pre><span class="cm"># hasJutsu: only some ninja have it</span>
+sensemaking:KakashiHatake
+    sensemaking:hasJutsu
+        sensemaking:Sharingan ,
+        sensemaking:ShadowClone .
+
+sensemaking:NarutoUzumaki
+    sensemaking:hasJutsu
+        sensemaking:ShadowClone .
+
+<span class="cm"># Sakura and Rock Lee: no hasJutsu triple</span></pre>
+    </div>
+    <div class="anno-note">
+      <strong>Absence is not negation.</strong> Sakura and Rock Lee have no <code>hasJutsu</code> triple. That does not mean they have no jutsu — it means this dataset does not assert any. Query q04 uses FILTER NOT EXISTS to find exactly these ninja. The open-world assumption distinction matters: the query finds "no jutsu asserted here," not "provably no jutsu."
+    </div>
+  </div>
+
+  <div class="data-pair">
+    <div>
+<pre><span class="cm"># rivalOf: asserted one direction only</span>
+sensemaking:NarutoUzumaki
+    sensemaking:rivalOf
+        sensemaking:SasukeUchiha .
+
+sensemaking:Gaara
+    sensemaking:rivalOf
+        sensemaking:RockLee .</pre>
+    </div>
+    <div class="anno-note">
+      <strong>rivalOf is declared symmetric (owl:SymmetricProperty) in the ontology, but plain SPARQL sees only what's in the store.</strong> The reverse direction — Sasuke rivals Naruto — is not asserted. Query q02's UNION includes rivals in one direction only. Challenge C3 asks you to use a path to find the reverse.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     03 · QUERY LAB
+══════════════════════════════════════════════ -->
+<section id="lab">
+  <div class="section-label">03 · Query lab</div>
+  <h2>Five patterns, five queries.</h2>
+  <p>Each query introduces one pattern not covered in the 1.1 workbook. Read the pattern description, predict the output, copy the query into Fuseki, then open the "Think about this" panel after running it.</p>
+
+  <!-- ── q01 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q01</span>
+      <div class="query-meta">
+        <div class="query-q">Tell me everything the dataset knows about Kakashi.</div>
+        <div class="query-c">Pattern: DESCRIBE · all outgoing triples for a named resource</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q01"><span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">DESCRIBE</span> sensemaking:KakashiHatake</pre>
+      <button class="copy-btn" onclick="copyQuery('q01',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output and how to read it</summary>
+        <div class="panel-body">
+          <div class="expected-out">A small RDF graph in Turtle format — change the Fuseki result format to "Turtle (text/turtle)" in the dropdown. Expect: rdf:type, schema:name, memberOfVillage, memberOfTeam (if any), hasJutsu (×2), senseiOf (×3).</div>
+          <p>DESCRIBE does not return a table. It returns a graph — a set of triples. Fuseki's default format is JSON-LD or N-Triples; switch to Turtle to read it comfortably. Kakashi should appear as the subject of every triple (Fuseki's default DESCRIBE returns only outgoing triples).</p>
+          <p>Notice what is absent: triples where Kakashi is the object (e.g., "someone is a student of Kakashi") do not appear in Fuseki's default DESCRIBE. Some endpoints return both directions. This is implementation-defined — the SPARQL spec only says DESCRIBE should return "relevant" facts.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. DESCRIBE a different ninja — try <code>sensemaking:RockLee</code>. How many triples does Rock Lee have? Compare to Kakashi. Which properties are present for both? Which are unique to Kakashi?</p>
+          <p>2. Write a SELECT that returns the same predicates as the DESCRIBE output. Which is easier to write? Which is easier to read? When would you reach for DESCRIBE in practice?</p>
+          <p>3. DESCRIBE accepts a WHERE clause: <code>DESCRIBE ?ninja WHERE { ?ninja sensemaking:senseiOf sensemaking:NarutoUzumaki . }</code> — what does this return? How does it differ from DESCRIBE on a fixed IRI?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q02 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q02</span>
+      <div class="query-meta">
+        <div class="query-q">Who plays a relational role — sensei OR rival of someone?</div>
+        <div class="query-c">Pattern: UNION · merge two independent graph patterns · DISTINCT deduplication</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q02"><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT DISTINCT</span> ?name ?role <span class="kw">WHERE</span> {
+  {
+    ?ninja sensemaking:senseiOf ?student .
+    ?ninja schema:name ?name .
+    <span class="kw">BIND</span>("sensei" <span class="kw">AS</span> ?role)
+  }
+  <span class="kw">UNION</span>
+  {
+    ?ninja sensemaking:rivalOf ?other .
+    ?ninja schema:name ?name .
+    <span class="kw">BIND</span>("rival" <span class="kw">AS</span> ?role)
+  }
+}
+<span class="kw">ORDER BY</span> ?role ?name</pre>
+      <button class="copy-btn" onclick="copyQuery('q02',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">5 rows · rival: Gaara, Naruto Uzumaki · sensei: Kakashi Hatake, Kurenai Yuhi · (Kakashi appears only once despite having 3 students — DISTINCT collapses them)</div>
+          <p>UNION concatenates two independent result sets. Without DISTINCT, Kakashi appears three times in the "sensei" results — once for each student the pattern matches. DISTINCT collapses duplicate rows. BIND assigns a constant string to a variable — here it labels which branch of the UNION each row came from.</p>
+          <p>UNION does not deduplicate across the two branches automatically. If a ninja were both a sensei and a rival, they would appear twice — once per branch. DISTINCT in the SELECT clause handles that.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Remove DISTINCT. How many rows now? Count the Kakashi rows. Why three?</p>
+          <p>2. Add a third UNION branch: <code>UNION { ?ninja sensemaking:memberOfTeam ?t . ?ninja schema:name ?name . BIND("team member" AS ?role) }</code>. How does the row count change? Does any ninja appear in all three branches?</p>
+          <p>3. rivalOf is only asserted in one direction (Naruto rivals Sasuke; Gaara rivals Rock Lee). If you add a branch that also looks for ninja who are the object of rivalOf — <code>?other sensemaking:rivalOf ?ninja</code> — who appears that wasn't there before?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q03 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q03</span>
+      <div class="query-meta">
+        <div class="query-q">Which sensei teaches students in which teams — in one step?</div>
+        <div class="query-c">Pattern: property path · / (sequence) chains two predicates into one pattern</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q03"><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT DISTINCT</span> ?senseiName ?teamName <span class="kw">WHERE</span> {
+  ?sensei schema:name ?senseiName ;
+          sensemaking:senseiOf/sensemaking:memberOfTeam ?team .
+  ?team schema:name ?teamName .
+}
+<span class="kw">ORDER BY</span> ?senseiName</pre>
+      <button class="copy-btn" onclick="copyQuery('q03',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">2 rows · Kakashi Hatake / Team 7 · Kurenai Yuhi / Team 8</div>
+          <p>The path <code>sensemaking:senseiOf/sensemaking:memberOfTeam</code> is a sequence: traverse <code>senseiOf</code> to get a student, then traverse <code>memberOfTeam</code> from that student to get a team. This collapses what would otherwise be two triple patterns and an intermediate variable into one predicate expression. DISTINCT collapses Kakashi's three students into one row per team.</p>
+          <p>Without DISTINCT: Kakashi appears three times (once per student who is on Team 7). The path matches, the team is the same, but the intermediate student differs — and intermediate variables are not projected in path expressions, so the rows look identical.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Rewrite this query without the property path — use two explicit triple patterns and an intermediate variable <code>?student</code>. Do you get the same result? Which version is easier to read?</p>
+          <p>2. Try <code>sensemaking:senseiOf+</code> (one-or-more). Does the result change with this dataset? Why or why not? When would <code>+</code> give a different result than a single hop?</p>
+          <p>3. Try <code>^sensemaking:senseiOf</code> (inverse path) starting from a student: change the query to find which sensei teaches a specific ninja by going backwards. Example: who teaches <code>sensemaking:NarutoUzumaki</code>?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q04 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q04</span>
+      <div class="query-meta">
+        <div class="query-q">Which ninja have no jutsu listed in the dataset?</div>
+        <div class="query-c">Pattern: FILTER NOT EXISTS · closed-world query on an open-world dataset</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q04"><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT</span> ?name <span class="kw">WHERE</span> {
+  ?ninja a sensemaking:Ninja ;
+         schema:name ?name .
+  <span class="kw">FILTER NOT EXISTS</span> {
+    ?ninja sensemaking:hasJutsu ?j .
+  }
+}
+<span class="kw">ORDER BY</span> ?name</pre>
+      <button class="copy-btn" onclick="copyQuery('q04',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">3 rows · Kurenai Yuhi, Rock Lee, Sakura Haruno</div>
+          <p>FILTER NOT EXISTS keeps a row only if the inner pattern does <em>not</em> match. For Sakura: the engine tries to find any triple <code>sensemaking:SakuraHaruno sensemaking:hasJutsu ?j</code> — none exists, so the FILTER passes and Sakura stays in the result.</p>
+          <p>Critical distinction: this query answers "which ninja have no jutsu asserted in this dataset," not "which ninja have no jutsu." Under the open-world assumption, those are different claims. Sakura's jutsu may simply be missing from this slice of data. The result is a statement about the dataset, not about the Naruto universe.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Replace FILTER NOT EXISTS with MINUS: <code>} MINUS { ?ninja sensemaking:hasJutsu ?j . }</code> — put MINUS outside the outer WHERE pattern. Do you get the same result? FILTER NOT EXISTS and MINUS are not identical for all inputs — can you construct a case where they differ?</p>
+          <p>2. Change the inner pattern to look for team membership instead of jutsu: find ninja with no team. Who appears? Compare to the output of Challenge C1 in the 1.1 workbook — should be the same characters.</p>
+          <p>3. Combine: find ninja with no jutsu AND no team — two FILTER NOT EXISTS blocks. Who survives both conditions?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── q05 ── -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q05</span>
+      <div class="query-meta">
+        <div class="query-q">Show me the village and team for these three specific ninja.</div>
+        <div class="query-c">Pattern: VALUES · inline data · parameterized lookup with OPTIONAL</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q05"><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT</span> ?name ?villageName ?teamName <span class="kw">WHERE</span> {
+  <span class="kw">VALUES</span> ?ninja {
+    sensemaking:NarutoUzumaki
+    sensemaking:SasukeUchiha
+    sensemaking:Gaara
+  }
+  ?ninja schema:name ?name ;
+         sensemaking:memberOfVillage ?village .
+  ?village schema:name ?villageName .
+  <span class="kw">OPTIONAL</span> {
+    ?ninja sensemaking:memberOfTeam ?team .
+    ?team schema:name ?teamName .
+  }
+}
+<span class="kw">ORDER BY</span> ?name</pre>
+      <button class="copy-btn" onclick="copyQuery('q05',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">3 rows · Gaara / Sunagakure / (no team) · Naruto Uzumaki / Konohagakure / Team 7 · Sasuke Uchiha / Konohagakure / Team 7</div>
+          <p>VALUES injects a fixed set of bindings into the query — equivalent to an inline data table. The engine runs the WHERE pattern for each value in the VALUES block. Gaara has no team, so <code>?teamName</code> is unbound for his row (OPTIONAL keeps him in the result).</p>
+          <p>VALUES is useful for parameterization: the query structure stays constant while the specific resources change. It is also how you replicate an IN(...) clause from SQL — instead of a FILTER with OR chains, use VALUES.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Add <code>sensemaking:KakashiHatake</code> to the VALUES list. Does he have a team? Check <code>example.ttl</code> — is <code>memberOfTeam</code> asserted for sensei characters?</p>
+          <p>2. Remove the OPTIONAL block. What happens to Gaara's row? How does this change your understanding of how VALUES interacts with required triple patterns?</p>
+          <p>3. VALUES can bind multiple variables at once: <code>VALUES (?ninja ?expectedVillage) { (sensemaking:Gaara sensemaking:Sunagakure) (sensemaking:NarutoUzumaki sensemaking:Konohagakure) }</code>. Extend the query to FILTER for cases where the actual village matches the expected one — or doesn't.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════
+     04 · MODIFICATION CHALLENGES
+══════════════════════════════════════════════ -->
+<section id="challenges">
+  <div class="section-label">04 · Modification challenges</div>
+  <h2>Four things to build.</h2>
+  <p>Each challenge extends or recombines patterns from the query lab. Write the query before opening the solution panel.</p>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C1</span>
+      <span class="challenge-title">Find all characters who are rivals of someone — in both directions</span>
+    </div>
+    <div class="challenge-body">
+      <p>In the dataset, rivalOf is asserted one way: Naruto rivals Sasuke; Gaara rivals Rock Lee. But rivalry should be mutual. Use UNION to find all characters who appear on either side of a rivalOf triple. Return each character's name once (use DISTINCT).</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected:</strong> 4 rows — Gaara, Naruto Uzumaki, Rock Lee, Sasuke Uchiha. Rock Lee and Sasuke appear as objects of rivalOf triples, not subjects.</p>
+<pre><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT DISTINCT</span> ?name <span class="kw">WHERE</span> {
+  {
+    ?n sensemaking:rivalOf ?other .
+    ?n schema:name ?name .
+  }
+  <span class="kw">UNION</span>
+  {
+    ?other sensemaking:rivalOf ?n .
+    ?n schema:name ?name .
+  }
+}
+<span class="kw">ORDER BY</span> ?name</pre>
+          <p>This is why rivalOf being <code>owl:SymmetricProperty</code> matters: with a reasoner, you would not need the UNION — the engine would derive the reverse triples automatically. Without a reasoner, UNION is how you query in both directions at once.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C2</span>
+      <span class="challenge-title">Use an inverse path to find all students of a given sensei</span>
+    </div>
+    <div class="challenge-body">
+      <p>The <code>^</code> operator inverts a property path: <code>?student ^sensemaking:senseiOf ?sensei</code> traverses senseiOf backwards. Rewrite q03 to start from a fixed sensei IRI and find all their students using <code>^sensemaking:senseiOf</code>. Return student names only.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected for Kakashi:</strong> 3 rows — Naruto Uzumaki, Sakura Haruno, Sasuke Uchiha.</p>
+<pre><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT</span> ?studentName <span class="kw">WHERE</span> {
+  ?student ^sensemaking:senseiOf sensemaking:KakashiHatake ;
+           schema:name ?studentName .
+}
+<span class="kw">ORDER BY</span> ?studentName</pre>
+          <p>Equivalently: <code>sensemaking:KakashiHatake sensemaking:senseiOf ?student</code> — the inverse path is not strictly necessary here since the data has senseiOf asserted in the subject→object direction. But <code>^</code> is useful when you only have access to the object-side of a triple and want to "walk back."</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C3</span>
+      <span class="challenge-title">Find all jutsu that appear in the dataset, regardless of who has them</span>
+    </div>
+    <div class="challenge-body">
+      <p>Write a SELECT that returns the label of every jutsu in the dataset — distinct values, sorted. Use <code>skos:prefLabel</code> if jutsu are typed as <code>skos:Concept</code>, or <code>rdfs:label</code> if they use that predicate. Check <code>example.ttl</code> to see how jutsu are modeled before writing the query.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected:</strong> 4–5 rows — Byakugan, Sand Manipulation, Shadow Clone Jutsu, Sharingan (and any others in the file). The exact set depends on what's asserted in <code>example.ttl</code>.</p>
+<pre><span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT DISTINCT</span> ?jutsuLabel <span class="kw">WHERE</span> {
+  ?jutsu a skos:Concept ;
+         skos:prefLabel ?jutsuLabel .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?jutsuLabel) = "en" || <span class="kw">LANG</span>(?jutsuLabel) = "")
+}
+<span class="kw">ORDER BY</span> ?jutsuLabel</pre>
+          <p>The LANG filter handles both the case where labels have no language tag (LANG returns "") and where they have @en explicitly. Without it, multilingual labels would produce duplicate rows per jutsu.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-header">
+      <span class="challenge-num">C4</span>
+      <span class="challenge-title">Combine UNION and FILTER NOT EXISTS</span>
+    </div>
+    <div class="challenge-body">
+      <p>Find all ninja who are "involved" — either a sensei of someone, or on a team — but who have NO jutsu listed. This combines the UNION pattern from q02 with the FILTER NOT EXISTS pattern from q04. Return names sorted alphabetically.</p>
+      <details class="panel">
+        <summary>Expected result and one approach</summary>
+        <div class="panel-body">
+          <p><strong>Expected:</strong> 2 rows — Kurenai Yuhi (sensei, no jutsu) and Rock Lee (Team Guy, no jutsu). Sakura has no jutsu but is also a team member — she should appear too. Verify against your dataset.</p>
+<pre><span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="kw">SELECT DISTINCT</span> ?name <span class="kw">WHERE</span> {
+  ?ninja a sensemaking:Ninja ;
+         schema:name ?name .
+  {
+    ?ninja sensemaking:senseiOf ?student .
+  }
+  <span class="kw">UNION</span>
+  {
+    ?ninja sensemaking:memberOfTeam ?team .
+  }
+  <span class="kw">FILTER NOT EXISTS</span> {
+    ?ninja sensemaking:hasJutsu ?j .
+  }
+}
+<span class="kw">ORDER BY</span> ?name</pre>
+          <p>Note how FILTER NOT EXISTS operates on the full row from the outer WHERE block — it checks each matched ninja (from either UNION branch) for the absence of jutsu. The DISTINCT collapses duplicates from a ninja matching both branches.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════
+     05 · RESOURCES
+══════════════════════════════════════════════ -->
+<section id="resources">
+  <div class="section-label">05 · Curated resources</div>
+  <h2>Five good next reads.</h2>
+
+  <div class="resource-grid">
+    <article class="resource-card">
+      <h4>Query reference</h4>
+      <h5><a href="https://www.learningsparql.com/">Learning SPARQL</a></h5>
+      <p>DuCharme. The curriculum's canonical SPARQL reference. Chapters 3–4 cover property paths, aggregation, and CONSTRUCT in depth — the natural next step from this workbook.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Synthesis doc</h4>
+      <h5><a href="1-2-sparql-basics.html">Sub-module 1.2 synthesis</a></h5>
+      <p>The reading companion for this workbook. Covers the four query forms conceptually and has three runnable Wikidata queries if you haven't tried the public endpoint yet.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Public endpoint</h4>
+      <h5><a href="https://query.wikidata.org/">Wikidata Query Service</a></h5>
+      <p>Apply the property path and UNION patterns here on a dataset with millions of nodes. The helper UI provides example queries — modify them rather than starting from scratch.</p>
+    </article>
+    <article class="resource-card">
+      <h4>W3C spec</h4>
+      <h5><a href="https://www.w3.org/TR/sparql11-query/">SPARQL 1.1 specification</a></h5>
+      <p>Authoritative on FILTER NOT EXISTS vs MINUS (section 8.3), property paths (section 9), and VALUES (section 10.3). Read the relevant sections when something surprising happens.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Domain variant</h4>
+      <h5><a href="1-2-workbook-mythology.html">Mythology workbook</a></h5>
+      <p>Same five patterns applied to Greek mythology data. Deities, realms, powers, and championed relationships. If Naruto is familiar ground, the mythology domain forces you to read the data rather than rely on domain knowledge.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Module context</h4>
+      <h5><a href="../README.md">Module 1 README</a></h5>
+      <p>The exercise list and primary project. If you have not started Exercise 1.3 (Resume Graph RDF slice), the SPARQL patterns in this workbook map directly to the three queries that exercise asks you to write.</p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Submodule 1.2 workbook · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Written content: CC BY 4.0 · Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+<script>
+/* ── Fuseki connection check ───────────────────────────── */
+(function checkFuseki() {
+  var banner = document.getElementById('fuseki-banner');
+  if (!window.fetch) {
+    banner.className = 'fuseki-banner checking';
+    banner.innerHTML = '<span class="dot"></span>Check Fuseki manually: <a href="http://localhost:3030/" target="_blank" rel="noopener">localhost:3030 ↗</a>';
+    return;
+  }
+  fetch('http://localhost:3030/', { mode: 'no-cors', cache: 'no-store' })
+    .then(function () {
+      banner.className = 'fuseki-banner connected';
+      banner.innerHTML = '<span class="dot"></span>Fuseki running — <a href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener">open SPARQL editor at localhost:3030 ↗</a> &nbsp;·&nbsp; Copy a query below, paste it there, run it.';
+    })
+    .catch(function () {
+      banner.className = 'fuseki-banner offline';
+      banner.innerHTML = '<span class="dot"></span>Fuseki not detected — start it from the starter-kit root: <code>fuseki-server --config=fuseki/config.ttl</code> &nbsp;—&nbsp; then reload this page.';
+    });
+})();
+
+/* ── Open Fuseki + auto-copy ───────────────────────────── */
+function openFuseki(e, btn) {
+  e.preventDefault();
+  var card = btn.closest('.query-card');
+  var text = card.querySelector('pre[id]').textContent;
+  var url  = btn.getAttribute('href');
+  function doOpen() { window.open(url, '_blank', 'noopener,noreferrer'); }
+  function flash() {
+    var orig = btn.textContent;
+    btn.textContent = 'Copied — paste in Fuseki ↗';
+    btn.style.borderColor = 'var(--teal-mid)';
+    setTimeout(function() { btn.textContent = orig; btn.style.borderColor = ''; }, 2500);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() { flash(); doOpen(); }).catch(function() { legacyCopy(text, null); doOpen(); });
+  } else { legacyCopy(text, null); doOpen(); }
+}
+
+/* ── Copy query to clipboard ───────────────────────────── */
+function copyQuery(id, btn) {
+  var text = document.getElementById(id).textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () { flashBtn(btn); }).catch(function () { legacyCopy(text, btn); });
+  } else { legacyCopy(text, btn); }
+}
+
+function legacyCopy(text, btn) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); if (btn) flashBtn(btn); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+function flashBtn(btn) {
+  var orig = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(function () { btn.textContent = orig; }, 1600);
+}
+</script>
+
+</body>
+</html>

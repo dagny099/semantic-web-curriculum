@@ -1,0 +1,188 @@
+# =============================================================================
+# Title:   Alex Rivera — Resume Graph (version 001)
+# Purpose: Starter-kit data file for Submodule 1.3.
+#          Demonstrates FOAF, Dublin Core, SKOS, schema.org, and sensemaking:
+#          working together in a single resume graph. ESCO skill concept stubs
+#          are included inline so SPARQL traversals work without loading the
+#          full ESCO dataset. Comments mark where real ESCO IRIs would replace
+#          the local stubs in a production graph.
+# Date:    2026-06-02
+# Author:  Barbara Hidalgo-Sotelo (Sensemaking AI)
+# License: CC BY 4.0
+# =============================================================================
+
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:         <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix foaf:        <http://xmlns.com/foaf/0.1/> .
+@prefix schema:      <https://schema.org/> .
+@prefix skos:        <http://www.w3.org/2004/02/skos/core#> .
+@prefix sensemaking: <https://sensemaking-ai.com/ns/> .
+
+# Local base for this file's nodes
+@base <https://sensemaking-ai.com/resume/alex-rivera/001/> .
+
+# =============================================================================
+# The Resume Document
+# Dublin Core describes the document itself — its title, creation date, and
+# the person it is about. dcterms:creator points to the author/submitter.
+# =============================================================================
+
+<https://sensemaking-ai.com/resume/alex-rivera/001>
+    a sensemaking:Resume ;
+    dcterms:title    "Alex Rivera — Resume" ;
+    dcterms:created  "2024-11-01"^^xsd:date ;
+    dcterms:modified "2025-08-15"^^xsd:date ;
+    dcterms:language "en" ;
+    foaf:primaryTopic <person> .
+
+# =============================================================================
+# The Person (FOAF + schema.org)
+# foaf:Person is the canonical class for human beings in Linked Data.
+# schema:jobTitle and schema:sameAs provide web-readable supplementary facts.
+# =============================================================================
+
+<person>
+    a foaf:Person ;
+    foaf:name       "Alex Rivera" ;
+    foaf:givenName  "Alex" ;
+    foaf:familyName "Rivera" ;
+    foaf:mbox       <mailto:alex@example.com> ;
+    schema:jobTitle "Data Scientist" ;
+    sensemaking:hasEmployment <emp1>, <emp2> ;
+    sensemaking:hasEducation  <edu1> ;
+    sensemaking:hasSkill      <skill_python>, <skill_sql>, <skill_ml> .
+
+# =============================================================================
+# Employment Events (sensemaking: + schema:Organization)
+# Employment is modeled as a first-class event node so that role, dates, and
+# employer can all be properties of the event. This is the same design forced
+# by RDF's inability to put properties on edges directly.
+# =============================================================================
+
+<emp1>
+    a sensemaking:Employment ;
+    sensemaking:employer    <org_riverbend> ;
+    sensemaking:role        "Junior Data Analyst" ;
+    sensemaking:startDate   "2020-01-15"^^xsd:date ;
+    sensemaking:endDate     "2022-06-30"^^xsd:date ;
+    schema:description      "Built and maintained ETL pipelines and client-facing reports for insurance analytics." .
+
+<emp2>
+    a sensemaking:Employment ;
+    sensemaking:employer    <org_northwind> ;
+    sensemaking:role        "Data Scientist" ;
+    sensemaking:startDate   "2022-07-01"^^xsd:date ;
+    schema:description      "Developed predictive models for clinical outcomes using Python and scikit-learn." .
+
+# =============================================================================
+# Education (sensemaking: + schema:CollegeOrUniversity)
+# =============================================================================
+
+<edu1>
+    a sensemaking:Education ;
+    sensemaking:institution <org_midstate> ;
+    sensemaking:degree      "BS Statistics" ;
+    sensemaking:startDate   "2015-09-01"^^xsd:date ;
+    sensemaking:endDate     "2019-05-15"^^xsd:date .
+
+# =============================================================================
+# Organizations (schema.org)
+# schema:Organization and its subclasses are preferred over custom classes
+# because search engines, validators, and other systems already understand them.
+# =============================================================================
+
+<org_riverbend>
+    a schema:Organization ;
+    schema:name "Riverbend Analytics" ;
+    schema:url  <https://riverbend-analytics.example.com> .
+
+<org_northwind>
+    a schema:Organization ;
+    schema:name "Northwind Health" ;
+    schema:url  <https://northwindhealth.example.com> .
+
+<org_midstate>
+    a schema:CollegeOrUniversity ;
+    schema:name "Midstate University" ;
+    schema:url  <https://midstate.edu.example.com> .
+
+# =============================================================================
+# Skills (SKOS)
+# Each skill is a skos:Concept — a unit in a controlled vocabulary, not an
+# OWL class. skos:exactMatch links to the corresponding ESCO concept IRI.
+# sensemaking:skillLevel is a local property (no ESCO equivalent for this).
+#
+# In a production graph, skos:exactMatch would point to real ESCO IRIs like:
+#   <http://data.europa.eu/esco/skill/ccd0a1d9-afb8-4c0e-96e4-63d4f8b56bd5>
+# Here we use local ESCO stubs (defined below) so traversals work in Fuseki
+# without loading the full ESCO dataset.
+# =============================================================================
+
+<skill_python>
+    a skos:Concept ;
+    skos:prefLabel   "Python (programming language)"@en ;
+    skos:altLabel    "Python"@en ;
+    skos:exactMatch  <esco_python> ;
+    sensemaking:skillLevel "advanced" .
+
+<skill_sql>
+    a skos:Concept ;
+    skos:prefLabel   "SQL (structured query language)"@en ;
+    skos:altLabel    "SQL"@en ;
+    skos:exactMatch  <esco_sql> ;
+    sensemaking:skillLevel "advanced" .
+
+<skill_ml>
+    a skos:Concept ;
+    skos:prefLabel   "machine learning"@en ;
+    skos:altLabel    "ML"@en ;
+    skos:exactMatch  <esco_ml> ;
+    sensemaking:skillLevel "intermediate" .
+
+# =============================================================================
+# ESCO Skill Concept Stubs (for teaching purposes)
+# These represent simplified versions of ESCO concepts and their broader
+# hierarchy. In production, load the full ESCO RDF dataset or federate with
+# the EU ESCO SPARQL endpoint. The structure mirrors real ESCO hierarchy:
+#   Skill → Domain → ICT Skills broad category
+# =============================================================================
+
+<esco_python>
+    a skos:Concept ;
+    skos:prefLabel "use a scripting language: Python"@en ;
+    skos:notation  "ccd0a1d9" ;
+    skos:broader   <esco_programming_languages> .
+
+<esco_sql>
+    a skos:Concept ;
+    skos:prefLabel "query databases using SQL"@en ;
+    skos:notation  "29cdd2a9" ;
+    skos:broader   <esco_database_skills> .
+
+<esco_ml>
+    a skos:Concept ;
+    skos:prefLabel "apply machine learning"@en ;
+    skos:notation  "4d4d5c8e" ;
+    skos:broader   <esco_data_science_skills> .
+
+<esco_programming_languages>
+    a skos:Concept ;
+    skos:prefLabel "programming languages and scripting"@en ;
+    skos:broader   <esco_ict_skills> .
+
+<esco_database_skills>
+    a skos:Concept ;
+    skos:prefLabel "database management and querying"@en ;
+    skos:broader   <esco_ict_skills> .
+
+<esco_data_science_skills>
+    a skos:Concept ;
+    skos:prefLabel "data science and analytics"@en ;
+    skos:broader   <esco_ict_skills> .
+
+<esco_ict_skills>
+    a skos:Concept ;
+    skos:prefLabel "ICT skills"@en .

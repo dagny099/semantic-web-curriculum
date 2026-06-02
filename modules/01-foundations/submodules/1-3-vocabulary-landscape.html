@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The vocabulary landscape — Sub-module 1.3 · Sensemaking Semantic Web</title>
+<meta name="description" content="FOAF, Dublin Core, SKOS, and schema.org — what each vocabulary does, when to use it, and why ESCO/SKOS interop is the payoff for the resume graph.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-deep: #0B4F4A;
+    --teal-mid: #1E8076;
+    --teal-light: #C6E2DD;
+    --coral: #D85A30;
+    --coral-tint: #FAEAE2;
+    --charcoal: #1F2A2E;
+    --slate: #5A6671;
+    --slate-light: #8A929A;
+    --cream: #FAF7F2;
+    --white: #FFFFFF;
+    --rule: #D8D2C6;
+    --code-bg: #F2EDE3;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { margin: 0; padding: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: var(--charcoal); background: var(--cream); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+  .masthead { background: var(--teal-deep); color: var(--white); padding: 3rem 2rem 2.5rem; }
+  .masthead::after { content: ""; display: block; width: 2.5rem; height: 3px; background: var(--coral); margin-top: 1.5rem; }
+  .masthead-inner { max-width: 68rem; margin: 0 auto; }
+  .brand { font-size: 0.72rem; letter-spacing: 0.22em; color: var(--teal-light); text-transform: uppercase; margin-bottom: 1rem; font-weight: 500; }
+  h1 { font-family: 'EB Garamond', Georgia, serif; font-weight: 500; font-style: italic; font-size: 3rem; line-height: 1.1; margin: 0 0 0.5rem; letter-spacing: -0.015em; }
+  .subtitle { font-size: 1.05rem; color: var(--teal-light); letter-spacing: 0.02em; max-width: 42rem; }
+
+  .container { max-width: 56rem; margin: 0 auto; padding: 2.5rem 2rem 1rem; }
+
+  nav.quick-nav { display: flex; flex-wrap: wrap; gap: 1.25rem 2rem; padding: 1.5rem 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin-bottom: 3rem; font-size: 0.78rem; }
+  nav.quick-nav a { color: var(--slate); text-decoration: none; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; transition: color 0.15s ease; }
+  nav.quick-nav a:hover { color: var(--coral); }
+
+  section { margin-bottom: 4rem; scroll-margin-top: 1.5rem; }
+  .section-label { font-size: 0.7rem; letter-spacing: 0.22em; color: var(--coral); text-transform: uppercase; font-weight: 500; margin-bottom: 0.75rem; }
+  h2 { font-family: 'EB Garamond', Georgia, serif; font-weight: 500; font-style: italic; font-size: 2.15rem; color: var(--charcoal); margin: 0 0 1rem; letter-spacing: -0.01em; line-height: 1.15; }
+  h3 { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--charcoal); margin: 1.75rem 0 0.6rem; letter-spacing: 0.005em; }
+  h3:first-of-type { margin-top: 0.5rem; }
+  p { margin: 0.4rem 0 1rem; font-size: 1rem; max-width: 44rem; }
+  p.lede { font-size: 1.08rem; color: var(--slate); max-width: 44rem; }
+
+  pre, code { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 0.82rem; }
+  pre { background: var(--code-bg); padding: 0.9rem 1.1rem; border-radius: 3px; overflow-x: auto; margin: 0.6rem 0 1.4rem; line-height: 1.65; color: var(--charcoal); border-left: 3px solid var(--teal-mid); }
+  p code, li code, td code { background: var(--code-bg); padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.88em; color: var(--charcoal); }
+  .comment { color: var(--slate-light); }
+  .kw { color: var(--teal-deep); font-weight: 500; }
+
+  .tip { background: var(--coral-tint); border-left: 3px solid var(--coral); padding: 0.85rem 1.1rem 0.95rem; margin: 1.25rem 0 1.5rem; font-size: 0.94rem; color: var(--charcoal); max-width: 44rem; }
+  .tip-label { font-size: 0.68rem; letter-spacing: 0.18em; color: var(--coral); text-transform: uppercase; font-weight: 600; margin-bottom: 0.35rem; display: block; }
+  .tip p { margin: 0; max-width: none; }
+
+  ul.spaced { padding-left: 1.2rem; margin: 0.6rem 0 1.2rem; max-width: 44rem; }
+  ul.spaced li { margin: 0.55rem 0; font-size: 0.98rem; }
+  ul.spaced li strong { color: var(--charcoal); font-weight: 600; }
+
+  a.inline { color: var(--teal-mid); text-decoration: underline; text-decoration-color: var(--teal-light); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+  a.inline:hover { color: var(--coral); text-decoration-color: var(--coral); }
+
+  /* Vocabulary cards */
+  .vocab-card { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: 1.2rem 1.3rem; margin: 1.3rem 0; max-width: 44rem; }
+  .vocab-name { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--coral); text-transform: uppercase; font-weight: 600; margin-bottom: 0.3rem; }
+  .vocab-full { font-size: 0.82rem; color: var(--slate); margin-bottom: 0.7rem; }
+  .vocab-card h3 { margin: 0.8rem 0 0.4rem; font-size: 0.88rem; }
+  .vocab-card h3:first-of-type { margin-top: 0; }
+  .vocab-card p { font-size: 0.92rem; margin: 0 0 0.6rem; max-width: none; }
+  .vocab-card ul { padding-left: 1.1rem; margin: 0.2rem 0 0.5rem; }
+  .vocab-card ul li { font-size: 0.9rem; margin: 0.3rem 0; }
+
+  /* Decision table */
+  table { width: 100%; border-collapse: collapse; margin: 1.4rem 0; font-size: 0.92rem; max-width: 44rem; }
+  th, td { border-bottom: 1px solid var(--rule); padding: 0.72rem 0.65rem; vertical-align: top; text-align: left; }
+  th { color: var(--coral); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; font-weight: 600; }
+
+  ol.resources { list-style: none; padding: 0; margin: 1rem 0 1.5rem; max-width: 44rem; counter-reset: list-counter; }
+  ol.resources li { margin-bottom: 1.1rem; padding-left: 1.5rem; position: relative; font-size: 0.95rem; counter-increment: list-counter; }
+  ol.resources li::before { content: counter(list-counter) "."; position: absolute; left: 0; color: var(--coral); font-weight: 600; font-size: 0.85rem; top: 0.1rem; }
+  ol.resources li .res-title { font-weight: 600; color: var(--charcoal); }
+  ol.resources li .res-note { color: var(--slate); display: block; margin-top: 0.2rem; }
+
+  .branch { border-left: 3px solid var(--teal-mid); background: var(--white); padding: 0.9rem 1.2rem; margin: 0.6rem 0 1.4rem; max-width: 44rem; }
+  .branch h3 { margin: 0 0 0.4rem; color: var(--teal-deep); }
+  .branch p { margin: 0; font-size: 0.95rem; }
+
+  .section-rule { border: none; height: 1px; background: var(--rule); margin: 0 0 3.5rem 0; }
+
+  footer { border-top: 1px solid var(--rule); padding: 2rem 0 3rem; margin-top: 3rem; color: var(--slate); font-size: 0.85rem; }
+  footer p { margin: 0.4rem 0; max-width: none; }
+  footer a { color: var(--teal-mid); }
+
+  @media (max-width: 760px) { h1 { font-size: 2.2rem; } h2 { font-size: 1.75rem; } .container { padding: 2rem 1.25rem 0.5rem; } .masthead { padding: 2.25rem 1.25rem 2rem; } pre { font-size: 0.78rem; } }
+  @media print {
+    body { background: white; color: black; font-size: 10pt; }
+    .masthead { background: white; color: black; border-bottom: 2px solid black; padding: 0.5rem 0; }
+    .masthead::after { display: none; }
+    h1 { color: black; font-size: 22pt; }
+    .brand, .subtitle { color: #444; }
+    .container { padding: 0.5rem 0; max-width: none; }
+    nav.quick-nav { display: none; }
+    pre { background: #f5f5f5 !important; color: black; page-break-inside: avoid; font-size: 8pt; border-left: 2px solid #888; }
+    .tip, .branch, .vocab-card { background: #f5f5f5 !important; border: 1px solid #ccc; page-break-inside: avoid; }
+    a { color: black !important; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sub-module 1.3</div>
+    <h1>The vocabulary landscape</h1>
+    <div class="subtitle">FOAF, Dublin Core, SKOS, and schema.org — what each vocabulary does, when to choose it, and why ESCO/SKOS interop is the payoff for the Resume Graph.</div>
+  </div>
+</header>
+
+<div class="container">
+
+<nav class="quick-nav" aria-label="Section navigation">
+  <a href="#why">Why vocabularies</a>
+  <a href="#foaf">FOAF</a>
+  <a href="#dc">Dublin Core</a>
+  <a href="#skos">SKOS</a>
+  <a href="#schema">schema.org</a>
+  <a href="#esco">ESCO payoff</a>
+  <a href="#reuse">Reuse heuristics</a>
+  <a href="#pain">Pain points</a>
+  <a href="#next">Next</a>
+  <a href="#resources">Resources</a>
+</nav>
+
+<!-- ===================== 01 Why vocabularies ===================== -->
+<section id="why">
+  <div class="section-label">01 · Why shared vocabularies exist</div>
+  <h2>The same predicate, everywhere.</h2>
+
+  <p class="lede">RDF's power is that a predicate is a URI — globally identifiable. If two graphs use <code>foaf:knows</code>, they mean the same relationship. If you define your own <code>:knows</code>, you mean whatever you decide. Shared vocabularies are the convention layer that makes the first case work at scale.</p>
+
+  <p>Without shared vocabularies, every RDF graph is an island. With them, two organizations can independently describe a person using <code>foaf:Person</code> and the descriptions merge without configuration. A search engine encounters <code>schema:name</code> on a web page and knows what to do with it. A job seeker's resume links a skill to <code>skos:exactMatch</code> and the link resolves into a continent-wide occupational taxonomy. None of this works if every publisher invents their own predicates.</p>
+
+  <p>The cost of shared vocabularies is that you inherit their design decisions. FOAF is from 2000 — it shows its age. Dublin Core was designed for library metadata — some of its semantics do not map cleanly to digital resources. SKOS was built for thesauri — it captures concept relationships but not formal class hierarchies. schema.org is optimized for search engine consumption, not reasoning. Every vocabulary is a tradeoff, and the skill of ontology design is knowing which tradeoffs to accept and where to define something new.</p>
+
+  <div class="tip">
+    <span class="tip-label">The rule that matters most</span>
+    <p>Reuse before defining. Always check whether FOAF, schema.org, SKOS, dcterms, or PROV-O has an appropriate term before creating a new one in your custom namespace. New terms in a custom namespace are not shared — they are meaningful only to you until someone else adopts them.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 02 FOAF ===================== -->
+<section id="foaf">
+  <div class="section-label">02 · FOAF</div>
+  <h2>For people, agents, and documents.</h2>
+
+  <div class="vocab-card">
+    <div class="vocab-name">FOAF</div>
+    <div class="vocab-full">Friend of a Friend · <code>http://xmlns.com/foaf/0.1/</code> · prefix: <code>foaf:</code></div>
+
+    <h3>What it does</h3>
+    <p>FOAF defines classes and properties for people, groups, organizations, and documents, plus the relationships between them. It was the first widely-adopted Linked Data vocabulary and remains the standard choice for representing human beings in RDF.</p>
+
+    <h3>Key terms for a resume graph</h3>
+    <ul>
+      <li><code>foaf:Person</code> — the class for a human being (the resume subject)</li>
+      <li><code>foaf:name</code>, <code>foaf:givenName</code>, <code>foaf:familyName</code> — name components</li>
+      <li><code>foaf:mbox</code> — email address (use the <code>mailto:</code> URI scheme)</li>
+      <li><code>foaf:primaryTopic</code> — links a document to the thing it is primarily about</li>
+      <li><code>foaf:knows</code> — a weak, symmetric social connection</li>
+    </ul>
+
+    <h3>When to use FOAF vs schema.org</h3>
+    <p>Both FOAF and schema.org define person-related terms. Use <code>foaf:Person</code> as the class (it is more precisely human-specific than <code>schema:Person</code>, which also covers fictional characters). Use schema.org properties where FOAF lacks them — <code>schema:jobTitle</code>, <code>schema:url</code>, <code>schema:telephone</code> have no close FOAF equivalents. Mixing them on the same node is fine and common.</p>
+  </div>
+
+<pre><span class="comment"># A person node mixing FOAF and schema.org</span>
+:alex a foaf:Person ;
+    foaf:name         "Alex Rivera" ;
+    foaf:mbox         &lt;mailto:alex@example.com&gt; ;
+    schema:jobTitle   "Data Scientist" .    <span class="comment"># no FOAF equivalent</span></pre>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 03 Dublin Core ===================== -->
+<section id="dc">
+  <div class="section-label">03 · Dublin Core</div>
+  <h2>For documents, records, and metadata.</h2>
+
+  <div class="vocab-card">
+    <div class="vocab-name">Dublin Core Terms</div>
+    <div class="vocab-full">DCMI Metadata Terms · <code>http://purl.org/dc/terms/</code> · prefix: <code>dcterms:</code></div>
+
+    <h3>What it does</h3>
+    <p>Dublin Core was designed for library-style document metadata: authorship, dates, subjects, languages, rights. In an RDF graph, dcterms is the right vocabulary when you need to describe a <em>record</em> — a document, a dataset, a file — rather than the entity the document is about.</p>
+
+    <h3>Key terms for a resume graph</h3>
+    <ul>
+      <li><code>dcterms:title</code> — the document's name</li>
+      <li><code>dcterms:created</code> — creation date (use <code>xsd:date</code>)</li>
+      <li><code>dcterms:modified</code> — last-modified date</li>
+      <li><code>dcterms:language</code> — the language of the document's content</li>
+      <li><code>dcterms:creator</code> — who created the document (range: <code>dcterms:Agent</code>)</li>
+      <li><code>dcterms:subject</code> — what the document is about</li>
+    </ul>
+
+    <h3>The dc: vs dcterms: distinction</h3>
+    <p>Dublin Core has two namespaces: the original <code>dc:</code> (<code>http://purl.org/dc/elements/1.1/</code>) and the refined <code>dcterms:</code>. Always use <code>dcterms:</code>. The original <code>dc:</code> properties have unspecified ranges; <code>dcterms:</code> properties have formal semantics and are more compatible with OWL reasoning.</p>
+  </div>
+
+<pre><span class="comment"># The resume document node — what dcterms describes</span>
+&lt;https://sensemaking-ai.com/resume/alex-rivera/001&gt;
+    a sensemaking:Resume ;
+    dcterms:title    "Alex Rivera — Resume" ;
+    dcterms:created  "2024-11-01"^^xsd:date ;
+    dcterms:language "en" ;
+    foaf:primaryTopic :alex .     <span class="comment"># link to the person (FOAF)</span></pre>
+
+  <div class="tip">
+    <span class="tip-label">Document vs entity</span>
+    <p>The resume document and the person the resume describes are two distinct nodes. dcterms describes the document; FOAF and schema.org describe the person. <code>foaf:primaryTopic</code> connects them. This distinction — document vs. thing — becomes important in Module 3 when provenance tracking requires you to say who asserted a fact, in which source, at what time.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 04 SKOS ===================== -->
+<section id="skos">
+  <div class="section-label">04 · SKOS</div>
+  <h2>For controlled vocabularies and taxonomies.</h2>
+
+  <div class="vocab-card">
+    <div class="vocab-name">SKOS</div>
+    <div class="vocab-full">Simple Knowledge Organization System · <code>http://www.w3.org/2004/02/skos/core#</code> · prefix: <code>skos:</code></div>
+
+    <h3>What it does</h3>
+    <p>SKOS represents concepts in a controlled vocabulary — a taxonomy, thesaurus, or classification scheme. A SKOS concept is a unit of meaning with preferred labels, alternative labels, and relationships to other concepts. SKOS does not make logical inferences; it organizes and navigates.</p>
+
+    <h3>Key terms for a resume graph</h3>
+    <ul>
+      <li><code>skos:Concept</code> — a unit in a vocabulary (a skill, a job category, a subject area)</li>
+      <li><code>skos:ConceptScheme</code> — the vocabulary or classification system itself</li>
+      <li><code>skos:prefLabel</code> — the preferred name (one per language)</li>
+      <li><code>skos:altLabel</code> — synonyms and abbreviations</li>
+      <li><code>skos:broader</code> — the parent concept in a hierarchy</li>
+      <li><code>skos:narrower</code> — child concepts</li>
+      <li><code>skos:related</code> — non-hierarchical conceptual association</li>
+      <li><code>skos:exactMatch</code> — this concept is the same as a concept in another vocabulary</li>
+      <li><code>skos:closeMatch</code> — similar but not identical to a concept in another vocabulary</li>
+    </ul>
+
+    <h3>SKOS vs OWL class hierarchy</h3>
+    <p><code>skos:broader</code> is not <code>rdfs:subClassOf</code>. In SKOS, "Machine learning is broader than Deep learning" is an organizational statement about two vocabulary concepts — not an assertion that every deep-learning instance is also a machine-learning instance in a formal reasoning sense. Use SKOS for concepts in a controlled vocabulary. Use <code>rdfs:subClassOf</code> for class hierarchies you want a reasoner to act on. The distinction matters in Module 2.</p>
+  </div>
+
+<pre><span class="comment"># A skill typed as a SKOS concept — not an OWL class</span>
+:skill_python
+    a skos:Concept ;
+    skos:prefLabel  "Python (programming language)"@en ;
+    skos:altLabel   "Python"@en ;
+    skos:exactMatch &lt;esco_python&gt; ;           <span class="comment"># links into ESCO</span>
+    sensemaking:skillLevel "advanced" .       <span class="comment"># local property</span>
+
+<span class="comment"># ESCO concept stub showing the broader hierarchy</span>
+&lt;esco_python&gt;
+    a skos:Concept ;
+    skos:prefLabel "use a scripting language: Python"@en ;
+    skos:broader   &lt;esco_programming_languages&gt; .
+
+&lt;esco_programming_languages&gt;
+    a skos:Concept ;
+    skos:prefLabel "programming languages and scripting"@en ;
+    skos:broader   &lt;esco_ict_skills&gt; .</pre>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 05 schema.org ===================== -->
+<section id="schema">
+  <div class="section-label">05 · schema.org</div>
+  <h2>For web-readable, broadly applicable entities.</h2>
+
+  <div class="vocab-card">
+    <div class="vocab-name">schema.org</div>
+    <div class="vocab-full"><code>https://schema.org/</code> · prefix: <code>schema:</code> · Note: use <code>https://</code>, not <code>http://</code></div>
+
+    <h3>What it does</h3>
+    <p>Schema.org is a joint vocabulary maintained by Google, Microsoft, Yahoo, and Yandex for annotating web pages so search engines can understand their content. It has extremely broad coverage — thousands of types and properties — with a deliberate emphasis on practical usability over formal precision. An organization with a name, a product with a price, a job posting with a salary range: schema.org has a type for it.</p>
+
+    <h3>Key terms for a resume graph</h3>
+    <ul>
+      <li><code>schema:Organization</code> — a company, institution, or group</li>
+      <li><code>schema:CollegeOrUniversity</code> — subclass of Organization</li>
+      <li><code>schema:name</code> — name of a thing (more permissive than foaf:name)</li>
+      <li><code>schema:jobTitle</code> — a person's current or most recent role</li>
+      <li><code>schema:description</code> — freetext description of anything</li>
+      <li><code>schema:url</code> — a web address</li>
+      <li><code>schema:DateTime</code> — datetime value type (used with <code>xsd:date</code>)</li>
+    </ul>
+
+    <h3>When schema.org earns its keep</h3>
+    <p>Schema.org is excellent when FOAF or dcterms lacks a property you need — which is often. Its weakness is loose semantics: ranges are very permissive, and the vocabulary is not well-suited to OWL reasoning. Use it for things you want to be web-readable and broadly understood. Avoid it as your primary design surface if you need formal inference or tight constraint validation.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 06 ESCO ===================== -->
+<section id="esco">
+  <div class="section-label">06 · ESCO — the interop payoff</div>
+  <h2>Why SKOS in a resume graph is not a toy example.</h2>
+
+  <p class="lede">ESCO — the European Skills, Competences, Qualifications and Occupations framework — is published as RDF using SKOS and OWL. Approximately 3,000 occupation concepts and 14,000 skill concepts, linked into a structured hierarchy, available as Linked Open Data.</p>
+
+  <p>This is the interop story from Sub-module 1.1, made concrete. When a resume graph types skills as <code>skos:Concept</code> and links them to ESCO via <code>skos:exactMatch</code>, those skills are no longer isolated string values — they are nodes in a graph that connects to a continent-wide occupational taxonomy maintained by the European Commission.</p>
+
+  <p>What that makes possible:</p>
+
+  <ul class="spaced">
+    <li>A SPARQL query can follow <code>skos:exactMatch/skos:broader</code> from a person's skill into the ESCO hierarchy and return the broader occupational domain — without any data migration, import, or string matching.</li>
+    <li>Two resumes from different organizations that both link to the same ESCO IRI are describing the same skill. A query that asks "who has this ESCO skill" finds them both, regardless of how the skill is labeled in each resume.</li>
+    <li>If ESCO adds a new <code>skos:related</code> skill to the concept, queries that traverse <code>skos:related</code> from the person's skill automatically reach the new concept — without changing the resume data.</li>
+  </ul>
+
+  <p>None of this works in a property graph where ESCO codes are string properties. The ESCO string "<code>ccd0a1d9</code>" is opaque — the database does not know it points to anything. The RDF version is a live connection.</p>
+
+<pre><span class="comment"># The query that demonstrates the payoff</span>
+<span class="kw">SELECT</span> ?skillLabel ?domainLabel <span class="kw">WHERE</span> {
+  &lt;person&gt; sensemaking:hasSkill ?skill .
+  ?skill skos:prefLabel ?skillLabel ;
+         skos:exactMatch/skos:broader ?domain .
+  ?domain skos:prefLabel ?domainLabel .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?skillLabel) = "en")
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?domainLabel) = "en")
+}</pre>
+
+  <p>With the ESCO stubs in <code>resume-001.ttl</code>, this query works locally and returns the broader domain for each of Alex's three skills. With the full ESCO dataset loaded or federated, the same query reaches the entire occupational hierarchy.</p>
+
+  <div class="tip">
+    <span class="tip-label">skos:exactMatch vs owl:sameAs</span>
+    <p>Do not use <code>owl:sameAs</code> to link a resume skill to an ESCO concept. <code>owl:sameAs</code> asserts full identity — a reasoner will merge all properties from both nodes, which causes unintended entailments (your <code>sensemaking:skillLevel</code> property would transfer to the ESCO concept). Use <code>skos:exactMatch</code>, which asserts semantic equivalence for the purposes of vocabulary alignment without triggering property inheritance. This distinction matters in Module 3. Know it now.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 07 Reuse heuristics ===================== -->
+<section id="reuse">
+  <div class="section-label">07 · Reuse heuristics</div>
+  <h2>Which vocabulary, when.</h2>
+
+  <table>
+    <thead>
+      <tr><th>What you are modeling</th><th>Start here</th><th>Then add</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>A person</td><td><code>foaf:Person</code></td><td><code>schema:</code> properties FOAF lacks (<code>jobTitle</code>, <code>telephone</code>)</td></tr>
+      <tr><td>A document or record</td><td><code>dcterms:</code> metadata</td><td><code>foaf:primaryTopic</code> to link to the subject</td></tr>
+      <tr><td>A skill, subject area, or category</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code> to ESCO or another published vocabulary</td></tr>
+      <tr><td>An organization or institution</td><td><code>schema:Organization</code> (or subclass)</td><td>Custom properties if schema.org lacks them</td></tr>
+      <tr><td>An event (employment, education)</td><td>Custom class (<code>sensemaking:Employment</code>)</td><td><code>schema:Event</code> or <code>schema:EducationEvent</code> as <code>rdfs:subClassOf</code></td></tr>
+      <tr><td>A class hierarchy you want to reason over</td><td><code>rdfs:subClassOf</code> / OWL</td><td>Not SKOS broader — SKOS is for vocabulary navigation, not logical inference</td></tr>
+    </tbody>
+  </table>
+
+  <p>The decision is not always clean. A skill could be modeled as a <code>skos:Concept</code> (appropriate for a controlled vocabulary) or as an OWL class (appropriate if you want to reason about subskills). The resume graph uses SKOS because skills here are navigation targets into ESCO — not concepts you plan to build a class hierarchy around. If Module 2's Naruto ontology needed "skill" as a class (to declare that every ninja who has the Sharingan is also a member of the Uchiha clan), OWL classes would be right. Context determines which model serves the actual use case.</p>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 08 Pain points ===================== -->
+<section id="pain">
+  <div class="section-label">08 · Pain points</div>
+  <h2>Where this landscape bites.</h2>
+
+  <ul class="spaced">
+    <li>
+      <strong>Namespace confusion.</strong> schema.org switched from <code>http://</code> to <code>https://</code> in 2019. Old data uses <code>http://schema.org/</code>; new data uses <code>https://schema.org/</code>. They are technically different IRIs. Always use <code>https://schema.org/</code> and double-check old Turtle files you copy from tutorials.
+    </li>
+    <li>
+      <strong>dc: vs dcterms:.</strong> Dozens of tutorials use <code>dc:creator</code> (the original Dublin Core). Always use <code>dcterms:creator</code>. The original <code>dc:</code> properties have no formal range; <code>dcterms:</code> properties are well-defined and compatible with OWL reasoning.
+    </li>
+    <li>
+      <strong>SKOS broader is not subClassOf.</strong> Using <code>skos:broader</code> does not trigger any inference. A SPARQL query that asks for all Python skills will not automatically return Deep Learning skills just because "machine learning is broader than deep learning" is stated in SKOS. Transitive closure on SKOS hierarchies requires either a property path (<code>skos:broader+</code>) or a reasoner with SKOS entailment rules.
+    </li>
+    <li>
+      <strong>skos:exactMatch is not owl:sameAs.</strong> They look similar; they have very different consequences. <code>owl:sameAs</code> merges all properties from both nodes in a reasoner. <code>skos:exactMatch</code> is a weaker assertion of semantic equivalence without property inheritance. Use the right one.
+    </li>
+    <li>
+      <strong>FOAF is aging.</strong> <code>foaf:Person</code> is universally recognized. Most other FOAF properties are less consistently supported. For anything beyond basic person identification, prefer schema.org equivalents — they have wider validator and tooling support.
+    </li>
+  </ul>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 09 Next ===================== -->
+<section id="next">
+  <div class="section-label">09 · Next</div>
+  <h2>What to do with this.</h2>
+
+  <div class="branch">
+    <h3>If you are working through the curriculum</h3>
+    <p>The Sub-module 1.3 workbook (<code>1-3-workbook-resume.html</code>) queries Alex Rivera's resume against Fuseki. Load <code>artifacts/resume-graph/ttl/resume-001.ttl</code> into the Fuseki <code>mythology</code> dataset first. The five queries apply every vocabulary covered in this synthesis — FOAF for person facts, dcterms for document metadata, sensemaking for employment events, schema.org for organizations, and SKOS for the ESCO interop query. Exercise 1.3 then asks you to build your own resume slice using the same vocabulary choices.</p>
+  </div>
+
+  <div class="branch">
+    <h3>Before starting Exercise 1.3</h3>
+    <p>Re-read the Module 1 README's primary project hook. The exercise asks for one resume, ~30–50 nodes, side-by-side Cypher and SPARQL queries. Use <code>resume-001.ttl</code> as a structural template — you will replace Alex Rivera's employment history with your own, but the vocabulary choices (which terms come from FOAF vs schema.org vs sensemaking vs SKOS) are the same decisions you will have to make.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ===================== 10 Resources ===================== -->
+<section id="resources">
+  <div class="section-label">10 · Resources</div>
+  <h2>Curated links.</h2>
+
+  <ol class="resources">
+    <li>
+      <span class="res-title">FOAF specification — <a class="inline" href="http://xmlns.com/foaf/spec/">xmlns.com/foaf/spec/</a></span>
+      <span class="res-note">The canonical reference. Short and readable — the whole spec is one page. Read it once to understand what FOAF was designed for and what it is not.</span>
+    </li>
+    <li>
+      <span class="res-title">DCMI Metadata Terms — <a class="inline" href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/">dublincore.org/specifications/dublin-core/dcmi-terms/</a></span>
+      <span class="res-note">Definitive reference for dcterms: properties, classes, and their formal semantics. Bookmark the terms list for quick lookup while writing Turtle.</span>
+    </li>
+    <li>
+      <span class="res-title">W3C SKOS Reference — <a class="inline" href="https://www.w3.org/TR/skos-reference/">w3.org/TR/skos-reference/</a></span>
+      <span class="res-note">Exhaustive specification for every SKOS term and its intended semantics. Section 8 (mapping properties) covers exactMatch, closeMatch, broadMatch — the terms that matter most for connecting resume skills to external vocabularies.</span>
+    </li>
+    <li>
+      <span class="res-title">schema.org — <a class="inline" href="https://schema.org/">schema.org</a></span>
+      <span class="res-note">Browse types and properties. The search box is the fastest way to check whether schema.org has a term for what you need. The "more specific types" panel at the bottom of each type page shows the subclass hierarchy.</span>
+    </li>
+    <li>
+      <span class="res-title">ESCO API and Linked Data — <a class="inline" href="https://esco.ec.europa.eu/en/use-esco/esco-api">esco.ec.europa.eu</a></span>
+      <span class="res-note">The EU's ESCO portal. The Linked Data section provides the full ESCO dataset as downloadable RDF (SKOS + OWL) and as a browsable hierarchy. Download the skills dataset and load it into Fuseki to replace the stubs in resume-001.ttl with live ESCO concept IRIs.</span>
+    </li>
+    <li>
+      <span class="res-title">Allemang, Hendler &amp; Gandon — <em>Semantic Web for the Working Ontologist</em>, Chapters 1–3.</span>
+      <span class="res-note">Chapter 3 ("The basic tools of RDFS") and the sections on modeling with SKOS provide the conceptual grounding behind the vocabulary decisions in this sub-module.</span>
+    </li>
+  </ol>
+</section>
+
+<footer>
+  <p>Sub-module 1.3 · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Licensed CC BY 4.0. Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+</div>
+
+</body>
+</html>
