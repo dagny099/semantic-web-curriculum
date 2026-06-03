@@ -150,6 +150,20 @@ footer p { margin: 0 0 .4rem; max-width: none; }
   main { padding-left: 1rem; padding-right: 1rem; }
   .masthead { padding: 2rem 1rem 2.5rem; }
 }
+/* ── Concept section collapsible ── */
+.concept-section { margin: 1.5rem 0; }
+.concept-section > summary { font-family: var(--font-sans); font-size: .9rem; font-weight: 600; color: var(--teal-deep); cursor: pointer; padding: .7rem 1rem; background: var(--teal-light); border: 1px solid var(--teal-mid); border-radius: 8px; list-style: none; display: flex; align-items: center; gap: .5rem; user-select: none; max-width: 44rem; }
+.concept-section > summary::before { content: "▶"; font-size: .6rem; color: var(--teal-mid); transition: transform .2s; }
+.concept-section[open] > summary::before { transform: rotate(90deg); }
+.concept-section > summary::-webkit-details-marker { display: none; }
+.concept-body { padding: 1.25rem 0 .5rem; }
+.concept-body h3 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(1.2rem, 2.5vw, 1.6rem); color: var(--charcoal); margin: 1.75rem 0 .6rem; }
+.concept-body h3:first-of-type { margin-top: .5rem; }
+.concept-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .9rem; max-width: 44rem; }
+.concept-body th, .concept-body td { border-bottom: 1px solid var(--rule); padding: .6rem .65rem; vertical-align: top; text-align: left; }
+.concept-body th { color: var(--coral); text-transform: uppercase; letter-spacing: .1em; font-size: .7rem; font-weight: 600; }
+.coming-soon { font-size: .72rem; color: var(--slate-lt); font-style: italic; }
+
 @media print {
   .masthead { background: white; color: black; border-bottom: 2px solid black; padding: .5rem 0; }
   h1 { color: black; font-size: 26pt; max-width: none; }
@@ -197,10 +211,11 @@ footer p { margin: 0 0 .4rem; max-width: none; }
 <nav class="quick-nav" aria-label="Section navigation">
   <div class="quick-nav-inner">
     <a href="#prereq">01 · Prerequisites</a>
-    <a href="#data">02 · The data</a>
-    <a href="#lab">03 · Query lab</a>
-    <a href="#challenges">04 · Challenges</a>
-    <a href="#resources">05 · Resources</a>
+    <a href="#concepts">02 · Core concepts</a>
+    <a href="#data">03 · The data</a>
+    <a href="#lab">04 · Query lab</a>
+    <a href="#challenges">05 · Challenges</a>
+    <a href="#resources">06 · Resources</a>
   </div>
 </nav>
 
@@ -222,10 +237,71 @@ footer p { margin: 0 0 .4rem; max-width: none; }
 </section>
 
 <!-- ══════════════════════════════════════════
-     02 · THE DATA
+     02 · CORE SPARQL CONCEPTS
+══════════════════════════════════════════════ -->
+<section id="concepts">
+  <div class="section-label">02 · Core SPARQL concepts</div>
+  <h2>The ideas behind these queries.</h2>
+  <p>If you've worked through the <a href="1-2-sparql-basics.html" style="color:var(--teal-mid)">Sub-module 1.2 synthesis doc</a>, skip ahead — this section condenses that material for quick reference. If you haven't, expand below before running the query lab.</p>
+
+  <details class="concept-section">
+    <summary>Core SPARQL concepts — expand to review</summary>
+    <div class="concept-body">
+
+      <h3>The endpoint model</h3>
+      <p>A SPARQL endpoint is an HTTP service: you POST a query, you get results back. Two endpoints in this curriculum:</p>
+      <ul class="spaced">
+        <li><strong>Local Fuseki</strong> at <code>localhost:3030</code> — your data, no rate limits, no internet required.</li>
+        <li><strong>Wikidata</strong> at <code>query.wikidata.org</code> — one of the largest open knowledge graphs, read-only, rate-limited, with Wikidata-specific extensions (<code>SERVICE wikibase:label</code>).</li>
+      </ul>
+
+      <h3>Query anatomy</h3>
+<pre><span class="cm">① PREFIX declarations — short aliases for full IRIs</span>
+<span class="kw">PREFIX</span> schema:      &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/example#&gt;
+
+<span class="cm">② SELECT clause — which variables to project</span>
+<span class="kw">SELECT</span> ?name ?teamName
+
+<span class="cm">③ WHERE clause — graph pattern that must match</span>
+<span class="kw">WHERE</span> {
+  ?ninja a sensemaking:Ninja ;
+         schema:name ?name ;
+         sensemaking:memberOfTeam ?team .
+  ?team schema:name ?teamName .
+}
+
+<span class="cm">④ Solution modifiers — ORDER BY, LIMIT, GROUP BY</span>
+<span class="kw">ORDER BY</span> ?teamName ?name</pre>
+
+      <h3>The four query forms</h3>
+      <table>
+        <thead><tr><th>Form</th><th>Returns</th><th>Use when</th></tr></thead>
+        <tbody>
+          <tr><td><code>SELECT</code></td><td>Table of variable bindings</td><td>You want a list of facts — the everyday form.</td></tr>
+          <tr><td><code>ASK</code></td><td>true / false</td><td>You only need to know whether a pattern exists.</td></tr>
+          <tr><td><code>CONSTRUCT</code></td><td>A new RDF graph</td><td>You want to derive or transform triples.</td></tr>
+          <tr><td><code>DESCRIBE</code></td><td>All known facts about a URI</td><td>You're exploring an unknown resource.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Three things that surprise people</h3>
+      <ul class="spaced">
+        <li><strong>The LANG tag trap.</strong> Multilingual literals multiply rows without a FILTER. Add <code>FILTER (LANG(?label) = "en")</code> whenever data has language-tagged values.</li>
+        <li><strong>OPTIONAL is a left join.</strong> A node with two jutsu appears twice in results. Use <code>GROUP_CONCAT</code> or restructure to collapse to one row.</li>
+        <li><strong>Plain SPARQL sees only what's in the store.</strong> OWL property declarations (symmetric, inverse) have no effect without a reasoner. This becomes Module 2's core topic.</li>
+      </ul>
+
+      <p>Full detail, query anatomy diagrams, and three live Wikidata queries: <a href="1-2-sparql-basics.html" style="color:var(--teal-mid)">Sub-module 1.2 synthesis doc</a>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════════════════════════════════════
+     03 · THE DATA
 ══════════════════════════════════════════════ -->
 <section id="data">
-  <div class="section-label">02 · The data: three patterns to notice</div>
+  <div class="section-label">03 · The data: three patterns to notice</div>
   <h2>Read the file before running queries.</h2>
   <p>Three patterns in <code>example.ttl</code> that become relevant in this workbook's queries. You saw them in the 1.1 workbook too — but the queries here ask them in new ways.</p>
 
@@ -287,7 +363,7 @@ sensemaking:Gaara
      03 · QUERY LAB
 ══════════════════════════════════════════════ -->
 <section id="lab">
-  <div class="section-label">03 · Query lab</div>
+  <div class="section-label">04 · Query lab</div>
   <h2>Five patterns, five queries.</h2>
   <p>Each query introduces one pattern not covered in the 1.1 workbook. Read the pattern description, predict the output, copy the query into Fuseki, then open the "Think about this" panel after running it.</p>
 
@@ -520,7 +596,7 @@ sensemaking:Gaara
      04 · MODIFICATION CHALLENGES
 ══════════════════════════════════════════════ -->
 <section id="challenges">
-  <div class="section-label">04 · Modification challenges</div>
+  <div class="section-label">05 · Modification challenges</div>
   <h2>Four things to build.</h2>
   <p>Each challenge extends or recombines patterns from the query lab. Write the query before opening the solution panel.</p>
 
@@ -648,7 +724,7 @@ sensemaking:Gaara
      05 · RESOURCES
 ══════════════════════════════════════════════ -->
 <section id="resources">
-  <div class="section-label">05 · Curated resources</div>
+  <div class="section-label">06 · Curated resources</div>
   <h2>Five good next reads.</h2>
 
   <div class="resource-grid">
@@ -680,7 +756,12 @@ sensemaking:Gaara
     <article class="resource-card">
       <h4>Module context</h4>
       <h5><a href="../README.md">Module 1 README</a></h5>
-      <p>The exercise list and primary project. If you have not started Exercise 1.3 (Resume Graph RDF slice), the SPARQL patterns in this workbook map directly to the three queries that exercise asks you to write.</p>
+      <p>The exercise list and primary project. The SPARQL patterns in this workbook map directly to the three queries Exercise 1.3 asks you to write against your own resume data.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Cheatsheet</h4>
+      <h5>Module 1 SPARQL quick-reference <span class="coming-soon">(coming soon)</span></h5>
+      <p>Prefix block, query anatomy, all five query patterns from this workbook — one-page reference card. Available when Module 1 materials are complete.</p>
     </article>
   </div>
 </section>

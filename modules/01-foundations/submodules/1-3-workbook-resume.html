@@ -139,6 +139,25 @@ footer p { margin: 0 0 .4rem; max-width: none; }
   main { padding-left: 1rem; padding-right: 1rem; }
   .masthead { padding: 2rem 1rem 2.5rem; }
 }
+/* ── Concept section collapsible ── */
+.concept-section { margin: 1.5rem 0; }
+.concept-section > summary { font-family: var(--font-sans); font-size: .9rem; font-weight: 600; color: var(--teal-deep); cursor: pointer; padding: .7rem 1rem; background: var(--teal-light); border: 1px solid var(--teal-mid); border-radius: 8px; list-style: none; display: flex; align-items: center; gap: .5rem; user-select: none; max-width: 44rem; }
+.concept-section > summary::before { content: "▶"; font-size: .6rem; color: var(--teal-mid); transition: transform .2s; }
+.concept-section[open] > summary::before { transform: rotate(90deg); }
+.concept-section > summary::-webkit-details-marker { display: none; }
+.concept-body { padding: 1.25rem 0 .5rem; }
+.concept-body h3 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(1.2rem, 2.5vw, 1.6rem); color: var(--charcoal); margin: 1.75rem 0 .6rem; }
+.concept-body h3:first-of-type { margin-top: .5rem; }
+.vocab-cards { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1rem; margin: 1rem 0 1.4rem; }
+.vocab-mini { background: var(--white); border: 1px solid var(--rule); border-radius: 10px; padding: .9rem 1rem; }
+.vocab-mini-name { font-size: .75rem; font-weight: 600; color: var(--teal-deep); margin-bottom: .35rem; letter-spacing: .05em; }
+.vocab-mini-name span { font-family: var(--font-mono); color: var(--slate); font-weight: 400; }
+.vocab-mini p { font-size: .88rem; margin: 0; max-width: none; color: var(--slate); }
+.concept-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .9rem; max-width: 44rem; }
+.concept-body th, .concept-body td { border-bottom: 1px solid var(--rule); padding: .6rem .65rem; vertical-align: top; text-align: left; }
+.concept-body th { color: var(--coral); text-transform: uppercase; letter-spacing: .1em; font-size: .7rem; font-weight: 600; }
+.coming-soon { font-size: .72rem; color: var(--slate-lt); font-style: italic; }
+
 @media print {
   .masthead { background: white; color: black; border-bottom: 2px solid black; padding: .5rem 0; }
   h1 { color: black; font-size: 26pt; }
@@ -179,11 +198,12 @@ footer p { margin: 0 0 .4rem; max-width: none; }
 <nav class="quick-nav" aria-label="Section navigation">
   <div class="quick-nav-inner">
     <a href="#setup">01 · Setup</a>
-    <a href="#data">02 · The data</a>
-    <a href="#lab">03 · Query lab</a>
-    <a href="#challenges">04 · Challenges</a>
-    <a href="#exercise">05 · Exercise 1.3</a>
-    <a href="#resources">06 · Resources</a>
+    <a href="#vocab">02 · Vocabulary overview</a>
+    <a href="#data">03 · The data</a>
+    <a href="#lab">04 · Query lab</a>
+    <a href="#challenges">05 · Challenges</a>
+    <a href="#exercise">06 · Exercise 1.3</a>
+    <a href="#resources">07 · Resources</a>
   </div>
 </nav>
 
@@ -210,10 +230,63 @@ footer p { margin: 0 0 .4rem; max-width: none; }
 </section>
 
 <!-- ══════════════════════════════════════════
-     02 · THE DATA
+     02 · VOCABULARY OVERVIEW
+══════════════════════════════════════════════ -->
+<section id="vocab">
+  <div class="section-label">02 · Vocabulary overview</div>
+  <h2>The four vocabularies in this workbook.</h2>
+  <p>If you've worked through the <a href="1-3-vocabulary-landscape.html" style="color:var(--teal-mid)">Sub-module 1.3 synthesis doc</a>, skip ahead — this section condenses that material for quick reference. If you haven't, expand below before running the query lab.</p>
+
+  <details class="concept-section">
+    <summary>Vocabulary overview — expand to review</summary>
+    <div class="concept-body">
+
+      <h3>Why shared vocabularies exist</h3>
+      <p>A predicate in RDF is a URI — globally identifiable. Shared vocabularies make that global agreement possible across systems, organizations, and countries. The core rule: <strong>reuse before defining.</strong> Always check whether FOAF, schema.org, SKOS, or Dublin Core has an appropriate term before creating one in your custom namespace.</p>
+
+      <div class="vocab-cards">
+        <div class="vocab-mini">
+          <div class="vocab-mini-name">FOAF <span>foaf:</span></div>
+          <p>For people and social connections. <code>foaf:Person</code> is the standard class for human beings in Linked Data. Pair with <code>schema:</code> properties where FOAF lacks them — <code>schema:jobTitle</code> and <code>schema:telephone</code> have no close FOAF equivalents. Mixing both vocabularies on the same node is normal and encouraged.</p>
+        </div>
+        <div class="vocab-mini">
+          <div class="vocab-mini-name">Dublin Core Terms <span>dcterms:</span></div>
+          <p>For document metadata. Use <code>dcterms:title</code>, <code>dcterms:created</code>, <code>dcterms:language</code> on the <em>document</em> node — not the person the document describes. Always use <code>dcterms:</code> (the refined namespace), never the older <code>dc:</code> which has weaker formal semantics.</p>
+        </div>
+        <div class="vocab-mini">
+          <div class="vocab-mini-name">SKOS <span>skos:</span></div>
+          <p>For controlled vocabularies. Skills in a resume graph are <code>skos:Concept</code> nodes — units in a vocabulary, not OWL classes. <code>skos:exactMatch</code> links to ESCO concepts without merging properties (unlike <code>owl:sameAs</code>). <code>skos:broader</code> lets SPARQL traverse the ESCO skill hierarchy.</p>
+        </div>
+        <div class="vocab-mini">
+          <div class="vocab-mini-name">schema.org <span>schema:</span></div>
+          <p>Broad coverage, web-readable. Best for organizations, job titles, dates, URLs. Use <code>https://schema.org/</code> (not <code>http://</code> — they switched in 2019 and old tutorials still show the wrong prefix). Permissive ranges make it poor for formal OWL reasoning, but excellent for anything a search engine or external system needs to understand.</p>
+        </div>
+      </div>
+
+      <h3>The ESCO interop payoff</h3>
+      <p>ESCO (European Skills, Competences, Qualifications and Occupations) is published as RDF using SKOS — ~3,000 occupation concepts and ~14,000 skill concepts in a structured hierarchy. When a skill node has <code>skos:exactMatch</code> pointing to an ESCO IRI, your resume graph connects directly to that taxonomy without any import or string-matching glue. Query q03 in the lab below runs <code>skos:exactMatch/skos:broader</code> to follow that connection. The ESCO stubs in <code>resume-001.ttl</code> let the query work locally; with the real ESCO dataset loaded, the same query reaches the full occupational hierarchy.</p>
+
+      <table>
+        <thead><tr><th>What you're modeling</th><th>Start here</th></tr></thead>
+        <tbody>
+          <tr><td>A person</td><td><code>foaf:Person</code> + <code>schema:</code> properties FOAF lacks</td></tr>
+          <tr><td>A document or record</td><td><code>dcterms:</code> metadata + <code>foaf:primaryTopic</code> to link to subject</td></tr>
+          <tr><td>A skill or category</td><td><code>skos:Concept</code> + <code>skos:exactMatch</code> to ESCO</td></tr>
+          <tr><td>An organization or institution</td><td><code>schema:Organization</code> or subclass</td></tr>
+          <tr><td>An event (employment, education)</td><td>Custom class (<code>sensemaking:Employment</code>) inheriting from <code>schema:Event</code></td></tr>
+        </tbody>
+      </table>
+
+      <p>Full coverage with pain points (dc: vs dcterms:, skos:exactMatch vs owl:sameAs): <a href="1-3-vocabulary-landscape.html" style="color:var(--teal-mid)">Sub-module 1.3 synthesis doc</a>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════════════════════════════════════
+     03 · THE DATA
 ══════════════════════════════════════════════ -->
 <section id="data">
-  <div class="section-label">02 · The data: vocabulary by vocabulary</div>
+  <div class="section-label">03 · The data: vocabulary by vocabulary</div>
   <h2>Each section of the file uses a different vocabulary.</h2>
   <p>Read <code>resume-001.ttl</code> before running queries. Three things to understand before the query lab begins.</p>
 
@@ -284,7 +357,7 @@ footer p { margin: 0 0 .4rem; max-width: none; }
      03 · QUERY LAB
 ══════════════════════════════════════════════ -->
 <section id="lab">
-  <div class="section-label">03 · Query lab</div>
+  <div class="section-label">04 · Query lab</div>
   <h2>Five queries, five vocabularies.</h2>
   <p>Each query demonstrates how one or more of the vocabularies in <code>resume-001.ttl</code> are accessed in SPARQL. The colored tags show which vocabulary each query primarily exercises.</p>
 
@@ -558,7 +631,7 @@ footer p { margin: 0 0 .4rem; max-width: none; }
      04 · MODIFICATION CHALLENGES
 ══════════════════════════════════════════════ -->
 <section id="challenges">
-  <div class="section-label">04 · Modification challenges</div>
+  <div class="section-label">05 · Modification challenges</div>
   <h2>Four things to build.</h2>
   <p>These challenges extend the query patterns toward what Exercise 1.3 will ask you to do with your own resume data. Write each query before opening the solution.</p>
 
@@ -696,7 +769,7 @@ footer p { margin: 0 0 .4rem; max-width: none; }
      05 · EXERCISE 1.3 BRIDGE
 ══════════════════════════════════════════════ -->
 <section id="exercise">
-  <div class="section-label">05 · Bridge to Exercise 1.3</div>
+  <div class="section-label">06 · Bridge to Exercise 1.3</div>
   <h2>Now build it for your own resume.</h2>
   <p>Exercise 1.3 asks you to take a representative subset of your own career history and produce a Turtle file using the same vocabulary decisions you just queried. <code>resume-001.ttl</code> is the template. The five queries in this workbook are the three queries the exercise asks you to write — plus two more.</p>
 
@@ -717,7 +790,7 @@ footer p { margin: 0 0 .4rem; max-width: none; }
      06 · RESOURCES
 ══════════════════════════════════════════════ -->
 <section id="resources">
-  <div class="section-label">06 · Curated resources</div>
+  <div class="section-label">07 · Curated resources</div>
   <h2>Five good next reads.</h2>
 
   <div class="resource-grid">
@@ -750,6 +823,11 @@ footer p { margin: 0 0 .4rem; max-width: none; }
       <h4>Prior workbooks</h4>
       <h5><a href="1-2-workbook-naruto.html">1.2 Naruto workbook</a></h5>
       <p>If the UNION and property path patterns in C1 and C2 felt shaky, the 1.2 workbooks drill those patterns extensively on simpler data. Return there before Exercise 1.3 if needed.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Cheatsheet</h4>
+      <h5>Module 1 vocabulary quick-reference <span class="coming-soon">(coming soon)</span></h5>
+      <p>FOAF / Dublin Core / SKOS / schema.org key terms on one page — what each term is for, common mistakes (dc: vs dcterms:, skos:exactMatch vs owl:sameAs), and the prefix block. Available when Module 1 materials are complete.</p>
     </article>
   </div>
 </section>
