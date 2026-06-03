@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submodule 4.3 — LLM + KG integration · Sensemaking Semantic Web</title>
+<meta name="description" content="GraphRAG patterns, hybrid vector + graph retrieval, TwinKit Semantic v2.0 architecture, and the honest evaluation framework for the capstone project.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--teal-deep:#0B4F4A;--teal-mid:#1E8076;--teal-light:#C6E2DD;--coral:#D85A30;--coral-tint:#FAEAE2;--charcoal:#1F2A2E;--slate:#5A6671;--slate-lt:#8A929A;--cream:#FAF7F2;--white:#FFFFFF;--rule:#D8D2C6;--code-bg:#F2EDE3;--green:#2A7040;--green-tint:#E4F1EA;--amber:#9A6B00;--amber-tint:#FDF6E3;--indigo:#3A3A8A;--indigo-tint:#EEEEF8;--font-serif:'EB Garamond',Georgia,serif;--font-sans:'IBM Plex Sans',system-ui,sans-serif;--font-mono:'IBM Plex Mono',Consolas,monospace;}
+*{box-sizing:border-box;}html{scroll-behavior:smooth;font-size:16px;}
+body{margin:0;background:var(--cream);color:var(--charcoal);font-family:var(--font-sans);line-height:1.65;-webkit-font-smoothing:antialiased;}
+.masthead{background:var(--teal-deep);color:var(--white);padding:3rem 1.5rem 3.5rem;border-bottom:5px solid var(--coral);}
+.masthead-inner{max-width:68rem;margin:0 auto;}
+.brand{font-size:.74rem;letter-spacing:.18em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:1.4rem;}
+.kicker{font-size:.74rem;letter-spacing:.14em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:.55rem;}
+h1{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2.8rem,7vw,5.2rem);color:var(--white);line-height:1.0;letter-spacing:-.025em;margin:0 0 .85rem;max-width:20ch;}
+.subtitle{color:var(--teal-light);font-size:clamp(1rem,2.5vw,1.18rem);line-height:1.55;max-width:46rem;margin:0 0 1.8rem;}
+.meta-row{display:flex;flex-wrap:wrap;gap:.45rem .85rem;}
+.meta-row span{border:1px solid rgba(198,226,221,.38);border-radius:999px;padding:.28rem .7rem;font-size:.8rem;color:var(--teal-light);}
+.quick-nav{position:sticky;top:0;z-index:20;background:rgba(250,247,242,.97);border-bottom:1px solid var(--rule);backdrop-filter:blur(4px);}
+.quick-nav-inner{max-width:68rem;margin:0 auto;padding:.65rem 1.5rem;display:flex;gap:.45rem;overflow-x:auto;scrollbar-width:none;}
+.quick-nav-inner::-webkit-scrollbar{display:none;}
+.quick-nav a{flex:0 0 auto;color:var(--charcoal);border:1px solid var(--rule);border-radius:999px;padding:.28rem .68rem;font-size:.76rem;white-space:nowrap;text-decoration:none;background:rgba(255,255,255,.4);transition:border-color .15s,color .15s;}
+.quick-nav a:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+main{max-width:68rem;margin:0 auto;padding:0 1.5rem 4rem;}
+section{padding:3.75rem 0;border-bottom:1px solid var(--rule);scroll-margin-top:3.5rem;}
+section:last-child{border-bottom:none;}
+.section-label{font-size:.7rem;letter-spacing:.2em;color:var(--coral);text-transform:uppercase;font-weight:600;margin-bottom:.85rem;}
+h2{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2rem,5vw,3.2rem);color:var(--charcoal);line-height:1.05;letter-spacing:-.015em;margin:0 0 1.1rem;}
+h3{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(1.35rem,3vw,1.9rem);color:var(--charcoal);margin:2.25rem 0 .65rem;}
+h3:first-of-type{margin-top:.4rem;}
+p{max-width:44rem;margin:0 0 1.05rem;font-size:1rem;}
+p.lead{font-size:1.1rem;line-height:1.6;}
+pre{font-family:var(--font-mono);font-size:.8rem;background:var(--code-bg);border-left:4px solid var(--teal-mid);border-radius:0 8px 8px 0;padding:1rem 1.1rem;overflow-x:auto;margin:.6rem 0 1.2rem;line-height:1.6;color:var(--charcoal);}
+code{font-family:var(--font-mono);font-size:.86em;background:var(--code-bg);padding:.1em .3em;border-radius:3px;}
+pre code{background:transparent;padding:0;font-size:inherit;}
+.kw{color:var(--teal-deep);font-weight:500;}.cm{color:var(--slate-lt);}
+.note,.payoff,.warn{max-width:44rem;margin:1.4rem 0;padding:.9rem 1.1rem .9rem 1.25rem;}
+.note{background:var(--coral-tint);border-left:4px solid var(--coral);}
+.payoff{background:var(--indigo-tint);border-left:4px solid var(--indigo);}
+.warn{background:#FFF8E6;border-left:4px solid var(--amber);}
+.note-title{display:block;font-size:.7rem;letter-spacing:.16em;font-weight:600;text-transform:uppercase;margin-bottom:.3rem;}
+.note .note-title{color:var(--coral);}.payoff .note-title{color:var(--indigo);}.warn .note-title{color:var(--amber);}
+.note p,.payoff p,.warn p{margin:0;max-width:none;}
+ul.spaced{padding-left:1.2rem;margin:.5rem 0 1.1rem;max-width:44rem;}
+ul.spaced li{margin:.48rem 0;font-size:.97rem;}
+/* Architecture diagram container */
+.arch-diagram{background:var(--white);border:1px solid var(--rule);border-radius:12px;padding:1.5rem;margin:1.5rem 0;max-width:52rem;}
+.arch-diagram svg{display:block;width:100%;height:auto;}
+.arch-diagram figcaption{font-size:.85rem;color:var(--slate);margin-top:.75rem;}
+/* Step grid for retrieval pipeline */
+.pipeline-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem;margin:1.4rem 0;max-width:52rem;}
+.pipeline-step{background:var(--white);border:1px solid var(--rule);border-radius:10px;padding:.85rem 1rem;text-align:center;}
+.pipeline-step-num{font-family:var(--font-mono);font-size:.72rem;font-weight:600;color:var(--coral);margin-bottom:.4rem;}
+.pipeline-step-title{font-weight:600;font-size:.88rem;color:var(--charcoal);margin-bottom:.3rem;}
+.pipeline-step p{font-size:.82rem;color:var(--slate);margin:0;text-align:left;}
+/* Eval table */
+table{width:100%;border-collapse:collapse;margin:1.4rem 0;font-size:.9rem;max-width:52rem;}
+th,td{border-bottom:1px solid var(--rule);padding:.72rem .65rem;vertical-align:top;text-align:left;}
+th{color:var(--coral);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;font-weight:600;}
+/* Query cards */
+.query-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin:1.5rem 0;overflow:hidden;}
+.query-header{display:flex;align-items:flex-start;gap:.9rem;padding:1rem 1.15rem .85rem;border-bottom:1px solid var(--rule);}
+.query-num{font-family:var(--font-mono);font-size:.76rem;font-weight:500;color:var(--white);background:var(--teal-mid);border-radius:6px;padding:.22rem .48rem;flex-shrink:0;margin-top:.1rem;}
+.query-meta{flex:1;min-width:0;}
+.query-q{font-weight:600;font-size:.98rem;color:var(--charcoal);margin-bottom:.22rem;}
+.query-c{font-size:.81rem;color:var(--slate);}
+.query-body pre{margin:0;border-radius:0;border-left:none;border-bottom:1px solid var(--rule);}
+.query-body{position:relative;}
+.copy-btn{position:absolute;top:.6rem;right:.6rem;background:var(--cream);border:1px solid var(--rule);border-radius:5px;padding:.2rem .52rem;font-family:var(--font-sans);font-size:.72rem;color:var(--slate);cursor:pointer;z-index:2;transition:border-color .15s,color .15s;}
+.copy-btn:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+.query-footer{padding:.7rem 1.15rem;display:flex;flex-direction:column;gap:.45rem;}
+details.panel summary{font-size:.83rem;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:.28rem 0;list-style:none;display:flex;align-items:center;gap:.4rem;user-select:none;}
+details.panel summary::before{content:"▶";font-size:.58rem;color:var(--coral);transition:transform .2s;}
+details.panel[open] summary::before{transform:rotate(90deg);}
+details.panel summary::-webkit-details-marker{display:none;}
+.panel-body{padding:.65rem 0 .25rem 1.2rem;}
+.panel-body p{font-size:.9rem;max-width:none;margin:0 0 .52rem;}
+.panel-body p:last-child{margin-bottom:0;}
+.panel-body pre{font-size:.77rem;margin:.35rem 0 .65rem;}
+.expected-out{background:var(--code-bg);border-radius:4px;padding:.38rem .65rem;font-family:var(--font-mono);font-size:.78rem;color:var(--charcoal);margin-bottom:.55rem;line-height:1.5;}
+.branch{border-left:4px solid var(--teal-mid);background:var(--white);padding:.82rem 1.15rem;margin:.6rem 0 1.3rem;max-width:44rem;}
+.branch h4{font-family:var(--font-sans);font-size:.88rem;font-weight:600;color:var(--teal-deep);margin:0 0 .3rem;}
+.branch p{margin:0;font-size:.9rem;max-width:none;}
+.branch a{color:var(--teal-mid);}
+.resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;margin:1.3rem 0;}
+.resource-card{background:rgba(255,255,255,.45);border:1px solid var(--rule);border-radius:14px;padding:1.1rem;}
+.resource-card h4{font-family:var(--font-sans);font-size:.7rem;letter-spacing:.14em;font-weight:600;text-transform:uppercase;color:var(--coral);margin:0 0 .5rem;}
+.resource-card h5{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:1.08rem;color:var(--charcoal);margin:0 0 .4rem;}
+.resource-card a{color:var(--teal-mid);text-decoration:underline;}
+.resource-card p{font-size:.87rem;margin:0;color:var(--slate);max-width:none;}
+footer{max-width:68rem;margin:0 auto;padding:2rem 1.5rem 3rem;border-top:1px solid var(--rule);color:var(--slate);font-size:.84rem;}
+footer a{color:var(--teal-mid);text-decoration:underline;}
+footer p{margin:0 0 .4rem;max-width:none;}
+@media(max-width:820px){.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.pipeline-steps{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:640px){.resource-grid{grid-template-columns:1fr;}.pipeline-steps{grid-template-columns:1fr;}.query-header{flex-wrap:wrap;}main{padding-left:1rem;padding-right:1rem;}.masthead{padding:2rem 1rem 2.5rem;}}
+@media print{.masthead{background:white;color:black;border-bottom:2px solid black;padding:.5rem 0;}h1{color:black;font-size:26pt;}.quick-nav{display:none!important;}main,footer,.masthead-inner{max-width:none;padding-left:0;padding-right:0;}pre{background:#f5f5f5;border-left:2px solid #888;font-size:7.5pt;page-break-inside:avoid;}.query-card,.resource-card,.pipeline-step{break-inside:avoid;border:1px solid #ccc;}details{display:block;}details summary{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sensemaking Semantic Web</div>
+    <div class="kicker">Submodule 4.3 · Shipping — Capstone</div>
+    <h1>LLM + KG integration.</h1>
+    <p class="subtitle">GraphRAG patterns, hybrid vector + graph retrieval, the TwinKit Semantic v2.0 architecture, and an honest evaluation framework. The curriculum culminates here.</p>
+    <div class="meta-row">
+      <span>Module 4 · Weeks 10–12</span>
+      <span>Capstone: Exercise 4.3</span>
+      <span>TwinKit Semantic v2.0</span>
+      <span>GraphRAG · hybrid retrieval · eval</span>
+    </div>
+  </div>
+</header>
+
+<nav class="quick-nav">
+  <div class="quick-nav-inner">
+    <a href="#graphrag">01 · GraphRAG patterns</a>
+    <a href="#hybrid">02 · Hybrid retrieval pipeline</a>
+    <a href="#architecture">03 · TwinKit Semantic v2.0</a>
+    <a href="#lab">04 · SPARQL for hybrid retrieval</a>
+    <a href="#eval">05 · Evaluation framework</a>
+    <a href="#capstone">06 · Exercise 4.3</a>
+    <a href="#resources">07 · Resources</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- 01 -->
+<section id="graphrag">
+  <div class="section-label">01 · GraphRAG patterns</div>
+  <h2>Beyond naive RAG.</h2>
+
+  <p class="lead">Standard RAG (Retrieval Augmented Generation) retrieves text chunks by vector similarity to the query and feeds them into an LLM context window. It works well for single-hop questions: "What is Itachi's canonical motivation?" fails on any question that requires traversing multiple relationships: "Which characters across all three arcs have a sensei lineage that connects to Naruto?" Vector similarity can find chunks mentioning Naruto, but cannot follow the senseiOf chain without structural guidance.</p>
+
+  <p>Microsoft's GraphRAG paper (Edge et al., 2024) formalizes this problem and introduces a solution: build a community graph over the text corpus (not just a semantic index), then use graph traversal to assemble context from related entities rather than from similar chunks. The curriculum's hybrid approach is more targeted: we have an explicit, hand-designed ontology (the Naruto ontology from Module 2) rather than a derived community graph, which means the traversal is more precise and the explanations are more interpretable.</p>
+
+  <h3>Three GraphRAG patterns</h3>
+
+  <ul class="spaced">
+    <li><strong>Entity-centric retrieval.</strong> Identify entities mentioned in the query, use graph traversal to find related entities, bias vector retrieval toward chunks mentioning those entities. This is the primary pattern in TwinKit Semantic v2.0.</li>
+    <li><strong>Community summarization.</strong> (Microsoft GraphRAG) Pre-compute summaries of entity clusters in the knowledge graph; retrieve the relevant cluster summary as context. Good for global questions; requires pre-computation.</li>
+    <li><strong>Subgraph extraction.</strong> For a given query entity, extract a k-hop subgraph as structured context alongside retrieved text chunks. Best for dense relational questions; expensive to compute at runtime for large graphs.</li>
+  </ul>
+
+  <div class="payoff">
+    <span class="note-title">Why this matters for the positioning</span>
+    <p>The ability to articulate <em>when</em> graph augmentation helps and <em>when</em> it does not — backed by actual eval numbers — is rare. Most practitioner blog posts advocate for GraphRAG without running a comparison. The capstone's honest evaluation is what differentiates it from marketing content. "I ran 20 multi-hop questions and graph augmentation helped on 14, made no difference on 4, and was worse on 2. Here is why." That is the senior engineer's voice.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="hybrid">
+  <div class="section-label">02 · Hybrid retrieval pipeline</div>
+  <h2>Five steps per query.</h2>
+
+  <div class="pipeline-steps">
+    <div class="pipeline-step">
+      <div class="pipeline-step-num">Step 1</div>
+      <div class="pipeline-step-title">Entity extraction</div>
+      <p>LLM call: extract named entities from the user query. "Which characters trained under Jiraiya?" → entities: [Jiraiya, Naruto Uzumaki (likely)].</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-step-num">Step 2</div>
+      <div class="pipeline-step-title">Graph traversal</div>
+      <p>SPARQL query: given extracted entities, find related entities 1–2 hops away. senseiOf, rivalOf, appearsInArc expand the entity set.</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-step-num">Step 3</div>
+      <div class="pipeline-step-title">Biased retrieval</div>
+      <p>ChromaDB query: retrieve chunks filtered to those mentioning the expanded entity set. Structural graph results bias the vector retrieval.</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-step-num">Step 4</div>
+      <div class="pipeline-step-title">Context composition</div>
+      <p>Merge: structured SPARQL results (graph facts) + retrieved text chunks. Graph facts go first — they are more precise for relational questions.</p>
+    </div>
+  </div>
+
+<pre><span class="cm"># The full hybrid retrieval pipeline in pseudocode</span>
+
+<span class="cm"># Step 1: Extract entities from query</span>
+entities = llm_extract_entities(user_query)
+<span class="cm"># → ["Jiraiya", "naruto:NarutoUzumaki"]</span>
+
+<span class="cm"># Step 2: SPARQL graph traversal</span>
+related = sparql_expand(entities, hops=2)
+<span class="cm"># → ["naruto:KakashiHatake", "naruto:SasukeUchiha", "naruto:Team7", ...]</span>
+
+<span class="cm"># Step 3: ChromaDB retrieval biased toward expanded entities</span>
+chunks = chromadb.query(
+    query_embeddings=embed(user_query),
+    where={"entities": {"$in": related}},
+    n_results=5
+)
+
+<span class="cm"># Step 4: Compose context</span>
+context = sparql_results_as_text(related) + "\n\n" + format_chunks(chunks)
+answer = llm_generate(user_query, context)</pre>
+</section>
+
+<!-- 03 -->
+<section id="architecture">
+  <div class="section-label">03 · TwinKit Semantic v2.0 architecture</div>
+  <h2>What changes from v1.0.</h2>
+
+  <p>TwinKit v1.0: markdown ingestion → ChromaDB → LLM generation. TwinKit Semantic v2.0 adds the semantic layer as an optional module that activates when a domain ontology is available.</p>
+
+  <div class="arch-diagram">
+    <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TwinKit Semantic v2.0 architecture showing the parallel ingestion pipeline (markdown to ChromaDB and to SPARQL endpoint) and the hybrid retrieval flow">
+      <!-- Ingestion layer -->
+      <text x="400" y="30" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" font-weight="600" fill="#D85A30" letter-spacing="2">INGESTION</text>
+      <rect x="320" y="42" width="160" height="36" rx="8" fill="#FAF7F2" stroke="#D8D2C6"/>
+      <text x="400" y="63" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="12" fill="#1F2A2E">Markdown / source data</text>
+
+      <!-- Two parallel pipelines -->
+      <line x1="360" y1="78" x2="200" y2="115" stroke="#1E8076" stroke-width="1.5" marker-end="url(#arr-arch)"/>
+      <text x="255" y="102" font-family="'IBM Plex Sans'" font-size="9" fill="#5A6671">text chunks</text>
+      <line x1="440" y1="78" x2="600" y2="115" stroke="#D85A30" stroke-width="1.5" marker-end="url(#arr-arch-c)"/>
+      <text x="495" y="102" font-family="'IBM Plex Sans'" font-size="9" fill="#5A6671">RDF triples</text>
+
+      <!-- ChromaDB -->
+      <rect x="100" y="118" width="200" height="50" rx="8" fill="#C6E2DD" stroke="#1E8076" stroke-width="1.5"/>
+      <text x="200" y="139" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="12" font-weight="600" fill="#0B4F4A">ChromaDB</text>
+      <text x="200" y="156" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="10" fill="#1E8076">vector index</text>
+
+      <!-- SPARQL endpoint -->
+      <rect x="500" y="118" width="200" height="50" rx="8" fill="#FAEAE2" stroke="#D85A30" stroke-width="1.5"/>
+      <text x="600" y="139" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="12" font-weight="600" fill="#D85A30">Oxigraph</text>
+      <text x="600" y="156" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="10" fill="#D85A30">SPARQL endpoint</text>
+
+      <!-- Retrieval layer -->
+      <text x="400" y="202" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="11" font-weight="600" fill="#D85A30" letter-spacing="2">RETRIEVAL (hybrid)</text>
+
+      <line x1="200" y1="168" x2="310" y2="215" stroke="#1E8076" stroke-width="1.5" marker-end="url(#arr-arch)"/>
+      <line x1="600" y1="168" x2="490" y2="215" stroke="#D85A30" stroke-width="1.5" marker-end="url(#arr-arch-c)"/>
+
+      <!-- Hybrid retriever -->
+      <rect x="280" y="218" width="240" height="50" rx="8" fill="#EEEEF8" stroke="#3A3A8A" stroke-width="1.5"/>
+      <text x="400" y="239" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="12" font-weight="600" fill="#3A3A8A">Hybrid retriever</text>
+      <text x="400" y="256" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="10" fill="#3A3A8A">graph expansion + biased vector search</text>
+
+      <!-- LLM -->
+      <line x1="400" y1="268" x2="400" y2="290" stroke="#3A3A8A" stroke-width="1.5" marker-end="url(#arr-arch-i)"/>
+      <rect x="290" y="290" width="220" height="22" rx="8" fill="#1F2A2E"/>
+      <text x="400" y="306" text-anchor="middle" font-family="'IBM Plex Sans'" font-size="12" fill="#C6E2DD">LLM generation</text>
+
+      <defs>
+        <marker id="arr-arch" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L8,3 z" fill="#1E8076"/>
+        </marker>
+        <marker id="arr-arch-c" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L8,3 z" fill="#D85A30"/>
+        </marker>
+        <marker id="arr-arch-i" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L8,3 z" fill="#3A3A8A"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>TwinKit Semantic v2.0: parallel ingestion (text → ChromaDB; structured data → SPARQL endpoint) and hybrid retrieval (graph expansion + biased vector search) before LLM generation.</figcaption>
+  </div>
+
+  <h3>What the Naruto demo adds to the framework</h3>
+
+  <p>The Naruto Knowledge Graph is the demo dataset that makes the framework tangible to non-practitioners. Instead of "a knowledge graph of your domain," it is a clickable, queryable graph of 87 characters, three arcs, and an ontology anyone who watched the show can verify. The Gradio or D3.js Explorer app (Exercise 4.3, step 5) is the front door — it is what people click on before reading the case study.</p>
+
+  <p>The two-birds strategy: TwinKit Semantic is the consulting artifact; the Naruto demo is the attention hook. They deploy together with one architecture.</p>
+</section>
+
+<!-- 04 -->
+<section id="lab">
+  <div class="section-label">04 · SPARQL queries for hybrid retrieval</div>
+  <h2>The graph traversal queries in the hybrid pipeline.</h2>
+
+  <!-- q01 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q01</span>
+      <div class="query-meta">
+        <div class="query-q">Entity expansion: given a character name, find all related entities 2 hops away.</div>
+        <div class="query-c">Pattern: hybrid retrieval Step 2 · property path expansion · entity set for ChromaDB filter</div>
+      </div>
+    </div>
+    <div class="query-body">
+      <pre id="q01"><span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="cm"># Step 2 of the hybrid pipeline: given entity ?seed (Jiraiya),
+# return all entities reachable via any naruto: property within 2 hops.</span>
+<span class="kw">SELECT DISTINCT</span> ?relatedEntity ?relatedName <span class="kw">WHERE</span> {
+  <span class="cm"># Seed entity lookup by name</span>
+  ?seed naruto:canonicalName ?seedName .
+  <span class="kw">FILTER</span> (<span class="kw">CONTAINS</span>(<span class="kw">LCASE</span>(?seedName), "jiraiya"))
+
+  <span class="cm"># 1-2 hop expansion via any naruto: property (forward + inverse)</span>
+  {
+    ?seed ?p1 ?hop1 .
+    <span class="kw">FILTER</span> (<span class="kw">STRSTARTS</span>(<span class="kw">STR</span>(?p1),
+           "https://sensemaking-ai.com/ns/naruto#"))
+    <span class="kw">OPTIONAL</span> { ?hop1 ?p2 ?relatedEntity .
+      <span class="kw">FILTER</span> (<span class="kw">STRSTARTS</span>(<span class="kw">STR</span>(?p2),
+             "https://sensemaking-ai.com/ns/naruto#"))
+    }
+    <span class="kw">BIND</span>(<span class="kw">COALESCE</span>(?relatedEntity, ?hop1) <span class="kw">AS</span> ?relatedEntity)
+  }
+  <span class="kw">OPTIONAL</span> { ?relatedEntity naruto:canonicalName ?relatedName . }
+}
+<span class="kw">ORDER BY</span> ?relatedName</pre>
+      <button class="copy-btn" onclick="copyQuery('q01',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>How this feeds into the hybrid pipeline</summary>
+        <div class="panel-body">
+          <p>The result set of <code>?relatedEntity</code> IRIs becomes the filter for the ChromaDB query in Step 3. Any text chunk whose metadata includes entities in this set is prioritized in retrieval. The graph traversal surfaces Naruto (Jiraiya's student), Kakashi (fellow Jonin), Team 7 (Naruto's team), and the Pain's Assault arc (where Jiraiya appears) — entities a vector-only search on "Jiraiya" might miss entirely.</p>
+          <p>In production, the property path would be parameterized to control hop count and property coverage. Expanding via all naruto: properties is broad; a more targeted version might restrict to only senseiOf, memberOfTeam, and appearsInArc.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q02 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q02</span>
+      <div class="query-meta">
+        <div class="query-q">Multi-hop question answering: which characters share a sensei lineage with Naruto?</div>
+        <div class="query-c">Pattern: multi-hop traversal · the class of questions that breaks vector-only RAG</div>
+      </div>
+    </div>
+    <div class="query-body">
+      <pre id="q02"><span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="cm"># Find all characters who share a common sensei ancestor with Naruto.
+# This requires 3+ hops: Naruto ← senseiOf ← Kakashi → senseiOf → Team7.
+# Pure vector search cannot traverse senseiOf chains reliably.</span>
+<span class="kw">SELECT DISTINCT</span> ?co_studentName ?sharedSenseiName <span class="kw">WHERE</span> {
+  <span class="cm"># Naruto's sensei lineage (upward)</span>
+  ?sensei naruto:senseiOf naruto:NarutoUzumaki .
+
+  <span class="cm"># Other students of the same sensei</span>
+  ?sensei naruto:senseiOf ?co_student .
+  <span class="kw">FILTER</span> (?co_student != naruto:NarutoUzumaki)
+
+  ?sensei naruto:canonicalName ?sharedSenseiName .
+  ?co_student naruto:canonicalName ?co_studentName .
+}
+<span class="kw">ORDER BY</span> ?sharedSenseiName ?co_studentName</pre>
+      <button class="copy-btn" onclick="copyQuery('q02',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output and why this demonstrates the value</summary>
+        <div class="panel-body">
+          <div class="expected-out">Sasuke Uchiha / Kakashi Hatake · Sakura Haruno / Kakashi Hatake (and Naruto studentOf Jiraiya after u01 runs)</div>
+          <p>This is an example of the 20 multi-hop questions for the eval set (Exercise 4.3, step 7). A vector-only RAG system, given the question "which characters share a sensei lineage with Naruto?", would retrieve chunks mentioning Naruto and hope that nearby text mentions Kakashi and Team 7. The graph traversal answers it structurally — no luck required.</p>
+          <p>The eval framework compares: (a) baseline vector retrieval with this question, (b) hybrid retrieval with this SPARQL query's results as the entity expansion. Score each on accuracy (is the answer correct?) and latency (how long did it take?).</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q03 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q03</span>
+      <div class="query-meta">
+        <div class="query-q">Generate the SPARQL for the Naruto KG Explorer — natural language to graph query.</div>
+        <div class="query-c">Pattern: NL-to-SPARQL · LLM-generated query · Explorer app backend</div>
+      </div>
+    </div>
+    <div class="query-body">
+      <pre id="q03"><span class="cm"># This is the query the Naruto KG Explorer generates when a user asks:
+# "Who are Itachi's known masters?"
+# The LLM generates SPARQL; Oxigraph executes it; the UI renders results.
+
+# LLM system prompt excerpt (TwinKit Semantic v2.0):
+# "You are a SPARQL query generator for the Naruto Knowledge Graph.
+#  The ontology uses PREFIX naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;.
+#  Available properties: senseiOf, studentOf, rivalOf, memberOfTeam,
+#  memberOfVillage, hasJutsu, hasRank, appearsInArc, familyOf.
+#  Generate only valid SPARQL SELECT queries."
+
+# LLM-generated query for "Who are Itachi's known masters?":
+</span>
+<span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="kw">SELECT</span> ?masterName <span class="kw">WHERE</span> {
+  {
+    <span class="cm"># Direct: someone who is senseiOf Itachi</span>
+    ?master naruto:senseiOf naruto:ItachiUchiha ;
+            naruto:canonicalName ?masterName .
+  }
+  <span class="kw">UNION</span>
+  {
+    <span class="cm"># Inverse: Itachi is studentOf someone</span>
+    naruto:ItachiUchiha naruto:studentOf ?master .
+    ?master naruto:canonicalName ?masterName .
+  }
+}
+<span class="kw">ORDER BY</span> ?masterName</pre>
+      <button class="copy-btn" onclick="copyQuery('q03',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>The NL-to-SPARQL pattern</summary>
+        <div class="panel-body">
+          <p>The Naruto KG Explorer (Exercise 4.3, step 5) takes natural-language questions, passes them to an LLM with the ontology schema as context, and runs the generated SPARQL against Oxigraph. The generated query is shown to the user alongside the results — transparency about the mechanism is a design choice, not an afterthought.</p>
+          <p>Error handling matters: generated SPARQL may be syntactically invalid or return 0 rows. The Explorer should degrade gracefully: show the raw query if it fails, let the user edit it, fall back to vector-only retrieval if graph retrieval returns nothing.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- 05 -->
+<section id="eval">
+  <div class="section-label">05 · Evaluation framework</div>
+  <h2>Honesty is the differentiating artifact.</h2>
+
+  <p>Exercise 4.3 step 7 specifies 20 multi-hop questions evaluated across three conditions. Here is the framework for structuring those results honestly.</p>
+
+  <h3>The 20-question set design</h3>
+
+  <ul class="spaced">
+    <li><strong>5 single-hop factual questions</strong> (e.g., "What is Naruto's rank?") — vector retrieval should handle these well. Graph augmentation is not expected to help. A baseline win for vector-only.</li>
+    <li><strong>10 multi-hop relational questions</strong> (e.g., "Who are the students of all Jonin-rank characters?") — graph traversal is necessary for precision. Hybrid should win here.</li>
+    <li><strong>5 ambiguous or contested questions</strong> (e.g., "Who is Itachi's true master?" — answers depend on which source you trust) — neither approach handles uncertainty well. Document both failures honestly.</li>
+  </ul>
+
+  <table>
+    <thead>
+      <tr><th>Question type</th><th>Metric</th><th>Expected winner</th><th>Honest finding if wrong</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Single-hop factual</td><td>Accuracy (correct/incorrect)</td><td>Vector-only</td><td>"Graph augmentation added latency with no accuracy gain on simple factual questions."</td></tr>
+      <tr><td>Multi-hop relational</td><td>Accuracy + completeness</td><td>Hybrid</td><td>"Graph traversal helped precision; vector retrieval caught prose context the graph missed."</td></tr>
+      <tr><td>Ambiguous / contested</td><td>Calibration (does it express uncertainty?)</td><td>Neither cleanly</td><td>"Both systems confidently answer questions where the correct answer is 'it depends on source.'  This is a known LLM limitation, not a graph limitation."</td></tr>
+      <tr><td>Latency (all types)</td><td>Wall-clock ms per query</td><td>Vector-only</td><td>"Hybrid retrieval adds 300–800ms per query for graph traversal. At this scale, acceptable; at production traffic, cache aggressively."</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <span class="note-title">The cases where hybrid is worse</span>
+    <p>The Module 4 README is explicit: document where hybrid retrieval is worse, not just where it is better. Expect to find: (a) questions where the graph entity expansion adds noise rather than signal — unrelated entities get included, biasing retrieval toward irrelevant chunks; (b) questions where vector retrieval already captures the answer from nearby prose and graph augmentation adds only latency; (c) questions where the ontology is missing the relevant relationship and the graph traversal returns nothing useful. All three are honest, publishable findings.</p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section id="capstone">
+  <div class="section-label">06 · Exercise 4.3 — the capstone</div>
+  <h2>Where the curriculum lands.</h2>
+
+  <p>The Module 4 README has the full nine-step capstone plan. The most important sequencing note: <strong>do the eval before writing the case study</strong>. The eval produces your findings; the case study communicates them. Writing the case study first produces marketing copy, not a technical contribution.</p>
+
+  <div class="branch">
+    <h4>The minimum viable capstone</h4>
+    <p>If time pressure forces a scope reduction: (a) deploy Oxigraph on EC2 with the naruto-ontology-1.0.0.ttl loaded and publicly queryable — this is the deployment credential; (b) build a Gradio app that takes a natural-language question, generates SPARQL, runs it, and shows results — this is the Explorer demo; (c) run the eval on 10 questions instead of 20. The case study documents what you built and what the eval showed. That is a complete, publishable capstone even without TwinKit v2.0 integration.</p>
+  </div>
+
+  <div class="branch">
+    <h4>The deployment test</h4>
+    <p>From the Module 4 README: "Is the Naruto KG Explorer deployed and queryable by anyone with a browser?" The URL should be public — not localhost, not behind a VPN, not a screenshot. Anyone should be able to open it and run a SPARQL query or natural-language question. This is the credential test for the whole curriculum.</p>
+  </div>
+
+  <h3>The publishable artifacts that come out of the capstone</h3>
+
+  <ul class="spaced">
+    <li>TwinKit v2.0 GitHub release — tagged, with a README that positions the semantic layer and links to the case study</li>
+    <li>Naruto KG Explorer — live URL, publicly accessible</li>
+    <li>Case study on barbhs.com: <em>"Building a hybrid semantic + vector knowledge twin (with Naruto)"</em></li>
+    <li>LinkedIn capstone announcement — with the eval results as the hook, not the architecture</li>
+    <li>Conference abstract for 2027 (Connected Data World, SEMANTiCS, or a RAG-track AI conference)</li>
+  </ul>
+
+  <p>After shipping: update the LinkedIn About section with the consulting positioning statement from the SYLLABUS closing note. The curriculum is complete. The artifacts are the receipts.</p>
+</section>
+
+<!-- 07 -->
+<section id="resources">
+  <div class="section-label">07 · Resources</div>
+  <h2>The final reading list.</h2>
+
+  <div class="resource-grid">
+    <article class="resource-card">
+      <h4>The paper</h4>
+      <h5><a href="https://arxiv.org/abs/2404.16130">Microsoft GraphRAG (Edge et al. 2024)</a></h5>
+      <p>The foundational paper for this submodule. Read the full paper, not just the abstract — the community summarization approach and the global vs. local query distinction are where the nuance lives.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Working code</h4>
+      <h5><a href="https://github.com/microsoft/graphrag">GraphRAG GitHub</a></h5>
+      <p>Microsoft's open-source implementation. The pipeline differs from TwinKit Semantic v2.0 (community graphs vs. ontology-driven traversal) — use it for comparison, not as a template.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Prior reading</h4>
+      <h5>Allemang et al. — Ch 14–15</h5>
+      <p>Chapters 14 and 15 cover enterprise modeling and the knowledge graph production landscape. Chapter 15 is the closest thing in the textbook to a deployment guide.</p>
+    </article>
+    <article class="resource-card">
+      <h4>KG + LLM commentary</h4>
+      <h5><a href="https://www.bobdc.com/blog/">Bob DuCharme's blog</a></h5>
+      <p>Recent posts on SPARQL + LLM integration, NL-to-SPARQL, and the practical LLM+KG landscape. The most current practitioner voice in the curriculum's reading list.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Deployment reference</h4>
+      <h5><a href="4-2-federation-deployment.html">Submodule 4.2 — Deployment guide</a></h5>
+      <p>The EC2 deployment steps (Exercise 4.1) must be complete before starting the capstone. The Oxigraph endpoint is what the TwinKit Semantic hybrid retriever queries.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Curriculum home</h4>
+      <h5><a href="../../../REFLECTIONS.md">REFLECTIONS.md</a></h5>
+      <p>The final curriculum artifact. Write the end-of-Module-4 reflection after the capstone ships — what you built, what you learned, what you would do differently. This closes the curriculum.</p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Submodule 4.3 workbook · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Written content: CC BY 4.0 · Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+<script>
+function copyQuery(id,btn){var t=document.getElementById(id).textContent;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){fb(btn);}).catch(function(){lc(t,btn);});}else{lc(t,btn);}}
+function lc(t,btn){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';document.body.appendChild(a);a.focus();a.select();try{document.execCommand('copy');if(btn)fb(btn);}catch(e){}document.body.removeChild(a);}
+function fb(btn){var x=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=x;},1600);}
+</script>
+</body>
+</html>

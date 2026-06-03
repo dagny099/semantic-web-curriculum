@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submodule 4.1 — SPARQL UPDATE · Sensemaking Semantic Web</title>
+<meta name="description" content="INSERT DATA, DELETE WHERE, CONSTRUCT into named graphs, and the transactional reality of SPARQL Update — with five hands-on update operations on the Naruto knowledge graph.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--teal-deep:#0B4F4A;--teal-mid:#1E8076;--teal-light:#C6E2DD;--coral:#D85A30;--coral-tint:#FAEAE2;--charcoal:#1F2A2E;--slate:#5A6671;--slate-lt:#8A929A;--cream:#FAF7F2;--white:#FFFFFF;--rule:#D8D2C6;--code-bg:#F2EDE3;--green:#2A7040;--green-tint:#E4F1EA;--amber:#9A6B00;--amber-tint:#FDF6E3;--indigo:#3A3A8A;--indigo-tint:#EEEEF8;--font-serif:'EB Garamond',Georgia,serif;--font-sans:'IBM Plex Sans',system-ui,sans-serif;--font-mono:'IBM Plex Mono',Consolas,monospace;}
+*{box-sizing:border-box;}html{scroll-behavior:smooth;font-size:16px;}
+body{margin:0;background:var(--cream);color:var(--charcoal);font-family:var(--font-sans);line-height:1.65;-webkit-font-smoothing:antialiased;}
+.masthead{background:var(--teal-deep);color:var(--white);padding:3rem 1.5rem 3.5rem;border-bottom:5px solid var(--coral);}
+.masthead-inner{max-width:68rem;margin:0 auto;}
+.brand{font-size:.74rem;letter-spacing:.18em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:1.4rem;}
+.kicker{font-size:.74rem;letter-spacing:.14em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:.55rem;}
+h1{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2.8rem,7vw,5.2rem);color:var(--white);line-height:1.0;letter-spacing:-.025em;margin:0 0 .85rem;max-width:20ch;}
+.subtitle{color:var(--teal-light);font-size:clamp(1rem,2.5vw,1.18rem);line-height:1.55;max-width:46rem;margin:0 0 1.8rem;}
+.meta-row{display:flex;flex-wrap:wrap;gap:.45rem .85rem;}
+.meta-row span{border:1px solid rgba(198,226,221,.38);border-radius:999px;padding:.28rem .7rem;font-size:.8rem;color:var(--teal-light);}
+.fuseki-banner{padding:.65rem 1.5rem;font-size:.875rem;display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;}
+.fuseki-banner.checking{background:var(--amber-tint);color:var(--amber);}
+.fuseki-banner.connected{background:var(--green-tint);color:var(--green);}
+.fuseki-banner.offline{background:var(--coral-tint);color:var(--coral);}
+.fuseki-banner .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fuseki-banner.checking .dot{background:var(--amber);}
+.fuseki-banner.connected .dot{background:var(--green);}
+.fuseki-banner.offline .dot{background:var(--coral);}
+.fuseki-banner a{color:inherit;text-decoration:underline;}
+.fuseki-banner code{font-family:var(--font-mono);font-size:.8em;background:rgba(0,0,0,.08);padding:.1em .3em;border-radius:3px;}
+.quick-nav{position:sticky;top:0;z-index:20;background:rgba(250,247,242,.97);border-bottom:1px solid var(--rule);backdrop-filter:blur(4px);}
+.quick-nav-inner{max-width:68rem;margin:0 auto;padding:.65rem 1.5rem;display:flex;gap:.45rem;overflow-x:auto;scrollbar-width:none;}
+.quick-nav-inner::-webkit-scrollbar{display:none;}
+.quick-nav a{flex:0 0 auto;color:var(--charcoal);border:1px solid var(--rule);border-radius:999px;padding:.28rem .68rem;font-size:.76rem;white-space:nowrap;text-decoration:none;background:rgba(255,255,255,.4);transition:border-color .15s,color .15s;}
+.quick-nav a:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+main{max-width:68rem;margin:0 auto;padding:0 1.5rem 4rem;}
+section{padding:3.75rem 0;border-bottom:1px solid var(--rule);scroll-margin-top:3.5rem;}
+section:last-child{border-bottom:none;}
+.section-label{font-size:.7rem;letter-spacing:.2em;color:var(--coral);text-transform:uppercase;font-weight:600;margin-bottom:.85rem;}
+h2{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2rem,5vw,3.2rem);color:var(--charcoal);line-height:1.05;letter-spacing:-.015em;margin:0 0 1.1rem;}
+h3{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(1.35rem,3vw,1.9rem);color:var(--charcoal);margin:2.25rem 0 .65rem;}
+h3:first-of-type{margin-top:.4rem;}
+p{max-width:44rem;margin:0 0 1.05rem;font-size:1rem;}
+p.lead{font-size:1.1rem;line-height:1.6;}
+pre{font-family:var(--font-mono);font-size:.8rem;background:var(--code-bg);border-left:4px solid var(--teal-mid);border-radius:0 8px 8px 0;padding:1rem 1.1rem;overflow-x:auto;margin:.6rem 0 1.2rem;line-height:1.6;color:var(--charcoal);}
+code{font-family:var(--font-mono);font-size:.86em;background:var(--code-bg);padding:.1em .3em;border-radius:3px;}
+pre code{background:transparent;padding:0;font-size:inherit;}
+.kw{color:var(--teal-deep);font-weight:500;}.cm{color:var(--slate-lt);}
+.note,.payoff,.warn{max-width:44rem;margin:1.4rem 0;padding:.9rem 1.1rem .9rem 1.25rem;}
+.note{background:var(--coral-tint);border-left:4px solid var(--coral);}
+.payoff{background:var(--indigo-tint);border-left:4px solid var(--indigo);}
+.warn{background:#FFF8E6;border-left:4px solid var(--amber);}
+.note-title{display:block;font-size:.7rem;letter-spacing:.16em;font-weight:600;text-transform:uppercase;margin-bottom:.3rem;}
+.note .note-title{color:var(--coral);}.payoff .note-title{color:var(--indigo);}.warn .note-title{color:var(--amber);}
+.note p,.payoff p,.warn p{margin:0;max-width:none;}
+ul.spaced{padding-left:1.2rem;margin:.5rem 0 1.1rem;max-width:44rem;}
+ul.spaced li{margin:.48rem 0;font-size:.97rem;}
+table{width:100%;border-collapse:collapse;margin:1.4rem 0;font-size:.92rem;max-width:52rem;}
+th,td{border-bottom:1px solid var(--rule);padding:.72rem .65rem;vertical-align:top;text-align:left;}
+th{color:var(--coral);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;font-weight:600;}
+/* Update query cards — slightly different chrome for destructive operations */
+.update-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin:1.5rem 0;overflow:hidden;}
+.update-header{display:flex;align-items:flex-start;gap:.9rem;padding:1rem 1.15rem .85rem;border-bottom:1px solid var(--rule);}
+.update-num{font-family:var(--font-mono);font-size:.76rem;font-weight:500;color:var(--white);background:var(--coral);border-radius:6px;padding:.22rem .48rem;flex-shrink:0;margin-top:.1rem;}
+.update-meta{flex:1;min-width:0;}
+.update-q{font-weight:600;font-size:.98rem;color:var(--charcoal);margin-bottom:.22rem;}
+.update-c{font-size:.81rem;color:var(--slate);}
+.btn-update{flex-shrink:0;display:inline-block;font-size:.76rem;font-weight:500;color:var(--coral);border:1px solid #ECC;border-radius:999px;padding:.26rem .72rem;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s;}
+.btn-update:hover{background:var(--coral-tint);border-color:var(--coral);}
+.update-body{position:relative;}
+.update-body pre{margin:0;border-radius:0;border-left:none;border-bottom:1px solid var(--rule);}
+.copy-btn{position:absolute;top:.6rem;right:.6rem;background:var(--cream);border:1px solid var(--rule);border-radius:5px;padding:.2rem .52rem;font-family:var(--font-sans);font-size:.72rem;color:var(--slate);cursor:pointer;z-index:2;transition:border-color .15s,color .15s;}
+.copy-btn:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+.update-footer{padding:.7rem 1.15rem;display:flex;flex-direction:column;gap:.45rem;}
+details.panel summary{font-size:.83rem;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:.28rem 0;list-style:none;display:flex;align-items:center;gap:.4rem;user-select:none;}
+details.panel summary::before{content:"▶";font-size:.58rem;color:var(--coral);transition:transform .2s;}
+details.panel[open] summary::before{transform:rotate(90deg);}
+details.panel summary::-webkit-details-marker{display:none;}
+.panel-body{padding:.65rem 0 .25rem 1.2rem;}
+.panel-body p{font-size:.9rem;max-width:none;margin:0 0 .52rem;}
+.panel-body p:last-child{margin-bottom:0;}
+.panel-body pre{font-size:.77rem;margin:.35rem 0 .65rem;}
+.expected-out{background:var(--code-bg);border-radius:4px;padding:.38rem .65rem;font-family:var(--font-mono);font-size:.78rem;color:var(--charcoal);margin-bottom:.55rem;line-height:1.5;}
+.branch{border-left:4px solid var(--teal-mid);background:var(--white);padding:.82rem 1.15rem;margin:.6rem 0 1.3rem;max-width:44rem;}
+.branch h4{font-family:var(--font-sans);font-size:.88rem;font-weight:600;color:var(--teal-deep);margin:0 0 .3rem;}
+.branch p{margin:0;font-size:.9rem;max-width:none;}
+.branch a{color:var(--teal-mid);}
+.resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;margin:1.3rem 0;}
+.resource-card{background:rgba(255,255,255,.45);border:1px solid var(--rule);border-radius:14px;padding:1.1rem;}
+.resource-card h4{font-family:var(--font-sans);font-size:.7rem;letter-spacing:.14em;font-weight:600;text-transform:uppercase;color:var(--coral);margin:0 0 .5rem;}
+.resource-card h5{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:1.08rem;color:var(--charcoal);margin:0 0 .4rem;}
+.resource-card a{color:var(--teal-mid);text-decoration:underline;}
+.resource-card p{font-size:.87rem;margin:0;color:var(--slate);max-width:none;}
+.coming-soon{font-size:.72rem;color:var(--slate-lt);font-style:italic;}
+footer{max-width:68rem;margin:0 auto;padding:2rem 1.5rem 3rem;border-top:1px solid var(--rule);color:var(--slate);font-size:.84rem;}
+footer a{color:var(--teal-mid);text-decoration:underline;}
+footer p{margin:0 0 .4rem;max-width:none;}
+@media(max-width:820px){.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:640px){.resource-grid{grid-template-columns:1fr;}.update-header{flex-wrap:wrap;}.btn-update{order:3;}main{padding-left:1rem;padding-right:1rem;}.masthead{padding:2rem 1rem 2.5rem;}}
+@media print{.masthead{background:white;color:black;border-bottom:2px solid black;padding:.5rem 0;}h1{color:black;font-size:26pt;}.quick-nav,.fuseki-banner,.btn-update,.copy-btn{display:none!important;}main,footer,.masthead-inner{max-width:none;padding-left:0;padding-right:0;}pre{background:#f5f5f5;border-left:2px solid #888;font-size:7.5pt;page-break-inside:avoid;}.update-card,.resource-card{break-inside:avoid;border:1px solid #ccc;}details{display:block;}details summary{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sensemaking Semantic Web</div>
+    <div class="kicker">Submodule 4.1 · Shipping</div>
+    <h1>SPARQL UPDATE.</h1>
+    <p class="subtitle">INSERT DATA, DELETE WHERE, CONSTRUCT-into-graph, and the transactional reality of SPARQL Update. Five hands-on update operations — with a data safety mindset throughout.</p>
+    <div class="meta-row">
+      <span>Module 4 · Weeks 10–12</span>
+      <span>Capstone module</span>
+      <span>Requires Fuseki</span>
+      <span>UPDATE · INSERT · DELETE · named graphs</span>
+    </div>
+  </div>
+</header>
+
+<div id="fuseki-banner" class="fuseki-banner checking">
+  <span class="dot"></span>Checking for Fuseki at localhost:3030…
+</div>
+
+<nav class="quick-nav">
+  <div class="quick-nav-inner">
+    <a href="#protocol">01 · The UPDATE protocol</a>
+    <a href="#operations">02 · Operation types</a>
+    <a href="#transactions">03 · Transactional reality</a>
+    <a href="#lab">04 · Update lab</a>
+    <a href="#resources">05 · Resources</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- 01 -->
+<section id="protocol">
+  <div class="section-label">01 · The SPARQL UPDATE protocol</div>
+  <h2>SPARQL is not read-only.</h2>
+
+  <p class="lead">SPARQL 1.1 defines a companion language — SPARQL Update — for writing to a graph store. It shares the same PREFIX syntax and the same graph pattern matching as SELECT queries, but the output is mutations to the store rather than a result set. The UPDATE endpoint is separate from the query endpoint by convention (Fuseki uses <code>/update</code> vs <code>/query</code>).</p>
+
+  <p>SPARQL Update is the standard way to manage the lifecycle of data in a triplestore: loading initial datasets, adding provenance annotations, correcting errors, materializing inferred triples, retiring outdated assertions. Every production knowledge graph system uses it. The queries in this workbook run against the <code>/update</code> endpoint in the Fuseki UI's "Update" tab.</p>
+
+  <div class="warn">
+    <span class="note-title">Use a test dataset — updates are destructive</span>
+    <p>Unlike SELECT queries, UPDATE operations permanently modify the store. Before running any update in this workbook, either: (a) work in a separate Fuseki dataset you don't mind destroying, or (b) have a backup copy of your TTL file to reload from. The Fuseki UI's "Upload files" function is your restore path. Every update operation below notes what it changes and how to undo it.</p>
+  </div>
+
+  <div class="branch">
+    <h4>What to load</h4>
+    <p>Load <code>modules/02-modeling/artifacts/naruto-ontology/naruto-ontology-starter.ttl</code> into a Fuseki dataset (call it <code>naruto-update</code> or similar — keep it separate from your main dataset). The update lab adds, modifies, and removes data from this dataset. Run each update in the "Update" tab of the Fuseki UI, not the Query tab.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="operations">
+  <div class="section-label">02 · Operation types</div>
+  <h2>Six operations, two strategies.</h2>
+
+  <p>SPARQL Update divides into two strategies: <strong>explicit</strong> (you specify exactly what to add or remove) and <strong>pattern-based</strong> (the store finds matches and acts on them).</p>
+
+  <table>
+    <thead>
+      <tr><th>Operation</th><th>Strategy</th><th>What it does</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>INSERT DATA</code></td><td>Explicit</td><td>Adds specific, hardcoded triples. No variables. Safest form — no unintended matches possible.</td></tr>
+      <tr><td><code>DELETE DATA</code></td><td>Explicit</td><td>Removes specific, hardcoded triples. If the triple is not present, the operation silently succeeds (no error).</td></tr>
+      <tr><td><code>INSERT WHERE</code></td><td>Pattern-based</td><td>Adds triples derived from a WHERE clause match. Powerful — can insert many triples from one operation.</td></tr>
+      <tr><td><code>DELETE WHERE</code></td><td>Pattern-based</td><td>Finds and removes triples matching a pattern. Destructive — test the WHERE clause as a SELECT first.</td></tr>
+      <tr><td><code>DELETE … INSERT … WHERE</code></td><td>Pattern-based</td><td>Replaces matched triples atomically (at graph level). The standard "update a value" pattern.</td></tr>
+      <tr><td><code>CLEAR</code> / <code>DROP</code></td><td>Explicit</td><td>Removes all triples from a named graph (CLEAR) or removes the graph itself (DROP). Use carefully.</td></tr>
+      <tr><td><code>COPY</code> / <code>MOVE</code></td><td>Explicit</td><td>Copies or moves graph contents between named graphs. Useful for version snapshotting.</td></tr>
+      <tr><td><code>LOAD</code></td><td>Explicit</td><td>Loads an RDF file from a URL into a named graph. Convenient for batch loading.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>The DELETE … INSERT … WHERE pattern</h3>
+
+  <p>The most important compound operation. It atomically replaces the old value of a property with a new value — the SPARQL equivalent of SQL's UPDATE SET WHERE:</p>
+
+<pre><span class="cm"># Replace Naruto's rank from Genin to Jonin</span>
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+<span class="kw">PREFIX</span> skos:   &lt;http://www.w3.org/2004/02/skos/core#&gt;
+
+<span class="kw">DELETE</span> {
+  naruto:NarutoUzumaki naruto:hasRank naruto:Genin .
+}
+<span class="kw">INSERT</span> {
+  naruto:NarutoUzumaki naruto:hasRank naruto:Jonin .
+}
+<span class="kw">WHERE</span> {
+  naruto:NarutoUzumaki naruto:hasRank naruto:Genin .
+}</pre>
+
+  <p>The WHERE clause guards the operation: if Naruto is not currently Genin, neither the DELETE nor the INSERT fires. This is the safe pattern for rank promotions — it will not create a second hasRank triple if one already exists with the new value, because the guard fails if the old value is absent.</p>
+</section>
+
+<!-- 03 -->
+<section id="transactions">
+  <div class="section-label">03 · Transactional reality</div>
+  <h2>Not like SQL — but not without guarantees.</h2>
+
+  <p>SPARQL Update is not transactional in the SQL sense. The Module 4 README's pain point: "most triplestores offer ACID at graph or statement level, but cross-graph multi-statement transactions are inconsistently supported."</p>
+
+  <p>What this means in practice:</p>
+
+  <ul class="spaced">
+    <li><strong>A single UPDATE request is atomic in Fuseki.</strong> If it fails partway through, the whole request is rolled back. You can chain multiple operations in one request using semicolons — they execute as a single unit.</li>
+    <li><strong>Cross-request consistency is not guaranteed.</strong> If you send two separate UPDATE requests, another client could read the store between them and see an intermediate state. There is no "begin transaction … commit" equivalent that spans multiple HTTP requests.</li>
+    <li><strong>The practical workaround.</strong> Design update operations to be idempotent where possible (running twice is harmless). Use the DELETE … INSERT … WHERE guard pattern to prevent double-inserts. Snapshot named graphs before destructive bulk updates using COPY.</li>
+  </ul>
+
+<pre><span class="cm"># Chain two updates in one request (Fuseki executes both atomically)</span>
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+<span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+
+<span class="cm"># First: snapshot the current state</span>
+<span class="kw">COPY</span> GRAPH naruto:Ontology <span class="kw">TO</span> GRAPH naruto:OntologyBackup ;
+
+<span class="cm"># Second: add new data</span>
+<span class="kw">INSERT DATA</span> {
+  GRAPH naruto:Ontology {
+    naruto:JiraiyaSannin naruto:senseiOf naruto:NarutoUzumaki .
+  }
+}</pre>
+
+  <div class="note">
+    <span class="note-title">Oxigraph vs Fuseki transaction support</span>
+    <p>Fuseki supports full SPARQL 1.1 Update with Jena's ACID transactions at the dataset level. Oxigraph (the simpler Rust triplestore recommended in Exercise 4.1) offers ACID transactions per operation but has fewer extensions. For the purposes of this curriculum, both behave the same for the operations in this workbook. For production systems handling concurrent writes, check your triplestore's specific transaction documentation before designing the update pattern.</p>
+  </div>
+</section>
+
+<!-- 04 UPDATE LAB -->
+<section id="lab">
+  <div class="section-label">04 · Update lab</div>
+  <h2>Five operations — paste into the Fuseki Update tab.</h2>
+  <p>These operations run against the Naruto ontology starter data loaded into a test Fuseki dataset. Run them in order — each one builds on the previous state. After each operation, run a SELECT query to verify the change took effect before proceeding.</p>
+
+  <!-- u01 -->
+  <div class="update-card">
+    <div class="update-header">
+      <span class="update-num">u01</span>
+      <div class="update-meta">
+        <div class="update-q">Add Jiraiya Sannin — a new character not in the starter data.</div>
+        <div class="update-c">Pattern: INSERT DATA · explicit triple addition · no WHERE clause needed</div>
+      </div>
+      <a class="btn-update" href="http://localhost:3030/#/dataset/mythology/update" target="_blank" rel="noopener" onclick="openUpdate(event,this)">Open Update tab ↗</a>
+    </div>
+    <div class="update-body">
+      <pre id="u01"><span class="kw">PREFIX</span> rdf:    &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+<span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="kw">INSERT DATA</span> {
+  naruto:JiraiyaSannin
+      a naruto:Ninja ;
+      naruto:canonicalName      "Jiraiya" ;
+      schema:name               "Jiraiya"@en , "自来也"@ja ;
+      naruto:memberOfVillage    naruto:VillageHiddenLeaf ;
+      naruto:hasRank            naruto:Jonin ;
+      naruto:senseiOf           naruto:NarutoUzumaki .
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('u01',this)">Copy</button>
+    </div>
+    <div class="update-footer">
+      <details class="panel">
+        <summary>Verification query and what to check</summary>
+        <div class="panel-body">
+          <p>After running, switch to the Query tab and run:</p>
+          <pre>SELECT ?name ?rank WHERE {
+  naruto:JiraiyaSannin naruto:canonicalName ?name ;
+                       naruto:hasRank ?rank .
+}</pre>
+          <p>If you get one row with "Jiraiya" and naruto:Jonin, the insert succeeded. If no rows: check that you ran it in the Update tab (not the Query tab) and that Fuseki shows a success message.</p>
+          <p><strong>To undo:</strong> Run <code>DELETE DATA { naruto:JiraiyaSannin naruto:canonicalName "Jiraiya" ; a naruto:Ninja ; ... }</code> with all the same triples, or run u05 (CLEAR) and reload the original TTL.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. INSERT DATA requires all values to be specified explicitly — no variables. What would you do if you wanted to insert Jiraiya with the same village as Kakashi (looked up dynamically)? That requires INSERT WHERE, not INSERT DATA.</p>
+          <p>2. Run the INSERT DATA twice without any changes. What happens? Does Fuseki create a duplicate node, a duplicate triple, or does it silently succeed with no change? What does this tell you about how RDF handles duplicate assertions?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- u02 -->
+  <div class="update-card">
+    <div class="update-header">
+      <span class="update-num">u02</span>
+      <div class="update-meta">
+        <div class="update-q">Promote Naruto from Genin to Jonin — safe rank replacement.</div>
+        <div class="update-c">Pattern: DELETE … INSERT … WHERE · guarded replacement · the safe update pattern</div>
+      </div>
+      <a class="btn-update" href="http://localhost:3030/#/dataset/mythology/update" target="_blank" rel="noopener" onclick="openUpdate(event,this)">Open Update tab ↗</a>
+    </div>
+    <div class="update-body">
+      <pre id="u02"><span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="cm"># Run this SELECT first to confirm the current state:
+# SELECT ?rank WHERE { naruto:NarutoUzumaki naruto:hasRank ?rank . }</span>
+
+<span class="kw">DELETE</span> {
+  naruto:NarutoUzumaki naruto:hasRank naruto:Genin .
+}
+<span class="kw">INSERT</span> {
+  naruto:NarutoUzumaki naruto:hasRank naruto:Jonin .
+}
+<span class="kw">WHERE</span> {
+  naruto:NarutoUzumaki naruto:hasRank naruto:Genin .
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('u02',this)">Copy</button>
+    </div>
+    <div class="update-footer">
+      <details class="panel">
+        <summary>Verification query and what to check</summary>
+        <div class="panel-body">
+          <p>After the update:</p>
+          <pre>SELECT ?rank WHERE {
+  naruto:NarutoUzumaki naruto:hasRank ?rank .
+}</pre>
+          <p>Should return exactly one row: naruto:Jonin. If you run the UPDATE twice, the second execution should be a no-op — the WHERE clause fails because Naruto is no longer Genin, so neither DELETE nor INSERT fires.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. What would happen if you wrote this as two separate requests — a DELETE request followed by an INSERT request — instead of a combined DELETE … INSERT … WHERE? What could go wrong if another client reads the store between the two requests?</p>
+          <p>2. This update does not capture when the rank changed or who authorized it. How would you extend the update to add a provenance triple simultaneously (e.g., using the named graph pattern from Submodule 3.2)?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- u03 -->
+  <div class="update-card">
+    <div class="update-header">
+      <span class="update-num">u03</span>
+      <div class="update-meta">
+        <div class="update-q">Materialize all studentOf triples by inverting senseiOf — INSERT WHERE.</div>
+        <div class="update-c">Pattern: INSERT WHERE · pattern-based bulk insert · materializing inferred data</div>
+      </div>
+      <a class="btn-update" href="http://localhost:3030/#/dataset/mythology/update" target="_blank" rel="noopener" onclick="openUpdate(event,this)">Open Update tab ↗</a>
+    </div>
+    <div class="update-body">
+      <pre id="u03"><span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="cm"># INSERT WHERE: for every senseiOf triple,
+# add the inverse studentOf triple if it doesn't already exist.</span>
+<span class="kw">INSERT</span> {
+  ?student naruto:studentOf ?sensei .
+}
+<span class="kw">WHERE</span> {
+  ?sensei naruto:senseiOf ?student .
+  <span class="kw">FILTER NOT EXISTS</span> {
+    ?student naruto:studentOf ?sensei .
+  }
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('u03',this)">Copy</button>
+    </div>
+    <div class="update-footer">
+      <details class="panel">
+        <summary>Verification query and what to check</summary>
+        <div class="panel-body">
+          <p>After the update, confirm the inverse triples exist:</p>
+          <pre>SELECT ?student ?sensei WHERE {
+  ?student naruto:studentOf ?sensei .
+}</pre>
+          <p>Should return the same pairs as querying senseiOf, with subject and object swapped: Naruto studentOf Kakashi, Sasuke studentOf Kakashi, Sakura studentOf Kakashi, Hinata studentOf Kurenai (and now Naruto studentOf Jiraiya if u01 ran first).</p>
+          <p>Run the UPDATE again. The FILTER NOT EXISTS guard means it is idempotent — no duplicate triples are added on the second run.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. This operation does the same thing as the CONSTRUCT + materialization approach from Submodule 3.1. What is the operational difference? (CONSTRUCT produces a graph you load manually; INSERT WHERE writes directly into the store.)</p>
+          <p>2. If you later add new senseiOf triples, the materialized studentOf triples do not update automatically. How would you manage this in a production system that receives ongoing data updates?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- u04 -->
+  <div class="update-card">
+    <div class="update-header">
+      <span class="update-num">u04</span>
+      <div class="update-meta">
+        <div class="update-q">Move all Chunin Exams arc data into a named graph for source tracking.</div>
+        <div class="update-c">Pattern: INSERT … WHERE with GRAPH target · named graph population from data patterns</div>
+      </div>
+      <a class="btn-update" href="http://localhost:3030/#/dataset/mythology/update" target="_blank" rel="noopener" onclick="openUpdate(event,this)">Open Update tab ↗</a>
+    </div>
+    <div class="update-body">
+      <pre id="u04"><span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="cm"># Create a named graph containing only characters
+# who appear in the Chunin Exams arc.</span>
+<span class="kw">INSERT</span> {
+  <span class="kw">GRAPH</span> naruto:ChunexamsCharacters {
+    ?ninja a naruto:Ninja ;
+           naruto:canonicalName ?name ;
+           naruto:appearsInArc   naruto:ChunexamsArc .
+  }
+}
+<span class="kw">WHERE</span> {
+  ?ninja a naruto:Ninja ;
+         naruto:canonicalName ?name ;
+         naruto:appearsInArc   naruto:ChunexamsArc .
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('u04',this)">Copy</button>
+    </div>
+    <div class="update-footer">
+      <details class="panel">
+        <summary>Verification query and what to check</summary>
+        <div class="panel-body">
+          <p>After the update, query the named graph directly:</p>
+          <pre>SELECT ?name WHERE {
+  GRAPH naruto:ChunexamsCharacters {
+    ?ninja naruto:canonicalName ?name .
+  }
+}
+ORDER BY ?name</pre>
+          <p>Should return all ninja who appear in the Chunin Exams arc. Compare to the plain dataset query (without GRAPH) — the arc information now exists in both the default graph and the named graph. The named graph can carry its own provenance metadata (dcterms:created, a prov:Entity, etc.).</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Add provenance metadata to the named graph itself in the default graph: <code>INSERT DATA { naruto:ChunexamsCharacters dcterms:created "2026-06-03"^^xsd:date . }</code>. Now the graph has both data (inside it) and metadata (about it in the default graph) — the full named graph provenance pattern from Submodule 3.2.</p>
+          <p>2. If you later run this operation again after adding more characters with appearsInArc, what happens to the existing named graph content? Are old entries removed or does new data just accumulate?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- u05 -->
+  <div class="update-card">
+    <div class="update-header">
+      <span class="update-num">u05</span>
+      <div class="update-meta">
+        <div class="update-q">Snapshot the current graph, then CLEAR and reload — the backup-restore cycle.</div>
+        <div class="update-c">Pattern: COPY → CLEAR → LOAD · the safe bulk-update workflow</div>
+      </div>
+      <a class="btn-update" href="http://localhost:3030/#/dataset/mythology/update" target="_blank" rel="noopener" onclick="openUpdate(event,this)">Open Update tab ↗</a>
+    </div>
+    <div class="update-body">
+      <pre id="u05"><span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="cm"># Step 1: Snapshot the default graph into a backup named graph</span>
+<span class="kw">COPY</span> <span class="kw">DEFAULT</span> <span class="kw">TO</span> <span class="kw">GRAPH</span> naruto:SnapshotBeforeBulkUpdate ;
+
+<span class="cm"># Step 2: Verify the snapshot exists before proceeding
+# (Run separately as a SELECT to check triple count matches)</span>
+
+<span class="cm"># Step 3 (run separately after verifying): clear and reload from file</span>
+<span class="cm"># CLEAR DEFAULT ;
+# LOAD &lt;file:///path/to/naruto-ontology-starter.ttl&gt; ;</span></pre>
+      <button class="copy-btn" onclick="copyQuery('u05',this)">Copy</button>
+    </div>
+    <div class="update-footer">
+      <details class="panel">
+        <summary>What this does and when to use it</summary>
+        <div class="panel-body">
+          <p><code>COPY DEFAULT TO GRAPH naruto:SnapshotBeforeBulkUpdate</code> copies all triples from the default graph into a named graph, preserving a rollback point. <code>CLEAR DEFAULT</code> removes all triples from the default graph (the named graph snapshot is unaffected). <code>LOAD</code> reads a file into the store.</p>
+          <p>This is the production workflow for bulk data refreshes: snapshot → verify → clear → reload. If the reload fails, the snapshot named graph still exists and can be recovered with <code>COPY GRAPH naruto:SnapshotBeforeBulkUpdate TO DEFAULT</code>.</p>
+          <p>The CLEAR and LOAD lines are commented out deliberately — uncomment them only after verifying the snapshot succeeded by counting triples in the named graph and confirming the count matches the default graph.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. COPY + CLEAR is not atomic as two separate statements in Fuseki. Between the COPY and the CLEAR, another client could query the store and see data in both places. Chain them in a single UPDATE request (separated by semicolons) to minimize the window. What risks remain even with chaining?</p>
+          <p>2. Ontology versioning: if you increment <code>owl:versionInfo</code> from "starter" to "1.0.0" as part of a bulk update, how would you capture both the old and new version information in the graph metadata? What SPARQL Update operations would you need?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- 05 -->
+<section id="resources">
+  <div class="section-label">05 · Resources</div>
+  <h2>Reading and next steps.</h2>
+
+  <div class="resource-grid">
+    <article class="resource-card">
+      <h4>Primary reading</h4>
+      <h5>DuCharme — Ch 5–6</h5>
+      <p>Chapters 5 and 6 cover SPARQL Update and applications. DuCharme's examples are practical and grounded — the closest thing to a cookbook for the patterns in this workbook.</p>
+    </article>
+    <article class="resource-card">
+      <h4>W3C spec</h4>
+      <h5><a href="https://www.w3.org/TR/sparql11-update/">SPARQL 1.1 Update</a></h5>
+      <p>Section 3 covers the full update language syntax. Section 4 covers the update protocol (HTTP). Bookmark it — you will need it when a compound operation behaves unexpectedly.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Triplestore docs</h4>
+      <h5><a href="https://jena.apache.org/documentation/fuseki2/">Apache Jena Fuseki</a></h5>
+      <p>The Fuseki documentation covers the /update endpoint, the dataset configuration, and transaction semantics specific to Jena's implementation. Read the "SPARQL Update" section before Exercise 4.1.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Next submodule</h4>
+      <h5><a href="4-2-federation-deployment.html">Submodule 4.2 — Federation and deployment</a></h5>
+      <p>The SERVICE keyword, federation failure modes, triplestore options, and the EC2 deployment guide for Exercise 4.1. The deployment work feeds directly into the capstone.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Prior data</h4>
+      <h5><a href="../../02-modeling/artifacts/naruto-ontology/naruto-ontology-starter.ttl">Naruto ontology starter</a></h5>
+      <p>The base data file for this workbook's update lab. Load into a separate Fuseki test dataset before running any update operations. Keep the original TTL file as your restore point.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Cheatsheet</h4>
+      <h5>Module 4 SPARQL Update quick-reference <span class="coming-soon">(coming soon)</span></h5>
+      <p>All eight update operations, the DELETE … INSERT … WHERE pattern, the backup-restore workflow, and transactional gotchas — one page. Available when Module 4 materials are complete.</p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Submodule 4.1 workbook · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Written content: CC BY 4.0 · Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+<script>
+(function checkFuseki(){var b=document.getElementById('fuseki-banner');if(!window.fetch){b.className='fuseki-banner checking';b.innerHTML='<span class="dot"></span>Check Fuseki manually: <a href="http://localhost:3030/" target="_blank" rel="noopener">localhost:3030 ↗</a>';return;}fetch('http://localhost:3030/',{mode:'no-cors',cache:'no-store'}).then(function(){b.className='fuseki-banner connected';b.innerHTML='<span class="dot"></span>Fuseki running — <a href="http://localhost:3030/#/dataset/mythology/update" target="_blank" rel="noopener">open Update tab at localhost:3030 ↗</a> &nbsp;·&nbsp; Paste update operations in the Update tab, not the Query tab.';}).catch(function(){b.className='fuseki-banner offline';b.innerHTML='<span class="dot"></span>Fuseki offline — start: <code>fuseki-server --config=fuseki/config.ttl</code>';});})();
+function openUpdate(e,btn){e.preventDefault();var card=btn.closest('.update-card'),t=card.querySelector('pre[id]').textContent,u=btn.getAttribute('href');function o(){window.open(u,'_blank','noopener,noreferrer');}function f(){var x=btn.textContent;btn.textContent='Copied — paste in Update tab ↗';btn.style.borderColor='var(--coral)';setTimeout(function(){btn.textContent=x;btn.style.borderColor='';},2500);}navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(function(){f();o();}).catch(function(){lc(t,null);o();}):lc(t,null),o();}
+function copyQuery(id,btn){var t=document.getElementById(id).textContent;navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(function(){fb(btn);}).catch(function(){lc(t,btn);}):lc(t,btn);}
+function lc(t,btn){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';document.body.appendChild(a);a.focus();a.select();try{document.execCommand('copy');if(btn)fb(btn);}catch(e){}document.body.removeChild(a);}
+function fb(btn){var x=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=x;},1600);}
+</script>
+</body>
+</html>
