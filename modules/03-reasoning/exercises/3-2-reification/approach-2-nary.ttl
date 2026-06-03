@@ -1,0 +1,72 @@
+# =============================================================================
+# Title:   Exercise 3.2 — Reification approach 2: N-ary relation
+# Purpose: Same fact expressed by promoting the relationship to a first-class
+#          event class with its own properties. The relationship itself becomes
+#          a named individual (an Event) rather than a triple annotation.
+# Date:    2026-06-03
+# Author:  Barbara Hidalgo-Sotelo (Sensemaking AI)
+# =============================================================================
+
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix schema:      <https://schema.org/> .
+@prefix naruto:      <https://sensemaking-ai.com/ns/naruto#> .
+@prefix sensemaking: <https://sensemaking-ai.com/ns/> .
+
+# ── Event class declaration ───────────────────────────────────────────────────
+# naruto:NarrativeEvent is a class for things-that-happened-in-the-story.
+# This is the n-ary pattern: the binary "Itachi killed Clan" becomes
+# a ternary "this Event involved actor Itachi, action killing, target Clan."
+# The event node is a first-class individual that any predicate can attach to.
+
+naruto:NarrativeEvent
+    a rdfs:Class ;
+    rdfs:label   "Narrative event"@en ;
+    rdfs:comment "An event within the Naruto narrative, with an actor, action, and context. Preferred for provenance-heavy assertions where a simple binary triple is insufficient."@en .
+
+# ── The event individual ──────────────────────────────────────────────────────
+# This is a named individual — it gets an IRI and can be referenced by
+# other parts of the graph, including SPARQL queries, without knowing
+# the subject/predicate/object of the original triple.
+
+naruto:ItachiClanMassacre
+    a naruto:NarrativeEvent ;
+    schema:name         "Uchiha clan massacre"@en ;
+    naruto:actor        naruto:ItachiUchiha ;
+    naruto:action       naruto:KilledClan ;
+    naruto:target       naruto:UchihaClan ;
+    naruto:orderGivenBy naruto:DanzoShimura ;
+    naruto:motivation   naruto:ProtectKonoha ;
+    dcterms:source      "Naruto manga, vol. 43, ch. 401"^^xsd:string ;
+    dcterms:date        "2007-05-14"^^xsd:date ;
+    sensemaking:confidence sensemaking:CanonicalManga ;
+    rdfs:comment        "The revelation in ch. 401 reframes the massacre as a sacrifice ordered by Konoha leadership rather than personal ambition."@en .
+
+# ── The earlier portrayal as a separate event ────────────────────────────────
+# The n-ary pattern makes it natural to have multiple events representing
+# the same real-world action as narrated from different sources.
+
+naruto:ItachiClanMassacreEarlyNarrative
+    a naruto:NarrativeEvent ;
+    schema:name         "Uchiha clan massacre (early narrative)"@en ;
+    naruto:actor        naruto:ItachiUchiha ;
+    naruto:action       naruto:KilledClan ;
+    naruto:target       naruto:UchihaClan ;
+    naruto:motivation   naruto:PersonalAmbition ;
+    dcterms:source      "Naruto manga, vol. 15, ch. 131"^^xsd:string ;
+    dcterms:date        "2002-06-03"^^xsd:date ;
+    sensemaking:confidence sensemaking:CanonicalDisputed ;
+    rdfs:comment        "The early-series portrayal — later retconned."@en .
+
+# The two event nodes represent the same real event but with different
+# narrative framings. A SPARQL query can retrieve all events of type
+# naruto:NarrativeEvent where naruto:actor = Itachi, then filter by source.
+
+# ── Advantage over classical reification ──────────────────────────────────────
+# The event node naruto:ItachiClanMassacre can be referenced directly by IRI
+# in any SPARQL query. You don't need to reconstruct the original triple's
+# subject/predicate/object to find it. Adding new properties to the event
+# (e.g., witnesses, duration, aftermath) is trivial — just add more triples
+# to the event node. This is the key ergonomic advantage of n-ary relations.

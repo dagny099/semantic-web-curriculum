@@ -1,0 +1,79 @@
+# =============================================================================
+# Title:   Exercise 3.2 — Reification approach 3: Named graphs
+# Purpose: Same fact in TriG format (Turtle + named graphs). The assertions
+#          go inside a named graph; metadata triples describe the graph itself.
+#          Format: TriG (file extension .trig). Fuseki loads TriG natively.
+# Date:    2026-06-03
+# Author:  Barbara Hidalgo-Sotelo (Sensemaking AI)
+# =============================================================================
+
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix prov:        <http://www.w3.org/ns/prov#> .
+@prefix schema:      <https://schema.org/> .
+@prefix naruto:      <https://sensemaking-ai.com/ns/naruto#> .
+@prefix sensemaking: <https://sensemaking-ai.com/ns/> .
+
+# ── Named graph 1: The manga chapter 401 revelation ──────────────────────────
+# The assertions about Itachi go INSIDE this named graph.
+# The graph IRI (naruto:MangaSource401) is itself a node in the default graph
+# that can carry metadata triples.
+
+naruto:MangaSource401 {
+    naruto:ItachiUchiha naruto:killedClan     naruto:UchihaClan .
+    naruto:ItachiUchiha naruto:actedUnderOrders naruto:DanzoShimura .
+    naruto:ItachiUchiha naruto:motivation     naruto:ProtectKonoha .
+}
+
+# ── Named graph 2: The earlier, contradictory narrative ───────────────────────
+naruto:MangaSource131 {
+    naruto:ItachiUchiha naruto:killedClan  naruto:UchihaClan .
+    naruto:ItachiUchiha naruto:motivation  naruto:PersonalAmbition .
+}
+
+# ── Default graph: metadata about each named graph ────────────────────────────
+# Provenance, source, date, and confidence for each graph live here.
+# A query can join the named graph (for the assertions) with the default graph
+# (for the metadata) using FROM / FROM NAMED / GRAPH patterns.
+
+{
+    naruto:MangaSource401
+        a prov:Entity , schema:Book ;
+        schema:name        "Naruto manga, vol. 43, ch. 401"@en ;
+        dcterms:date       "2007-05-14"^^xsd:date ;
+        dcterms:isPartOf   naruto:NarutoMangaSeries ;
+        sensemaking:confidence sensemaking:CanonicalManga ;
+        rdfs:comment       "The revelation chapter. Itachi's motivations reframed as sacrifice rather than ambition. This contradicts assertions in earlier source graphs."@en .
+
+    naruto:MangaSource131
+        a prov:Entity , schema:Book ;
+        schema:name        "Naruto manga, vol. 15, ch. 131"@en ;
+        dcterms:date       "2002-06-03"^^xsd:date ;
+        dcterms:isPartOf   naruto:NarutoMangaSeries ;
+        sensemaking:confidence sensemaking:CanonicalDisputed ;
+        rdfs:comment       "Early portrayal of Itachi's motivation — later retconned by ch. 401."@en .
+}
+
+# ── Querying named graphs ────────────────────────────────────────────────────
+# In SPARQL, named graphs are queried with the GRAPH keyword:
+#
+# SELECT ?assertion ?source ?confidence WHERE {
+#   GRAPH ?g { naruto:ItachiUchiha naruto:killedClan naruto:UchihaClan . }
+#   ?g dcterms:date ?date ;
+#      sensemaking:confidence ?confidence ;
+#      schema:name ?source .
+# }
+# ORDER BY ?date
+#
+# This returns each named graph that contains the assertion, with its metadata.
+# Named graphs are the most natural reification for "all facts from this source."
+
+# ── Advantage and limitation ─────────────────────────────────────────────────
+# Advantage: granularity at the graph level, not the triple level. All
+# assertions from a single chapter go in one named graph with one set of
+# metadata triples. Querying is clean with GRAPH patterns.
+# Limitation: you cannot annotate individual triples within the named graph
+# without classical or RDF-star sub-annotation. Named graphs annotate groups
+# of assertions, not single triples.

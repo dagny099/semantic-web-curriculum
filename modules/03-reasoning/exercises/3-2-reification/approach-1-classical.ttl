@@ -1,0 +1,74 @@
+# =============================================================================
+# Title:   Exercise 3.2 — Reification approach 1: Classical RDF reification
+# Purpose: The same provenance fact expressed using rdf:Statement.
+#          Fact: Itachi killed the Uchiha clan under orders from Danzo,
+#          revealed in Naruto manga chapter 401 (vol. 43, 2007).
+# Date:    2026-06-03
+# Author:  Barbara Hidalgo-Sotelo (Sensemaking AI)
+# =============================================================================
+
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix naruto:      <https://sensemaking-ai.com/ns/naruto#> .
+@prefix sensemaking: <https://sensemaking-ai.com/ns/> .
+
+# ── Confidence vocabulary ─────────────────────────────────────────────────────
+sensemaking:CanonicalManga    a sensemaking:ConfidenceLevel ;
+    rdfs:label "Canonical — manga source"@en .
+sensemaking:AnimeOnly         a sensemaking:ConfidenceLevel ;
+    rdfs:label "Anime-only / filler"@en .
+sensemaking:CanonicalDisputed a sensemaking:ConfidenceLevel ;
+    rdfs:label "Canonical but fan-disputed"@en .
+
+# ── The base facts (asserted naively, without provenance) ─────────────────────
+# These would exist in a naive graph. Classical reification annotates them.
+naruto:ItachiUchiha naruto:killedClan naruto:UchihaClan .
+naruto:ItachiUchiha naruto:actedUnderOrders naruto:DanzoShimura .
+
+# ── Classical reification of the first fact ───────────────────────────────────
+# rdf:Statement turns a triple into a subject that can carry metadata.
+# Cost: 4 triples per annotated fact (subject, predicate, object, type).
+# Query: you must know the subject/predicate/object to retrieve the statement node.
+
+naruto:ItachiKilledStatement
+    a rdf:Statement ;
+    rdf:subject   naruto:ItachiUchiha ;
+    rdf:predicate naruto:killedClan ;
+    rdf:object    naruto:UchihaClan ;
+    dcterms:source     "Naruto manga, vol. 43, ch. 401"^^xsd:string ;
+    dcterms:date       "2007-05-14"^^xsd:date ;
+    sensemaking:confidence sensemaking:CanonicalManga ;
+    rdfs:comment       "Revealed late — contradicts earlier portrayal of Itachi as purely villainous."@en .
+
+# ── Classical reification of the second fact ──────────────────────────────────
+naruto:ItachiOrdersStatement
+    a rdf:Statement ;
+    rdf:subject   naruto:ItachiUchiha ;
+    rdf:predicate naruto:actedUnderOrders ;
+    rdf:object    naruto:DanzoShimura ;
+    dcterms:source     "Naruto manga, vol. 43, ch. 401"^^xsd:string ;
+    dcterms:date       "2007-05-14"^^xsd:date ;
+    sensemaking:confidence sensemaking:CanonicalManga ;
+    rdfs:comment       "Danzo's role as the orderer is stated in chapter 401 but debated in fan interpretations."@en .
+
+# ── The earlier, contradictory portrayal ──────────────────────────────────────
+# This is what makes reification genuinely necessary: contested knowledge.
+# Earlier chapters portrayed Itachi as self-motivated. This statement
+# captures the pre-chapter-401 narrative, sourced to early arcs.
+
+naruto:ItachiEarlyPortrayal
+    a rdf:Statement ;
+    rdf:subject   naruto:ItachiUchiha ;
+    rdf:predicate naruto:killedClan ;
+    rdf:object    naruto:UchihaClan ;
+    dcterms:source     "Naruto manga, vol. 15, ch. 131"^^xsd:string ;
+    dcterms:date       "2002-06-03"^^xsd:date ;
+    sensemaking:confidence sensemaking:CanonicalDisputed ;
+    rdfs:comment       "Itachi's motivation stated as personal ambition — later retconned in ch. 401."@en .
+
+# ── Pain point note ────────────────────────────────────────────────────────────
+# Classical reification repeats the triple content across each rdf:Statement.
+# A SPARQL query must join on all three of subject/predicate/object to retrieve
+# the statement node. This is verbose and error-prone. Compare to approach-4-rdf-star.ttl.

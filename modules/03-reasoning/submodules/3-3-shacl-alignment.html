@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submodule 3.3 — SHACL and vocabulary alignment · Sensemaking Semantic Web</title>
+<meta name="description" content="SHACL in production, owl:sameAs vs skos:exactMatch vs skos:closeMatch, and the Resume skill inference project — formal reasoning rules applied to career data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--teal-deep:#0B4F4A;--teal-mid:#1E8076;--teal-light:#C6E2DD;--coral:#D85A30;--coral-tint:#FAEAE2;--charcoal:#1F2A2E;--slate:#5A6671;--slate-lt:#8A929A;--cream:#FAF7F2;--white:#FFFFFF;--rule:#D8D2C6;--code-bg:#F2EDE3;--green:#2A7040;--green-tint:#E4F1EA;--amber:#9A6B00;--amber-tint:#FDF6E3;--indigo:#3A3A8A;--indigo-tint:#EEEEF8;--font-serif:'EB Garamond',Georgia,serif;--font-sans:'IBM Plex Sans',system-ui,sans-serif;--font-mono:'IBM Plex Mono',Consolas,monospace;}
+*{box-sizing:border-box;}html{scroll-behavior:smooth;font-size:16px;}
+body{margin:0;background:var(--cream);color:var(--charcoal);font-family:var(--font-sans);line-height:1.65;-webkit-font-smoothing:antialiased;}
+.masthead{background:var(--teal-deep);color:var(--white);padding:3rem 1.5rem 3.5rem;border-bottom:5px solid var(--coral);}
+.masthead-inner{max-width:68rem;margin:0 auto;}
+.brand{font-size:.74rem;letter-spacing:.18em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:1.4rem;}
+.kicker{font-size:.74rem;letter-spacing:.14em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:.55rem;}
+h1{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2.8rem,7vw,5.2rem);color:var(--white);line-height:1.0;letter-spacing:-.025em;margin:0 0 .85rem;max-width:20ch;}
+.subtitle{color:var(--teal-light);font-size:clamp(1rem,2.5vw,1.18rem);line-height:1.55;max-width:46rem;margin:0 0 1.8rem;}
+.meta-row{display:flex;flex-wrap:wrap;gap:.45rem .85rem;}
+.meta-row span{border:1px solid rgba(198,226,221,.38);border-radius:999px;padding:.28rem .7rem;font-size:.8rem;color:var(--teal-light);}
+.fuseki-banner{padding:.65rem 1.5rem;font-size:.875rem;display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;}
+.fuseki-banner.checking{background:var(--amber-tint);color:var(--amber);}
+.fuseki-banner.connected{background:var(--green-tint);color:var(--green);}
+.fuseki-banner.offline{background:var(--coral-tint);color:var(--coral);}
+.fuseki-banner .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fuseki-banner.checking .dot{background:var(--amber);}
+.fuseki-banner.connected .dot{background:var(--green);}
+.fuseki-banner.offline .dot{background:var(--coral);}
+.fuseki-banner a{color:inherit;text-decoration:underline;}
+.fuseki-banner code{font-family:var(--font-mono);font-size:.8em;background:rgba(0,0,0,.08);padding:.1em .3em;border-radius:3px;}
+.quick-nav{position:sticky;top:0;z-index:20;background:rgba(250,247,242,.97);border-bottom:1px solid var(--rule);backdrop-filter:blur(4px);}
+.quick-nav-inner{max-width:68rem;margin:0 auto;padding:.65rem 1.5rem;display:flex;gap:.45rem;overflow-x:auto;scrollbar-width:none;}
+.quick-nav-inner::-webkit-scrollbar{display:none;}
+.quick-nav a{flex:0 0 auto;color:var(--charcoal);border:1px solid var(--rule);border-radius:999px;padding:.28rem .68rem;font-size:.76rem;white-space:nowrap;text-decoration:none;background:rgba(255,255,255,.4);transition:border-color .15s,color .15s;}
+.quick-nav a:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+main{max-width:68rem;margin:0 auto;padding:0 1.5rem 4rem;}
+section{padding:3.75rem 0;border-bottom:1px solid var(--rule);scroll-margin-top:3.5rem;}
+section:last-child{border-bottom:none;}
+.section-label{font-size:.7rem;letter-spacing:.2em;color:var(--coral);text-transform:uppercase;font-weight:600;margin-bottom:.85rem;}
+h2{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2rem,5vw,3.2rem);color:var(--charcoal);line-height:1.05;letter-spacing:-.015em;margin:0 0 1.1rem;}
+h3{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(1.35rem,3vw,1.9rem);color:var(--charcoal);margin:2.25rem 0 .65rem;}
+h3:first-of-type{margin-top:.4rem;}
+p{max-width:44rem;margin:0 0 1.05rem;font-size:1rem;}
+p.lead{font-size:1.1rem;line-height:1.6;}
+pre{font-family:var(--font-mono);font-size:.8rem;background:var(--code-bg);border-left:4px solid var(--teal-mid);border-radius:0 8px 8px 0;padding:1rem 1.1rem;overflow-x:auto;margin:.6rem 0 1.2rem;line-height:1.6;color:var(--charcoal);}
+code{font-family:var(--font-mono);font-size:.86em;background:var(--code-bg);padding:.1em .3em;border-radius:3px;}
+pre code{background:transparent;padding:0;font-size:inherit;}
+.kw{color:var(--teal-deep);font-weight:500;}.cm{color:var(--slate-lt);}
+.note,.payoff,.warn{max-width:44rem;margin:1.4rem 0;padding:.9rem 1.1rem .9rem 1.25rem;}
+.note{background:var(--coral-tint);border-left:4px solid var(--coral);}
+.payoff{background:var(--indigo-tint);border-left:4px solid var(--indigo);}
+.warn{background:#FFF8E6;border-left:4px solid var(--amber);}
+.note-title{display:block;font-size:.7rem;letter-spacing:.16em;font-weight:600;text-transform:uppercase;margin-bottom:.3rem;}
+.note .note-title{color:var(--coral);}.payoff .note-title{color:var(--indigo);}.warn .note-title{color:var(--amber);}
+.note p,.payoff p,.warn p{margin:0;max-width:none;}
+ul.spaced{padding-left:1.2rem;margin:.5rem 0 1.1rem;max-width:44rem;}
+ul.spaced li{margin:.48rem 0;font-size:.97rem;}
+table{width:100%;border-collapse:collapse;margin:1.4rem 0;font-size:.92rem;max-width:52rem;}
+th,td{border-bottom:1px solid var(--rule);padding:.72rem .65rem;vertical-align:top;text-align:left;}
+th{color:var(--coral);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;font-weight:600;}
+.query-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin:1.5rem 0;overflow:hidden;}
+.query-header{display:flex;align-items:flex-start;gap:.9rem;padding:1rem 1.15rem .85rem;border-bottom:1px solid var(--rule);}
+.query-num{font-family:var(--font-mono);font-size:.76rem;font-weight:500;color:var(--white);background:var(--teal-mid);border-radius:6px;padding:.22rem .48rem;flex-shrink:0;margin-top:.1rem;}
+.query-meta{flex:1;min-width:0;}
+.query-q{font-weight:600;font-size:.98rem;color:var(--charcoal);margin-bottom:.22rem;}
+.query-c{font-size:.81rem;color:var(--slate);}
+.btn-fuseki{flex-shrink:0;display:inline-block;font-size:.76rem;font-weight:500;color:var(--teal-mid);border:1px solid var(--teal-light);border-radius:999px;padding:.26rem .72rem;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s;}
+.btn-fuseki:hover{background:var(--teal-light);border-color:var(--teal-mid);}
+.query-body{position:relative;}
+.query-body pre{margin:0;border-radius:0;border-left:none;border-bottom:1px solid var(--rule);}
+.copy-btn{position:absolute;top:.6rem;right:.6rem;background:var(--cream);border:1px solid var(--rule);border-radius:5px;padding:.2rem .52rem;font-family:var(--font-sans);font-size:.72rem;color:var(--slate);cursor:pointer;z-index:2;transition:border-color .15s,color .15s;}
+.copy-btn:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+.query-footer{padding:.7rem 1.15rem;display:flex;flex-direction:column;gap:.45rem;}
+details.panel summary{font-size:.83rem;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:.28rem 0;list-style:none;display:flex;align-items:center;gap:.4rem;user-select:none;}
+details.panel summary::before{content:"▶";font-size:.58rem;color:var(--coral);transition:transform .2s;}
+details.panel[open] summary::before{transform:rotate(90deg);}
+details.panel summary::-webkit-details-marker{display:none;}
+.panel-body{padding:.65rem 0 .25rem 1.2rem;}
+.panel-body p{font-size:.9rem;max-width:none;margin:0 0 .52rem;}
+.panel-body p:last-child{margin-bottom:0;}
+.panel-body pre{font-size:.77rem;margin:.35rem 0 .65rem;}
+.expected-out{background:var(--code-bg);border-radius:4px;padding:.38rem .65rem;font-family:var(--font-mono);font-size:.78rem;color:var(--charcoal);margin-bottom:.55rem;line-height:1.5;}
+.branch{border-left:4px solid var(--teal-mid);background:var(--white);padding:.82rem 1.15rem;margin:.6rem 0 1.3rem;max-width:44rem;}
+.branch h4{font-family:var(--font-sans);font-size:.88rem;font-weight:600;color:var(--teal-deep);margin:0 0 .3rem;}
+.branch p{margin:0;font-size:.9rem;max-width:none;}
+.branch a{color:var(--teal-mid);}
+.resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;margin:1.3rem 0;}
+.resource-card{background:rgba(255,255,255,.45);border:1px solid var(--rule);border-radius:14px;padding:1.1rem;}
+.resource-card h4{font-family:var(--font-sans);font-size:.7rem;letter-spacing:.14em;font-weight:600;text-transform:uppercase;color:var(--coral);margin:0 0 .5rem;}
+.resource-card h5{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:1.08rem;color:var(--charcoal);margin:0 0 .4rem;}
+.resource-card a{color:var(--teal-mid);text-decoration:underline;}
+.resource-card p{font-size:.87rem;margin:0;color:var(--slate);max-width:none;}
+.coming-soon{font-size:.72rem;color:var(--slate-lt);font-style:italic;}
+footer{max-width:68rem;margin:0 auto;padding:2rem 1.5rem 3rem;border-top:1px solid var(--rule);color:var(--slate);font-size:.84rem;}
+footer a{color:var(--teal-mid);text-decoration:underline;}
+footer p{margin:0 0 .4rem;max-width:none;}
+@media(max-width:820px){.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:640px){.resource-grid{grid-template-columns:1fr;}.query-header{flex-wrap:wrap;}.btn-fuseki{order:3;}main{padding-left:1rem;padding-right:1rem;}.masthead{padding:2rem 1rem 2.5rem;}}
+@media print{.masthead{background:white;color:black;border-bottom:2px solid black;padding:.5rem 0;}h1{color:black;font-size:26pt;}.quick-nav,.fuseki-banner,.btn-fuseki,.copy-btn{display:none!important;}main,footer,.masthead-inner{max-width:none;padding-left:0;padding-right:0;}pre{background:#f5f5f5;border-left:2px solid #888;font-size:7.5pt;page-break-inside:avoid;}.query-card,.resource-card{break-inside:avoid;border:1px solid #ccc;}details{display:block;}details summary{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sensemaking Semantic Web</div>
+    <div class="kicker">Submodule 3.3 · Reasoning ★</div>
+    <h1>SHACL and vocabulary alignment.</h1>
+    <p class="subtitle">Closed-world validation in an open-world graph. owl:sameAs vs skos:exactMatch. Formal skill inference applied to resume data — and where it beats (and loses to) LLM reasoning.</p>
+    <div class="meta-row">
+      <span>Module 3 · Weeks 7–9</span>
+      <span>Primary project B: Exercise 3.4</span>
+      <span>Requires Fuseki + resume-001.ttl</span>
+      <span>SHACL · alignment · skill inference</span>
+    </div>
+  </div>
+</header>
+
+<div id="fuseki-banner" class="fuseki-banner checking">
+  <span class="dot"></span>Checking for Fuseki at localhost:3030…
+</div>
+
+<nav class="quick-nav">
+  <div class="quick-nav-inner">
+    <a href="#shacl">01 · SHACL in production</a>
+    <a href="#alignment">02 · Vocabulary alignment</a>
+    <a href="#inference">03 · Skill inference</a>
+    <a href="#lab">04 · Query lab</a>
+    <a href="#comparison">05 · Formal vs LLM</a>
+    <a href="#project">06 · Exercise 3.4</a>
+    <a href="#resources">07 · Resources</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- 01 -->
+<section id="shacl">
+  <div class="section-label">01 · SHACL in production</div>
+  <h2>Going deeper than the Module 2 introduction.</h2>
+
+  <p class="lead">Submodule 2.3 introduced SHACL as the closed-world answer to OWL's open-world assumption. This submodule goes deeper: the full constraint component vocabulary, SPARQL-based custom constraints, severity levels, and how SHACL fits into a production data pipeline.</p>
+
+  <h3>The SHACL data model</h3>
+
+  <p>SHACL defines two kinds of shapes:</p>
+
+  <ul class="spaced">
+    <li><strong><code>sh:NodeShape</code></strong> — targets specific nodes in the graph (via <code>sh:targetClass</code>, <code>sh:targetNode</code>, <code>sh:targetSubjectsOf</code>, or <code>sh:targetObjectsOf</code>) and applies property constraints to them.</li>
+    <li><strong><code>sh:PropertyShape</code></strong> — a reusable constraint on a specific property, which can be referenced from multiple NodeShapes via <code>sh:property</code>.</li>
+  </ul>
+
+<pre><span class="cm"># A NodeShape targeting all naruto:Ninja nodes</span>
+naruto:NinjaShape
+    a sh:NodeShape ;
+    sh:targetClass naruto:Ninja ;
+    sh:property [
+        sh:path     naruto:canonicalName ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message  "A Ninja must have exactly one canonicalName."@en ;
+        sh:severity sh:Violation
+    ] ;
+    sh:property [
+        sh:path     naruto:memberOfVillage ;
+        sh:class    naruto:Village ;
+        sh:minCount 1 ;
+        sh:message  "A Ninja must belong to at least one Village."@en
+    ] .</pre>
+
+  <h3>Key constraint components</h3>
+
+  <table>
+    <thead>
+      <tr><th>Component</th><th>Constrains</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>sh:minCount</code> / <code>sh:maxCount</code></td><td>Number of values</td><td>Exactly one canonicalName</td></tr>
+      <tr><td><code>sh:datatype</code></td><td>Literal type</td><td>canonicalName must be xsd:string</td></tr>
+      <tr><td><code>sh:class</code></td><td>Object type</td><td>memberOfVillage value must be a naruto:Village</td></tr>
+      <tr><td><code>sh:pattern</code></td><td>Regex on literals</td><td>villageCode matches "[A-Z]{2}"</td></tr>
+      <tr><td><code>sh:in</code></td><td>Allowed values</td><td>confidence in {canonical, disputed, fan-theory}</td></tr>
+      <tr><td><code>sh:hasValue</code></td><td>Required specific value</td><td>a node must be of rdf:type naruto:Ninja</td></tr>
+      <tr><td><code>sh:node</code></td><td>Reference another shape</td><td>employer must conform to OrganizationShape</td></tr>
+      <tr><td><code>sh:sparql</code></td><td>Custom SPARQL constraint</td><td>No circular senseiOf chains</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Severity levels</h3>
+
+  <p>SHACL has three built-in severity levels, attached with <code>sh:severity</code>:</p>
+
+  <ul class="spaced">
+    <li><code>sh:Violation</code> — the node does not conform; a data ingestion pipeline should reject it (default if not specified).</li>
+    <li><code>sh:Warning</code> — the constraint is best-practice but not blocking; flag for review.</li>
+    <li><code>sh:Info</code> — informational annotation; not a conformance failure.</li>
+  </ul>
+
+  <p>Use severity to express policy rather than binary pass/fail. A missing <code>schema:url</code> on an organization might be a Warning; a missing <code>canonicalName</code> on a Ninja is a Violation. Both constraints live in the same shape file.</p>
+
+  <h3>SPARQL-based constraints</h3>
+
+  <p>For constraints that basic SHACL components cannot express, <code>sh:sparql</code> allows embedding a SPARQL query that returns violation results.</p>
+
+<pre><span class="cm"># Custom constraint: no ninja should be their own sensei</span>
+naruto:NinjaShape sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "A Ninja cannot be their own sensei."@en ;
+    sh:severity sh:Violation ;
+    sh:select """
+        PREFIX naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+        SELECT $this WHERE {
+            $this naruto:senseiOf $this .
+        }
+    """ ;
+] .</pre>
+
+  <div class="note">
+    <span class="note-title">SHACL vs OWL restrictions — choosing between them</span>
+    <p>Both SHACL and OWL can say "a Ninja must have a Village." They mean different things. OWL's existential restriction says "if this is a Ninja, there must exist some Village it belongs to — possibly unasserted." SHACL's minCount says "if this is a Ninja and there is no asserted Village triple, this is a validation error." Use OWL for reasoning (what can be inferred). Use SHACL for data quality (what must be present). Both can coexist in the same system serving different purposes.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="alignment">
+  <div class="section-label">02 · Vocabulary alignment</div>
+  <h2>Not all equivalences are equal.</h2>
+
+  <p>When connecting your graph to an external vocabulary or dataset, the equivalence predicate you choose has consequences that compound through reasoning. The wrong choice is usually <code>owl:sameAs</code> applied where <code>skos:exactMatch</code> should go.</p>
+
+  <table>
+    <thead>
+      <tr><th>Predicate</th><th>Asserts</th><th>Reasoner consequence</th><th>Use when</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>owl:sameAs</code></td>
+        <td>These two IRIs refer to the same individual — full identity</td>
+        <td>All properties from both nodes merge. Every triple about A is also about B and vice versa.</td>
+        <td>You actually intend full property merging. Rare in practice — usually too strong.</td>
+      </tr>
+      <tr>
+        <td><code>skos:exactMatch</code></td>
+        <td>These two concepts are semantically equivalent in their respective vocabularies</td>
+        <td>No property merging. Linked for vocabulary alignment purposes only.</td>
+        <td>Linking a local skill concept to an ESCO concept. Linking a Wikidata entity to your ontology individual.</td>
+      </tr>
+      <tr>
+        <td><code>skos:closeMatch</code></td>
+        <td>These two concepts are similar but not identical</td>
+        <td>No property merging. Weaker alignment signal.</td>
+        <td>A local "data engineering" skill is close to but not exactly ESCO's "apply data engineering methods."</td>
+      </tr>
+      <tr>
+        <td><code>skos:broadMatch</code></td>
+        <td>The local concept is narrower than the external concept</td>
+        <td>No property merging. Hierarchical signal for cross-vocabulary navigation.</td>
+        <td>A specific "PyTorch proficiency" skill broadly matches ESCO's "machine learning" concept.</td>
+      </tr>
+      <tr>
+        <td><code>owl:equivalentClass</code></td>
+        <td>These two classes have exactly the same extension</td>
+        <td>Instances of one class are inferred to be instances of the other.</td>
+        <td>Your naruto:Ninja class is declared equivalent to an external ontology's Fighter class — intentional class merging.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warn">
+    <span class="note-title">The owl:sameAs hammer in practice</span>
+    <p>Asserting <code>:BarbaraHidalgo owl:sameAs wikidata:Q12345678</code> causes a reasoner to merge every Wikidata property into your local node — birth date, nationality, Wikipedia categories, external identifiers, everything. If your graph has a <code>sensemaking:personalBlog</code> property, it now transfers to the Wikidata entity. This is almost never what you want. Use <code>skos:exactMatch</code> instead: it signals "same referent" without triggering property inheritance. Reserve <code>owl:sameAs</code> for cases where you genuinely need two IRIs to behave identically under all reasoning.</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="inference">
+  <div class="section-label">03 · Skill inference</div>
+  <h2>What formal rules can surface that a resume doesn't state.</h2>
+
+  <p>The Resume Graph Explorer contains explicitly asserted skills — what someone listed on their resume. Formal inference rules can surface skills that are <em>implied</em> by the combination of asserted skills and ESCO's vocabulary structure, or by the duration and nature of work experience.</p>
+
+  <h3>The inference rules (from the Module 3 README)</h3>
+
+<pre><span class="cm"># Rule 1: ESCO-related exposure
+# If a person has skill X and X is skos:related to Y in ESCO,
+# infer sensemaking:hasInferredSkill ?person ?y at "exposure" level.</span>
+
+<span class="kw">CONSTRUCT</span> {
+  ?person sensemaking:hasInferredSkill ?relatedConcept .
+  _:basis a sensemaking:InferenceBasis ;
+          sensemaking:inferenceRule "esco-related-exposure" ;
+          sensemaking:exposureLevel "exposure" .
+}
+<span class="kw">WHERE</span> {
+  ?person sensemaking:hasSkill ?skill .
+  ?skill skos:exactMatch/skos:related ?relatedConcept .
+  <span class="kw">FILTER NOT EXISTS</span> {
+    ?person sensemaking:hasSkill ?s2 .
+    ?s2 skos:exactMatch ?relatedConcept .
+  }
+}</pre>
+
+<pre><span class="cm"># Rule 2: Long-tenure promotion
+# If a person held a role for 2+ years AND has a skill at "advanced",
+# escalate skos:related concepts from "exposure" to "demonstrated".</span>
+
+<span class="kw">CONSTRUCT</span> {
+  ?person sensemaking:hasInferredSkill ?relatedConcept .
+  _:basis a sensemaking:InferenceBasis ;
+          sensemaking:inferenceRule "long-tenure-promotion" ;
+          sensemaking:exposureLevel "demonstrated" .
+}
+<span class="kw">WHERE</span> {
+  ?person sensemaking:hasEmployment ?emp ;
+          sensemaking:hasSkill ?skill .
+  ?skill skos:exactMatch/skos:related ?relatedConcept ;
+         sensemaking:skillLevel "advanced" .
+  ?emp sensemaking:startDate ?start ;
+       sensemaking:endDate   ?end .
+  <span class="kw">FILTER</span> ((?end - ?start) &gt; "P2Y"^^xsd:duration)
+  <span class="kw">FILTER NOT EXISTS</span> {
+    ?person sensemaking:hasSkill ?s2 .
+    ?s2 skos:exactMatch ?relatedConcept .
+  }
+}</pre>
+
+  <div class="branch">
+    <h4>What to load for the query lab</h4>
+    <p>Load both <code>modules/01-foundations/artifacts/resume-graph/ttl/resume-001.ttl</code> (the Alex Rivera resume) and <code>modules/03-reasoning/artifacts/skill-inference/skill-inference-starter.ttl</code> (the ESCO-related stubs and inference property declarations) into the same Fuseki dataset before running the query lab. The queries below apply the inference rules to Alex's resume data.</p>
+  </div>
+</section>
+
+<!-- 04 -->
+<section id="lab">
+  <div class="section-label">04 · Query lab</div>
+  <h2>Five queries — validation, alignment, and inference.</h2>
+
+  <!-- q01 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q01</span>
+      <div class="query-meta">
+        <div class="query-q">What SHACL violations would Alex's resume have against the NinjaShape equivalent?</div>
+        <div class="query-c">Pattern: SHACL validation simulation via SPARQL · checking minCount constraints manually</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q01"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> dcterms:     &lt;http://purl.org/dc/terms/&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="cm"># Simulate a PersonShape validation:
+# - Every foaf:Person must have foaf:name (minCount 1)
+# - Every sensemaking:Resume must have dcterms:created (minCount 1)
+# Find violations: persons without a name</span>
+
+<span class="kw">SELECT</span> ?person ?violation <span class="kw">WHERE</span> {
+  ?person a foaf:Person .
+  <span class="kw">BIND</span>("missing foaf:name" <span class="kw">AS</span> ?violation)
+  <span class="kw">FILTER NOT EXISTS</span> { ?person foaf:name ?name . }
+}
+<span class="kw">UNION</span>
+{
+  ?resume a sensemaking:Resume .
+  <span class="kw">BIND</span>("missing dcterms:created" <span class="kw">AS</span> ?violation)
+  <span class="kw">FILTER NOT EXISTS</span> { ?resume dcterms:created ?date . }
+}
+<span class="kw">ORDER BY</span> ?person</pre>
+      <button class="copy-btn" onclick="copyQuery('q01',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">0 rows — Alex's resume has foaf:name and dcterms:created. Try deliberately removing one from the TTL and reloading to see violations appear.</div>
+          <p>This query manually simulates what a SHACL validator computes automatically. The FILTER NOT EXISTS pattern is the SPARQL equivalent of SHACL's <code>sh:minCount 1</code> violation check. In production, you would run Apache Jena's <code>shacl validate</code> CLI or a library integration rather than writing this SPARQL manually — but understanding that SHACL validation IS SPARQL-executable is the key insight.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Add a third UNION branch checking that every sensemaking:Employment has at least one sensemaking:startDate. Does the query return a violation for the current data?</p>
+          <p>2. The real SHACL validator (Apache Jena <code>shacl validate</code> command) produces a validation report as RDF output itself — a graph describing each violation. What advantages does that have over returning violations as SPARQL table rows?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q02 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q02</span>
+      <div class="query-meta">
+        <div class="query-q">Which resume skills have exactMatch to ESCO, and which have skos:related links available?</div>
+        <div class="query-c">Pattern: vocabulary alignment audit · exactMatch vs related · inference readiness check</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q02"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">SELECT</span> ?skillLabel ?hasExactMatch ?relatedCount <span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          sensemaking:hasSkill ?skill .
+  ?skill skos:prefLabel ?skillLabel .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?skillLabel) = "en")
+  <span class="kw">BIND</span>(<span class="kw">EXISTS</span> { ?skill skos:exactMatch ?esco . } <span class="kw">AS</span> ?hasExactMatch)
+  {
+    <span class="kw">SELECT</span> ?skill (<span class="kw">COUNT</span>(?related) <span class="kw">AS</span> ?relatedCount) <span class="kw">WHERE</span> {
+      <span class="kw">OPTIONAL</span> { ?skill skos:exactMatch/skos:related ?related . }
+    } <span class="kw">GROUP BY</span> ?skill
+  }
+}
+<span class="kw">ORDER BY</span> <span class="kw">DESC</span>(?relatedCount)</pre>
+      <button class="copy-btn" onclick="copyQuery('q02',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">3 rows · Python (true / 3 related) · SQL (true / 3 related) · Machine learning (true / 3 related)</div>
+          <p>All three skills have exactMatch links (to the ESCO stubs) and each has 3 skos:related concepts. This is the "inference readiness check" — confirming that the vocabulary alignment is in place before running the inference rules. A skill with <code>hasExactMatch = false</code> or <code>relatedCount = 0</code> would not benefit from Rule 1.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. If you added a skill to Alex's resume without an exactMatch link (e.g., "Excel proficiency"), this query would show it with <code>hasExactMatch = false</code> and <code>relatedCount = 0</code>. That skill would not be inferred to have any related skills. What does this tell you about the cost of incomplete vocabulary alignment?</p>
+          <p>2. The ESCO portal lets you look up actual skill IRIs and their skos:related links. For Exercise 3.4, you would replace the stubs with real ESCO IRIs and load a portion of the ESCO RDF dataset. How many related skills does the real Python skill in ESCO have?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q03 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q03</span>
+      <div class="query-meta">
+        <div class="query-q">CONSTRUCT: apply Rule 1 — infer skills from ESCO related concepts.</div>
+        <div class="query-c">Pattern: CONSTRUCT as inference rule · skos:exactMatch/skos:related path · FILTER NOT EXISTS for new-only</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q03"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="kw">CONSTRUCT</span> {
+  ?person sensemaking:hasInferredSkill ?relatedConcept .
+}
+<span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          sensemaking:hasSkill ?skill .
+  ?skill skos:exactMatch/skos:related ?relatedConcept .
+  <span class="kw">FILTER NOT EXISTS</span> {
+    ?person sensemaking:hasSkill ?s2 .
+    ?s2 skos:exactMatch ?relatedConcept .
+  }
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('q03',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">9 triples (Turtle) · person hasInferredSkill esco_software_testing, esco_version_control, esco_data_pipelines (from Python) · esco_database_design, esco_data_modeling, esco_etl_processes (from SQL) · esco_statistics, esco_data_preprocessing, esco_model_evaluation (from ML)</div>
+          <p>Switch Fuseki to Turtle format. The CONSTRUCT produces 9 new triples — inferred skills that were not on Alex's resume but are implied by the ESCO-related relationships of his asserted skills. These are "exposure-level" inferences: Alex has Python at advanced, so the reasoner infers he has likely been exposed to software testing, version control, and data pipelines.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. The FILTER NOT EXISTS excludes any related concept that is already an explicitly asserted skill. Alex's asserted skills are Python, SQL, and machine learning. Do any of the related concepts overlap with these asserted skills? If so, they would not appear in the inferred output.</p>
+          <p>2. This is Rule 1 producing "exposure" level inferences. Write a separate query that returns only the inferred skills where the source skill is at "advanced" level — those would be candidates for Rule 2's "demonstrated" escalation.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q04 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q04</span>
+      <div class="query-meta">
+        <div class="query-q">CONSTRUCT: apply Rule 2 — escalate to "demonstrated" for long-tenure roles.</div>
+        <div class="query-c">Pattern: date arithmetic in SPARQL · tenure-based inference escalation</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q04"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> xsd:         &lt;http://www.w3.org/2001/XMLSchema#&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="cm"># Skills inferred at "demonstrated" level:
+# person held a role for 2+ years AND the asserted skill is "advanced"</span>
+<span class="kw">CONSTRUCT</span> {
+  ?person sensemaking:hasDemonstratedSkill ?relatedConcept .
+}
+<span class="kw">WHERE</span> {
+  ?person a foaf:Person ;
+          sensemaking:hasEmployment ?emp ;
+          sensemaking:hasSkill ?skill .
+  ?skill skos:exactMatch/skos:related ?relatedConcept ;
+         sensemaking:skillLevel "advanced" .
+  ?emp sensemaking:startDate ?start .
+  <span class="kw">OPTIONAL</span> { ?emp sensemaking:endDate ?end . }
+  <span class="kw">BIND</span>(<span class="kw">COALESCE</span>(?end, "2026-06-03"^^xsd:date) <span class="kw">AS</span> ?effectiveEnd)
+  <span class="kw">FILTER</span> ((?effectiveEnd - ?start) &gt; "P730D"^^xsd:duration)
+  <span class="kw">FILTER NOT EXISTS</span> {
+    ?person sensemaking:hasSkill ?s2 .
+    ?s2 skos:exactMatch ?relatedConcept .
+  }
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('q04',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">Triples (Turtle) · hasDemonstratedSkill for esco_software_testing, esco_version_control, esco_data_pipelines (from Python/advanced + Riverbend 2.5yr employment) · esco_database_design, esco_data_modeling, esco_etl_processes (from SQL/advanced + Riverbend 2.5yr)</div>
+          <p>The Riverbend Analytics role ran 2020-01 to 2022-07 — 2.5 years. Alex was advanced in Python and SQL during that role. The COALESCE handles the current role (Northwind Health, no endDate) by substituting today's date. Duration comparison in Fuseki uses xsd:duration arithmetic — "P730D" is 730 days (approximately 2 years).</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. The COALESCE for current employment (no endDate) uses today's date. Is that the right semantics? What if Alex has been at Northwind for only 3 months with Python at "advanced"? Should those related skills be "demonstrated"?</p>
+          <p>2. Rules 1 and 2 produce different output triples (<code>hasInferredSkill</code> vs <code>hasDemonstratedSkill</code>). What would Rule 3 (core competency by co-occurrence) produce? Write the CONSTRUCT template header — the WHERE clause is the harder part.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q05 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q05</span>
+      <div class="query-meta">
+        <div class="query-q">What skills do the formal rules infer — and which of those would an LLM also identify?</div>
+        <div class="query-c">Pattern: inference result summary · the comparison query that sets up Exercise 3.4</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q05"><span class="kw">PREFIX</span> foaf:        &lt;http://xmlns.com/foaf/0.1/&gt;
+<span class="kw">PREFIX</span> skos:        &lt;http://www.w3.org/2004/02/skos/core#&gt;
+<span class="kw">PREFIX</span> sensemaking: &lt;https://sensemaking-ai.com/ns/&gt;
+
+<span class="cm"># After running q03 and q04 CONSTRUCTs and loading the results:
+# Summary of all inferred skills with their labels</span>
+<span class="kw">SELECT DISTINCT</span> ?skillLabel ?inferenceType <span class="kw">WHERE</span> {
+  ?person a foaf:Person .
+  {
+    ?person sensemaking:hasInferredSkill ?concept .
+    <span class="kw">BIND</span>("exposure" <span class="kw">AS</span> ?inferenceType)
+  }
+  <span class="kw">UNION</span>
+  {
+    ?person sensemaking:hasDemonstratedSkill ?concept .
+    <span class="kw">BIND</span>("demonstrated" <span class="kw">AS</span> ?inferenceType)
+  }
+  ?concept skos:prefLabel ?skillLabel .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?skillLabel) = "en")
+}
+<span class="kw">ORDER BY</span> ?inferenceType ?skillLabel</pre>
+      <button class="copy-btn" onclick="copyQuery('q05',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output (after running q03 + q04 and inserting results)</summary>
+        <div class="panel-body">
+          <div class="expected-out">Up to 9 rows · demonstrated: database design, data modeling, data pipelines, ETL processes, software testing, version control · exposure: model evaluation, data preprocessing, statistics</div>
+          <p>This is the comparison baseline for Exercise 3.4. Print or save this list. Then run an LLM prompt asking the same question from the raw resume text: "What skills would you infer from this resume that aren't explicitly listed?" Compare the two lists systematically: what did formal rules find that the LLM missed? What did the LLM find that formal rules missed? Where do they agree? Where does each one get it wrong?</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. The formal rules are only as good as the ESCO vocabulary links. If a skill is not linked to ESCO, it contributes no inferences. An LLM has no such constraint — it draws on broad training data. What does this asymmetry tell you about when to use each approach?</p>
+          <p>2. The formal rules produce reproducible results from the same data. An LLM may produce different results on successive runs, or may hallucinate skills entirely. For a hiring system, which property matters more: reproducibility or coverage?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- 05 -->
+<section id="comparison">
+  <div class="section-label">05 · Formal reasoning vs LLM reasoning</div>
+  <h2>Where each one wins — and where it doesn't.</h2>
+
+  <p>This comparison is the consulting-positioning artifact the Module 3 README describes as "highest-leverage." The honest version of the comparison — not a promotional piece for either approach — is what makes it valuable.</p>
+
+  <table>
+    <thead>
+      <tr><th>Property</th><th>Formal reasoning (OWL + SPARQL)</th><th>LLM inference</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Reproducibility</td><td>Deterministic: same data + same rules = same result, always.</td><td>Non-deterministic: results vary across runs and model versions.</td></tr>
+      <tr><td>Coverage</td><td>Bounded by vocabulary links and rule coverage. Can miss obvious skills not in ESCO.</td><td>Broad: draws on training data. Can surface skills the vocabulary doesn't cover.</td></tr>
+      <tr><td>Explainability</td><td>Every inferred skill traces to a specific rule and evidence triple. Fully auditable.</td><td>Opaque: the reasoning is distributed across billions of parameters. Not auditable.</td></tr>
+      <tr><td>Hallucination risk</td><td>None: inferences are strictly derived from asserted data. Cannot produce a skill not in the graph.</td><td>High: LLMs can confidently assert skills that have no basis in the resume text.</td></tr>
+      <tr><td>Maintenance cost</td><td>High: rules must be written, tested, and updated as the vocabulary evolves.</td><td>Low: the model updates handle most improvement without manual rule changes.</td></tr>
+      <tr><td>Nuance</td><td>Low: rules are binary — the condition is met or it is not. Cannot handle "probably" without custom confidence scoring.</td><td>High: LLMs handle hedged, contextual, and domain-specific inferences naturally.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="payoff">
+    <span class="note-title">The honest consulting position</span>
+    <p>Neither approach is uniformly better. Formal reasoning wins where reproducibility, auditability, and hallucination risk matter — compliance, legal, medical, regulatory. LLM inference wins where coverage, nuance, and low maintenance matter — exploratory discovery, consumer-facing features, rapid iteration. The most honest answer — and the most valuable consulting position — is knowing which context you are in and which risks your client is willing to accept. Building both and comparing them on real data (Exercise 3.4) is how you earn the right to say that confidently.</p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section id="project">
+  <div class="section-label">06 · Bridge to Exercise 3.4</div>
+  <h2>The primary project: Resume skill inference.</h2>
+
+  <p>Exercise 3.4 (primary project B) builds the Jupyter notebook that demonstrates skill inference end-to-end on 5–10 resume profiles and compares formal rules to LLM inference. The query lab above provides the formal rules side. For the LLM side:</p>
+
+  <div class="branch">
+    <h4>The LLM prompt template</h4>
+    <p>For each resume: "Given the following resume data [paste plain-text resume], what skills would you infer that are NOT explicitly listed? List only skills implied by the work experience, not mentioned directly." Run this prompt with the same resume text used in the formal inference. Record both outputs.</p>
+  </div>
+
+  <div class="branch">
+    <h4>The comparison structure</h4>
+    <p>For each profile, create a table with four columns: Skill name · Formal rules found it (yes/no) · LLM found it (yes/no) · Is it actually a reasonable inference? (your judgment). The fourth column is the ground truth — and your judgment IS the data. After 5-10 profiles, patterns emerge: formal rules miss X, LLM hallucinates Y, both agree on Z. That pattern is the blog post.</p>
+  </div>
+
+  <p>The artifact lives at <code>modules/03-reasoning/artifacts/skill-inference/</code> as a Jupyter notebook. The Module 3 README says this connects directly to the existing <code>narrative synthesizer</code> work — the comparison result is positioning gold for the consulting practice.</p>
+</section>
+
+<!-- 07 -->
+<section id="resources">
+  <div class="section-label">07 · Resources</div>
+  <h2>Reading, tools, and next module.</h2>
+
+  <div class="resource-grid">
+    <article class="resource-card">
+      <h4>SHACL spec</h4>
+      <h5><a href="https://www.w3.org/TR/shacl/">W3C SHACL</a></h5>
+      <p>Section 2 (Data Shapes) and Section 5 (Core Constraint Components) are the most relevant. The SPARQL-based constraints (§8) are the advanced feature used in the NinjaShape circular-reference example.</p>
+    </article>
+    <article class="resource-card">
+      <h4>SHACL book</h4>
+      <h5><a href="http://book.validatingrdf.com/">Validating RDF Data</a></h5>
+      <p>Labra Gayo et al. — open access. The most complete treatment of SHACL and ShEx available. Chapters 3–5 cover the constraint model and validation semantics. Keep open as a reference during Exercise 3.4.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Primary reading</h4>
+      <h5>Allemang et al. — Ch 13</h5>
+      <p>Chapter 13 covers vocabulary alignment and the sameAs / exactMatch distinction in production contexts. The examples are from life sciences and finance — different domains, same design decisions.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Starter data</h4>
+      <h5><a href="../artifacts/skill-inference/skill-inference-starter.ttl">skill-inference-starter.ttl</a></h5>
+      <p>ESCO-related concept stubs, inference property declarations, and the three inference rule templates as comments. Load alongside resume-001.ttl before running the query lab.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Vocabulary alignment</h4>
+      <h5><a href="https://esco.ec.europa.eu/en/use-esco/esco-api">ESCO API</a></h5>
+      <p>The ESCO portal's Linked Data download and API. For Exercise 3.4, download the ESCO skills taxonomy as RDF and load it into Fuseki to replace the stubs with real concept IRIs and real skos:related links.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Next module</h4>
+      <h5><a href="../../04-shipping/module-04-README.md">Module 4 — Shipping</a></h5>
+      <p>SPARQL UPDATE, federation, deployment, and the TwinKit Semantic v2.0 capstone. Module 4 depends on having the Naruto ontology (Module 2) and either reification artifact (3.3) or skill inference (3.4) ready as demo data.</p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Submodule 3.3 workbook · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Written content: CC BY 4.0 · Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+<script>
+(function checkFuseki(){var b=document.getElementById('fuseki-banner');if(!window.fetch){b.className='fuseki-banner checking';b.innerHTML='<span class="dot"></span>Check Fuseki manually: <a href="http://localhost:3030/" target="_blank" rel="noopener">localhost:3030 ↗</a>';return;}fetch('http://localhost:3030/',{mode:'no-cors',cache:'no-store'}).then(function(){b.className='fuseki-banner connected';b.innerHTML='<span class="dot"></span>Fuseki running — <a href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener">open SPARQL editor ↗</a>';}).catch(function(){b.className='fuseki-banner offline';b.innerHTML='<span class="dot"></span>Fuseki offline — start: <code>fuseki-server --config=fuseki/config.ttl</code>';});})();
+function openFuseki(e,btn){e.preventDefault();var c=btn.closest('.query-card'),t=c.querySelector('pre[id]').textContent,u=btn.getAttribute('href');function o(){window.open(u,'_blank','noopener,noreferrer');}function f(){var x=btn.textContent;btn.textContent='Copied — paste in Fuseki ↗';btn.style.borderColor='var(--teal-mid)';setTimeout(function(){btn.textContent=x;btn.style.borderColor='';},2500);}navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(function(){f();o();}).catch(function(){lc(t,null);o();}):lc(t,null),o();}
+function copyQuery(id,btn){var t=document.getElementById(id).textContent;navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(function(){fb(btn);}).catch(function(){lc(t,btn);}):lc(t,btn);}
+function lc(t,btn){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';document.body.appendChild(a);a.focus();a.select();try{document.execCommand('copy');if(btn)fb(btn);}catch(e){}document.body.removeChild(a);}
+function fb(btn){var x=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=x;},1600);}
+</script>
+</body>
+</html>

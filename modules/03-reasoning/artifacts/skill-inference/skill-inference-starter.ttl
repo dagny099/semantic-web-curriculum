@@ -1,0 +1,134 @@
+# =============================================================================
+# Title:   Resume Skill Inference — Starter Data
+# Purpose: Extends resume-001.ttl (Module 1) with ESCO-related concept links
+#          that enable formal skill inference via SPARQL CONSTRUCT rules.
+#          Load alongside resume-001.ttl into Fuseki before running
+#          the inference queries in Submodule 3.3.
+# Date:    2026-06-03
+# Author:  Barbara Hidalgo-Sotelo (Sensemaking AI)
+# License: CC BY 4.0
+# =============================================================================
+
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:         <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix skos:        <http://www.w3.org/2004/02/skos/core#> .
+@prefix sensemaking: <https://sensemaking-ai.com/ns/> .
+
+@base <https://sensemaking-ai.com/resume/alex-rivera/001/> .
+
+# =============================================================================
+# INFERENCE PROPERTY DECLARATIONS
+# New properties that the SPARQL CONSTRUCT rules will produce as output.
+# These are the inferred skills — not asserted in the resume, but derived.
+# =============================================================================
+
+sensemaking:hasInferredSkill
+    a owl:ObjectProperty ;
+    rdfs:label   "has inferred skill"@en ;
+    rdfs:comment "A skill inferred from context — not explicitly asserted on the resume. The object is a skos:Concept."@en ;
+    rdfs:subPropertyOf sensemaking:hasSkill .
+
+sensemaking:InferenceBasis
+    a rdfs:Class ;
+    rdfs:label   "Inference basis"@en ;
+    rdfs:comment "Documents why a skill was inferred — which rule fired and what evidence triggered it."@en .
+
+sensemaking:inferredFrom
+    a owl:ObjectProperty ;
+    rdfs:label   "inferred from"@en ;
+    rdfs:comment "Links an inferred skill assertion to the InferenceBasis that produced it."@en .
+
+sensemaking:inferenceRule
+    a owl:DatatypeProperty ;
+    rdfs:label   "inference rule"@en ;
+    rdfs:comment "Short name of the rule that produced this inference (e.g., 'esco-related-exposure', 'long-tenure-promotion')."@en ;
+    rdfs:range   xsd:string .
+
+sensemaking:exposureLevel
+    a owl:DatatypeProperty ;
+    rdfs:label   "exposure level"@en ;
+    rdfs:comment "Inferred level: 'exposure', 'demonstrated', 'core-competency'."@en ;
+    rdfs:range   xsd:string .
+
+# =============================================================================
+# ESCO SKILL RELATIONSHIP STUBS
+# In production: load the full ESCO RDF dataset. Here: illustrative stubs
+# showing the skos:related links that enable the exposure-inference rule.
+# =============================================================================
+
+# Python is related to: software testing, version control, data pipelines
+<esco_python>
+    skos:related <esco_software_testing> ,
+                 <esco_version_control> ,
+                 <esco_data_pipelines> .
+
+# SQL is related to: database design, data modeling, ETL
+<esco_sql>
+    skos:related <esco_database_design> ,
+                 <esco_data_modeling> ,
+                 <esco_etl_processes> .
+
+# Machine learning is related to: statistics, data preprocessing, model evaluation
+<esco_ml>
+    skos:related <esco_statistics> ,
+                 <esco_data_preprocessing> ,
+                 <esco_model_evaluation> .
+
+# Related skill concept stubs
+<esco_software_testing>   a skos:Concept ; skos:prefLabel "software testing"@en ; skos:broader <esco_programming_languages> .
+<esco_version_control>    a skos:Concept ; skos:prefLabel "use version control systems"@en ; skos:broader <esco_programming_languages> .
+<esco_data_pipelines>     a skos:Concept ; skos:prefLabel "build data pipelines"@en ; skos:broader <esco_data_science_skills> .
+<esco_database_design>    a skos:Concept ; skos:prefLabel "database design"@en ; skos:broader <esco_database_skills> .
+<esco_data_modeling>      a skos:Concept ; skos:prefLabel "data modeling"@en ; skos:broader <esco_database_skills> .
+<esco_etl_processes>      a skos:Concept ; skos:prefLabel "ETL processes"@en ; skos:broader <esco_database_skills> .
+<esco_statistics>         a skos:Concept ; skos:prefLabel "apply statistical analysis"@en ; skos:broader <esco_data_science_skills> .
+<esco_data_preprocessing> a skos:Concept ; skos:prefLabel "data preprocessing and cleaning"@en ; skos:broader <esco_data_science_skills> .
+<esco_model_evaluation>   a skos:Concept ; skos:prefLabel "evaluate machine learning models"@en ; skos:broader <esco_data_science_skills> .
+
+# =============================================================================
+# INFERENCE RULES (as SPARQL CONSTRUCT queries — run these in Fuseki)
+# These are documented here as comments. The actual inference happens via
+# SPARQL CONSTRUCT in the Submodule 3.3 query lab.
+# =============================================================================
+
+# RULE 1 — ESCO-related exposure:
+# If a person has skill X, and X is skos:related to skill Y,
+# infer the person has *exposure* to Y.
+#
+# CONSTRUCT { ?person sensemaking:hasInferredSkill ?relatedConcept .
+#             ?basis a sensemaking:InferenceBasis ;
+#                    sensemaking:inferenceRule "esco-related-exposure" ;
+#                    sensemaking:exposureLevel "exposure" . }
+# WHERE { ?person sensemaking:hasSkill ?skill .
+#         ?skill skos:exactMatch/skos:related ?relatedConcept .
+#         FILTER NOT EXISTS { ?person sensemaking:hasSkill ?s2 . ?s2 skos:exactMatch ?relatedConcept . } }
+
+# RULE 2 — Long-tenure promotion:
+# If a person held a role for more than 2 years AND has skill X at "advanced",
+# escalate related concepts from "exposure" to "demonstrated".
+# (Requires date arithmetic — see Submodule 3.3 query lab q04.)
+
+# RULE 3 — Core competency by co-occurrence:
+# If a person has skills X and Y, and both X and Y are in the same ESCO domain,
+# mark that domain as a core competency.
+
+# =============================================================================
+# SAMPLE INFERRED RESULT
+# What the graph looks like AFTER running Rule 1 on Alex Rivera's resume.
+# In the workbook, learners produce this themselves via CONSTRUCT.
+# It is shown here for reference only — do not load this alongside the rules
+# or you will have both the inferred and the rule-produced triples.
+# =============================================================================
+
+# <person> sensemaking:hasInferredSkill <esco_software_testing> ,
+#                                        <esco_version_control> ,
+#                                        <esco_data_pipelines> ,
+#                                        <esco_database_design> ,
+#                                        <esco_data_modeling> ,
+#                                        <esco_etl_processes> ,
+#                                        <esco_statistics> ,
+#                                        <esco_data_preprocessing> ,
+#                                        <esco_model_evaluation> .

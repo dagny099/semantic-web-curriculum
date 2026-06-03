@@ -1,0 +1,70 @@
+# =============================================================================
+# Title:   Exercise 3.2 — Reification approach 4: RDF-star
+# Purpose: Same fact using RDF-star syntax (<<subject predicate object>> as
+#          a quoted triple that can itself be the subject of other triples).
+#          Requires RDF 1.2 / RDF-star support (Jena 4.x, Oxigraph, GraphDB).
+#          Turtle 1.2 / RDF-star syntax — not all tools support this yet.
+# Date:    2026-06-03
+# Author:  Barbara Hidalgo-Sotelo (Sensemaking AI)
+# =============================================================================
+
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix naruto:      <https://sensemaking-ai.com/ns/naruto#> .
+@prefix sensemaking: <https://sensemaking-ai.com/ns/> .
+
+# ── The base facts ────────────────────────────────────────────────────────────
+naruto:ItachiUchiha naruto:killedClan     naruto:UchihaClan .
+naruto:ItachiUchiha naruto:actedUnderOrders naruto:DanzoShimura .
+
+# ── RDF-star annotation of the first fact ────────────────────────────────────
+# <<subject predicate object>> creates a "quoted triple" that can be used
+# as the subject of further triples. This annotates the triple directly
+# without a separate node or class.
+
+<<naruto:ItachiUchiha naruto:killedClan naruto:UchihaClan>>
+    dcterms:source         "Naruto manga, vol. 43, ch. 401"^^xsd:string ;
+    dcterms:date           "2007-05-14"^^xsd:date ;
+    sensemaking:confidence sensemaking:CanonicalManga ;
+    rdfs:comment           "Revealed in ch. 401 — motivation retconned from personal ambition to Konoha sacrifice."@en .
+
+# ── RDF-star annotation of the second fact ───────────────────────────────────
+<<naruto:ItachiUchiha naruto:actedUnderOrders naruto:DanzoShimura>>
+    dcterms:source         "Naruto manga, vol. 43, ch. 401"^^xsd:string ;
+    dcterms:date           "2007-05-14"^^xsd:date ;
+    sensemaking:confidence sensemaking:CanonicalManga .
+
+# ── The earlier, contradictory assertion ─────────────────────────────────────
+# The same triple (Itachi killedClan UchihaClan) can appear twice with
+# different annotations — once with the ch. 401 source, once with the
+# ch. 131 source. This is the key capability: the triple itself is reused;
+# only the annotation changes.
+
+<<naruto:ItachiUchiha naruto:killedClan naruto:UchihaClan>>
+    dcterms:source         "Naruto manga, vol. 15, ch. 131"^^xsd:string ;
+    dcterms:date           "2002-06-03"^^xsd:date ;
+    sensemaking:confidence sensemaking:CanonicalDisputed ;
+    rdfs:comment           "Early-series portrayal — motivation stated as personal ambition."@en .
+
+# ── Querying RDF-star ─────────────────────────────────────────────────────────
+# In SPARQL-star (the query extension), the << >> syntax works in patterns:
+#
+# SELECT ?source ?confidence WHERE {
+#   << naruto:ItachiUchiha naruto:killedClan naruto:UchihaClan >>
+#       dcterms:source ?source ;
+#       sensemaking:confidence ?confidence .
+# }
+# ORDER BY ?date
+#
+# This is more readable than classical reification — you don't have to
+# reconstruct the subject/predicate/object to find the annotation nodes.
+
+# ── Advantage and limitation ─────────────────────────────────────────────────
+# Advantage: the cleanest syntax. No intermediate node required. The annotation
+# attaches directly to the quoted triple. Queries are readable.
+# Limitation: support is not universal (2026). Standard Jena, Oxigraph, and
+# GraphDB support it; older Fuseki 3.x and some cloud triplestores do not.
+# Before using RDF-star in production, verify your stack supports SPARQL-star
+# queries (not just loading the Turtle syntax).

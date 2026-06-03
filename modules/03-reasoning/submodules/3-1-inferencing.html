@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submodule 3.1 — Inferencing · Sensemaking Semantic Web</title>
+<meta name="description" content="How OWL reasoning works: entailment regimes, what HermiT computes, inference materialization vs query-time reasoning, and when reasoning surprises you. Includes a Protégé walkthrough and SPARQL queries.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--teal-deep:#0B4F4A;--teal-mid:#1E8076;--teal-light:#C6E2DD;--coral:#D85A30;--coral-tint:#FAEAE2;--charcoal:#1F2A2E;--slate:#5A6671;--slate-lt:#8A929A;--cream:#FAF7F2;--white:#FFFFFF;--rule:#D8D2C6;--code-bg:#F2EDE3;--green:#2A7040;--green-tint:#E4F1EA;--amber:#9A6B00;--amber-tint:#FDF6E3;--indigo:#3A3A8A;--indigo-tint:#EEEEF8;--font-serif:'EB Garamond',Georgia,serif;--font-sans:'IBM Plex Sans',system-ui,sans-serif;--font-mono:'IBM Plex Mono',Consolas,monospace;}
+*{box-sizing:border-box;}html{scroll-behavior:smooth;font-size:16px;}
+body{margin:0;background:var(--cream);color:var(--charcoal);font-family:var(--font-sans);line-height:1.65;-webkit-font-smoothing:antialiased;}
+.masthead{background:var(--teal-deep);color:var(--white);padding:3rem 1.5rem 3.5rem;border-bottom:5px solid var(--coral);}
+.masthead-inner{max-width:68rem;margin:0 auto;}
+.brand{font-size:.74rem;letter-spacing:.18em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:1.4rem;}
+.kicker{font-size:.74rem;letter-spacing:.14em;color:var(--teal-light);text-transform:uppercase;font-weight:600;margin-bottom:.55rem;}
+h1{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2.8rem,7vw,5.2rem);color:var(--white);line-height:1.0;letter-spacing:-.025em;margin:0 0 .85rem;max-width:20ch;}
+.subtitle{color:var(--teal-light);font-size:clamp(1rem,2.5vw,1.18rem);line-height:1.55;max-width:46rem;margin:0 0 1.8rem;}
+.meta-row{display:flex;flex-wrap:wrap;gap:.45rem .85rem;}
+.meta-row span{border:1px solid rgba(198,226,221,.38);border-radius:999px;padding:.28rem .7rem;font-size:.8rem;color:var(--teal-light);}
+.fuseki-banner{padding:.65rem 1.5rem;font-size:.875rem;display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;}
+.fuseki-banner.checking{background:var(--amber-tint);color:var(--amber);}
+.fuseki-banner.connected{background:var(--green-tint);color:var(--green);}
+.fuseki-banner.offline{background:var(--coral-tint);color:var(--coral);}
+.fuseki-banner .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fuseki-banner.checking .dot{background:var(--amber);}
+.fuseki-banner.connected .dot{background:var(--green);}
+.fuseki-banner.offline .dot{background:var(--coral);}
+.fuseki-banner a{color:inherit;text-decoration:underline;}
+.fuseki-banner code{font-family:var(--font-mono);font-size:.8em;background:rgba(0,0,0,.08);padding:.1em .3em;border-radius:3px;}
+.quick-nav{position:sticky;top:0;z-index:20;background:rgba(250,247,242,.97);border-bottom:1px solid var(--rule);backdrop-filter:blur(4px);}
+.quick-nav-inner{max-width:68rem;margin:0 auto;padding:.65rem 1.5rem;display:flex;gap:.45rem;overflow-x:auto;scrollbar-width:none;}
+.quick-nav-inner::-webkit-scrollbar{display:none;}
+.quick-nav a{flex:0 0 auto;color:var(--charcoal);border:1px solid var(--rule);border-radius:999px;padding:.28rem .68rem;font-size:.76rem;white-space:nowrap;text-decoration:none;background:rgba(255,255,255,.4);transition:border-color .15s,color .15s;}
+.quick-nav a:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+main{max-width:68rem;margin:0 auto;padding:0 1.5rem 4rem;}
+section{padding:3.75rem 0;border-bottom:1px solid var(--rule);scroll-margin-top:3.5rem;}
+section:last-child{border-bottom:none;}
+.section-label{font-size:.7rem;letter-spacing:.2em;color:var(--coral);text-transform:uppercase;font-weight:600;margin-bottom:.85rem;}
+h2{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(2rem,5vw,3.2rem);color:var(--charcoal);line-height:1.05;letter-spacing:-.015em;margin:0 0 1.1rem;}
+h3{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(1.35rem,3vw,1.9rem);color:var(--charcoal);margin:2.25rem 0 .65rem;}
+h3:first-of-type{margin-top:.4rem;}
+p{max-width:44rem;margin:0 0 1.05rem;font-size:1rem;}
+p.lead{font-size:1.1rem;line-height:1.6;}
+pre{font-family:var(--font-mono);font-size:.8rem;background:var(--code-bg);border-left:4px solid var(--teal-mid);border-radius:0 8px 8px 0;padding:1rem 1.1rem;overflow-x:auto;margin:.6rem 0 1.2rem;line-height:1.6;color:var(--charcoal);}
+code{font-family:var(--font-mono);font-size:.86em;background:var(--code-bg);padding:.1em .3em;border-radius:3px;}
+pre code{background:transparent;padding:0;font-size:inherit;}
+.kw{color:var(--teal-deep);font-weight:500;}.cm{color:var(--slate-lt);}
+.note,.payoff,.warn{max-width:44rem;margin:1.4rem 0;padding:.9rem 1.1rem .9rem 1.25rem;}
+.note{background:var(--coral-tint);border-left:4px solid var(--coral);}
+.payoff{background:var(--indigo-tint);border-left:4px solid var(--indigo);}
+.warn{background:#FFF8E6;border-left:4px solid var(--amber);}
+.note-title{display:block;font-size:.7rem;letter-spacing:.16em;font-weight:600;text-transform:uppercase;margin-bottom:.3rem;}
+.note .note-title{color:var(--coral);}.payoff .note-title{color:var(--indigo);}.warn .note-title{color:var(--amber);}
+.note p,.payoff p,.warn p{margin:0;max-width:none;}
+ul.spaced{padding-left:1.2rem;margin:.5rem 0 1.1rem;max-width:44rem;}
+ul.spaced li{margin:.48rem 0;font-size:.97rem;}
+table{width:100%;border-collapse:collapse;margin:1.4rem 0;font-size:.92rem;max-width:44rem;}
+th,td{border-bottom:1px solid var(--rule);padding:.72rem .65rem;vertical-align:top;text-align:left;}
+th{color:var(--coral);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;font-weight:600;}
+.protege-section{max-width:44rem;margin:1.5rem 0;}
+.protege-section>summary{font-family:var(--font-sans);font-size:.9rem;font-weight:600;color:var(--indigo);cursor:pointer;padding:.75rem 1rem;background:var(--indigo-tint);border:1px solid #C4C4E4;border-radius:8px;list-style:none;display:flex;align-items:center;gap:.5rem;user-select:none;}
+.protege-section>summary::before{content:"▶";font-size:.6rem;color:var(--indigo);transition:transform .2s;}
+.protege-section[open]>summary::before{transform:rotate(90deg);}
+.protege-section>summary::-webkit-details-marker{display:none;}
+.protege-body{padding:1rem 0 .25rem;}
+.protege-step{margin-bottom:1.25rem;border:1px solid var(--rule);border-radius:8px;overflow:hidden;}
+.protege-step-header{display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;background:var(--white);cursor:pointer;list-style:none;user-select:none;}
+.protege-step-header::-webkit-details-marker{display:none;}
+.step-num{font-family:var(--font-mono);font-size:.75rem;font-weight:500;background:var(--indigo);color:var(--white);border-radius:5px;padding:.18rem .42rem;flex-shrink:0;}
+.step-title{font-weight:600;font-size:.94rem;color:var(--charcoal);flex:1;}
+.step-expand{font-size:.72rem;color:var(--slate-lt);flex-shrink:0;}
+details.protege-step[open] .step-expand{display:none;}
+.step-body{padding:.75rem 1rem 1rem;border-top:1px solid var(--rule);background:var(--cream);}
+.step-body p{font-size:.9rem;max-width:none;margin:0 0 .65rem;}
+.step-body p:last-child{margin-bottom:0;}
+.step-body ol{padding-left:1.3rem;margin:.35rem 0 .65rem;}
+.step-body ol li{font-size:.9rem;margin:.35rem 0;}
+.screenshot-placeholder{border:2px dashed var(--rule);border-radius:6px;padding:.75rem 1rem;margin:.75rem 0;background:rgba(255,255,255,.5);font-size:.82rem;color:var(--slate-lt);font-style:italic;}
+.screenshot-placeholder strong{color:var(--slate);font-style:normal;}
+.query-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin:1.5rem 0;overflow:hidden;}
+.query-header{display:flex;align-items:flex-start;gap:.9rem;padding:1rem 1.15rem .85rem;border-bottom:1px solid var(--rule);}
+.query-num{font-family:var(--font-mono);font-size:.76rem;font-weight:500;color:var(--white);background:var(--teal-mid);border-radius:6px;padding:.22rem .48rem;flex-shrink:0;margin-top:.1rem;}
+.query-meta{flex:1;min-width:0;}
+.query-q{font-weight:600;font-size:.98rem;color:var(--charcoal);margin-bottom:.22rem;}
+.query-c{font-size:.81rem;color:var(--slate);}
+.btn-fuseki{flex-shrink:0;display:inline-block;font-size:.76rem;font-weight:500;color:var(--teal-mid);border:1px solid var(--teal-light);border-radius:999px;padding:.26rem .72rem;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s;}
+.btn-fuseki:hover{background:var(--teal-light);border-color:var(--teal-mid);}
+.query-body{position:relative;}
+.query-body pre{margin:0;border-radius:0;border-left:none;border-bottom:1px solid var(--rule);}
+.copy-btn{position:absolute;top:.6rem;right:.6rem;background:var(--cream);border:1px solid var(--rule);border-radius:5px;padding:.2rem .52rem;font-family:var(--font-sans);font-size:.72rem;color:var(--slate);cursor:pointer;z-index:2;transition:border-color .15s,color .15s;}
+.copy-btn:hover{border-color:var(--teal-mid);color:var(--teal-deep);}
+.query-footer{padding:.7rem 1.15rem;display:flex;flex-direction:column;gap:.45rem;}
+details.panel summary{font-size:.83rem;font-weight:600;color:var(--teal-deep);cursor:pointer;padding:.28rem 0;list-style:none;display:flex;align-items:center;gap:.4rem;user-select:none;}
+details.panel summary::before{content:"▶";font-size:.58rem;color:var(--coral);transition:transform .2s;}
+details.panel[open] summary::before{transform:rotate(90deg);}
+details.panel summary::-webkit-details-marker{display:none;}
+.panel-body{padding:.65rem 0 .25rem 1.2rem;}
+.panel-body p{font-size:.9rem;max-width:none;margin:0 0 .52rem;}
+.panel-body p:last-child{margin-bottom:0;}
+.panel-body pre{font-size:.77rem;margin:.35rem 0 .65rem;}
+.expected-out{background:var(--code-bg);border-radius:4px;padding:.38rem .65rem;font-family:var(--font-mono);font-size:.78rem;color:var(--charcoal);margin-bottom:.55rem;line-height:1.5;}
+.branch{border-left:4px solid var(--teal-mid);background:var(--white);padding:.82rem 1.15rem;margin:.6rem 0 1.3rem;max-width:44rem;}
+.branch h4{font-family:var(--font-sans);font-size:.88rem;font-weight:600;color:var(--teal-deep);margin:0 0 .3rem;}
+.branch p{margin:0;font-size:.9rem;max-width:none;}
+.branch a{color:var(--teal-mid);}
+.resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;margin:1.3rem 0;}
+.resource-card{background:rgba(255,255,255,.45);border:1px solid var(--rule);border-radius:14px;padding:1.1rem;}
+.resource-card h4{font-family:var(--font-sans);font-size:.7rem;letter-spacing:.14em;font-weight:600;text-transform:uppercase;color:var(--coral);margin:0 0 .5rem;}
+.resource-card h5{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:1.08rem;color:var(--charcoal);margin:0 0 .4rem;}
+.resource-card a{color:var(--teal-mid);text-decoration:underline;}
+.resource-card p{font-size:.87rem;margin:0;color:var(--slate);max-width:none;}
+.coming-soon{font-size:.72rem;color:var(--slate-lt);font-style:italic;}
+footer{max-width:68rem;margin:0 auto;padding:2rem 1.5rem 3rem;border-top:1px solid var(--rule);color:var(--slate);font-size:.84rem;}
+footer a{color:var(--teal-mid);text-decoration:underline;}
+footer p{margin:0 0 .4rem;max-width:none;}
+@media(max-width:820px){.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:640px){.resource-grid{grid-template-columns:1fr;}.query-header{flex-wrap:wrap;}.btn-fuseki{order:3;}main{padding-left:1rem;padding-right:1rem;}.masthead{padding:2rem 1rem 2.5rem;}}
+@media print{.masthead{background:white;color:black;border-bottom:2px solid black;padding:.5rem 0;}h1{color:black;font-size:26pt;}.quick-nav,.fuseki-banner,.btn-fuseki,.copy-btn{display:none!important;}main,footer,.masthead-inner{max-width:none;padding-left:0;padding-right:0;}pre{background:#f5f5f5;border-left:2px solid #888;font-size:7.5pt;page-break-inside:avoid;}.query-card,.resource-card,.protege-step{break-inside:avoid;border:1px solid #ccc;}details{display:block;}details summary{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">Sensemaking AI · Sensemaking Semantic Web</div>
+    <div class="kicker">Submodule 3.1 · Reasoning ★</div>
+    <h1>Inferencing.</h1>
+    <p class="subtitle">What a reasoner actually computes. RDFS vs OWL entailment regimes, the cascade from property declarations, materialization tradeoffs — and the promise made in Module 2's Challenge C4, finally paid off.</p>
+    <div class="meta-row">
+      <span>Module 3 · Weeks 7–9</span>
+      <span>★ Hardest module — pace accordingly</span>
+      <span>Requires Protégé + Fuseki</span>
+      <span>inferencing · HermiT · entailment</span>
+    </div>
+  </div>
+</header>
+
+<div id="fuseki-banner" class="fuseki-banner checking">
+  <span class="dot"></span>Checking for Fuseki at localhost:3030…
+</div>
+
+<nav class="quick-nav">
+  <div class="quick-nav-inner">
+    <a href="#thread">01 · The Module 2 thread</a>
+    <a href="#entailment">02 · Entailment regimes</a>
+    <a href="#cascade">03 · The inference cascade</a>
+    <a href="#materialization">04 · Materialization tradeoffs</a>
+    <a href="#protege">05 · Protégé walkthrough</a>
+    <a href="#lab">06 · Query lab</a>
+    <a href="#resources">07 · Resources</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- 01 -->
+<section id="thread">
+  <div class="section-label">01 · Picking up from Module 2</div>
+  <h2>The thread that's been building since 1.1.</h2>
+
+  <p class="lead">Submodule 1.1 workbook, Challenge C4: <em>"rivalOf is declared owl:SymmetricProperty. Does a plain SPARQL query pick up the inferred triples?"</em> The answer was no. Submodule 2.1 showed the inference in Protégé with HermiT. Submodule 2.2 named the property characteristics that trigger reasoning. This submodule explains the full mechanism — what a reasoner actually computes and when, and what you can rely on versus what surprises you.</p>
+
+  <div class="payoff">
+    <span class="note-title">What changes in Module 3</span>
+    <p>Modules 1 and 2 established that you can <em>declare</em> schema rules and <em>observe</em> their effects in Protégé. Module 3 establishes that you can reason over those rules in production — and that doing so has costs, tradeoffs, and failure modes that matter for real systems. The conceptual shift: from "reasoning as a demo" to "reasoning as infrastructure."</p>
+  </div>
+
+  <div class="branch">
+    <h4>What to load</h4>
+    <p>This submodule runs queries against the Naruto ontology from Module 2. Load <code>modules/02-modeling/artifacts/naruto-ontology/naruto-ontology-starter.ttl</code> into Fuseki. The query lab also references the extended ontology with the OWL restriction you added in Submodule 2.2 — if you saved that as <code>naruto-ontology-restricted.ttl</code>, load it as well or substitute it for the starter.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="entailment">
+  <div class="section-label">02 · Entailment regimes</div>
+  <h2>Not all reasoning is the same reasoning.</h2>
+
+  <p>When Fuseki loads RDF data without a configured reasoner, it returns only explicitly asserted triples. That is the <em>simple entailment</em> regime — the most conservative setting. More expressive regimes add derived triples based on vocabulary declarations.</p>
+
+  <table>
+    <thead>
+      <tr><th>Regime</th><th>What it derives</th><th>How to enable</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Simple</strong></td>
+        <td>Nothing. Only asserted triples.</td>
+        <td>Default in Fuseki.</td>
+      </tr>
+      <tr>
+        <td><strong>RDF entailment</strong></td>
+        <td>Typing of triples themselves (each triple's predicate <code>a rdf:Property</code>), container membership.</td>
+        <td>Enable in Fuseki config: <code>ja:reasoner [ja:reasonerURL &lt;...RDFS&gt;]</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>RDFS entailment</strong></td>
+        <td>Subclass/subproperty inheritance, domain/range inferences. What Submodule 2.1 demonstrated.</td>
+        <td>Fuseki config with RDFS reasoner or <code>--rdfs schema.ttl</code> flag.</td>
+      </tr>
+      <tr>
+        <td><strong>OWL DL entailment</strong></td>
+        <td>Property characteristics (symmetric, transitive, inverse, functional), restrictions (someValuesFrom, allValuesFrom, cardinality), class equivalences, disjointness.</td>
+        <td>Load into Protégé + HermiT or Pellet. Or configure Fuseki with Jena's OWL reasoner (slower, not OWL-Full).</td>
+      </tr>
+      <tr>
+        <td><strong>SPARQL-native (materialized)</strong></td>
+        <td>Whatever you CONSTRUCT and INSERT into the store. Full control, no magic.</td>
+        <td>SPARQL CONSTRUCT + INSERT DATA or SPARQL Update.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Most production systems do not run a full OWL DL reasoner at query time — the cost is prohibitive at scale. They either materialize inferences offline (compute once, store, refresh on schedule) or use lighter RDFS entailment for the few rules that matter. Knowing which entailment regime your store is operating under is essential for debugging surprising query results.</p>
+
+  <div class="note">
+    <span class="note-title">The most common confusion</span>
+    <p>Declaring <code>naruto:rivalOf a owl:SymmetricProperty</code> does <em>not</em> make Fuseki derive the reverse triples automatically. It declares the rule to any reasoner that reads the ontology. Whether a reasoner acts on it depends entirely on which entailment regime is active. Fuseki in simple mode ignores it. HermiT in Protégé acts on it. This is why "I declared it in the ontology but the query doesn't see it" is the most common Module 2→3 confusion.</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="cascade">
+  <div class="section-label">03 · The inference cascade</div>
+  <h2>One declaration triggers many derivations.</h2>
+
+  <p>OWL declarations compose. A single set of well-designed property declarations triggers a cascade of inferences. The Exercise 3.1 example from the Module 3 README illustrates this cleanly:</p>
+
+<pre><span class="cm"># Declare senseiOf as a sub-property of colleagueOf</span>
+naruto:senseiOf rdfs:subPropertyOf naruto:colleagueOf .
+
+<span class="cm"># Declare colleagueOf symmetric</span>
+naruto:colleagueOf a owl:SymmetricProperty .
+
+<span class="cm"># Declare an instance</span>
+naruto:JiraiyaSannin naruto:senseiOf naruto:NarutoUzumaki .</pre>
+
+  <p>From these three statements, a reasoner derives:</p>
+
+  <ul class="spaced">
+    <li><code>naruto:JiraiyaSannin naruto:colleagueOf naruto:NarutoUzumaki</code> — because senseiOf is a sub-property of colleagueOf (subPropertyOf entailment)</li>
+    <li><code>naruto:NarutoUzumaki naruto:colleagueOf naruto:JiraiyaSannin</code> — because colleagueOf is symmetric (symmetric property entailment)</li>
+    <li><code>naruto:NarutoUzumaki naruto:senseiOf naruto:JiraiyaSannin</code> — <strong>not</strong> derived. senseiOf is not declared symmetric. This is intentional and correct: Naruto did not teach Jiraiya.</li>
+  </ul>
+
+  <p>The cascade is: one fact + two schema rules = two derived facts. And critically, the schema rules prevent an unwanted third derivation that would be semantically wrong. The OWL property declarations are doing design work, not just documentation.</p>
+
+  <h3>Declaring a contradiction and what happens</h3>
+
+  <p>A useful exercise: add a contradictory assertion and observe the reasoner's response.</p>
+
+<pre><span class="cm"># Declare senseiOf asymmetric (A teaches B → B does NOT teach A)</span>
+naruto:senseiOf a owl:AsymmetricProperty .
+
+<span class="cm"># Now add a circular teaching relationship — this contradicts asymmetry</span>
+naruto:NarutoUzumaki naruto:senseiOf naruto:JiraiyaSannin .</pre>
+
+  <p>HermiT will flag the ontology as inconsistent — because <code>AsymmetricProperty</code> on <code>senseiOf</code> means if Jiraiya teaches Naruto, then Naruto cannot also teach Jiraiya. The reasoner found the logical contradiction. This is what consistency checking is for: catching modeling errors before they silently propagate into wrong query results.</p>
+
+  <div class="warn">
+    <span class="note-title">The transitivity trap revisited</span>
+    <p>Declaring any property <code>owl:TransitiveProperty</code> triggers the reasoner to compute the full transitive closure. On the Naruto graph with 87 characters and complex relationship chains, a transitive <code>familyOf</code> or <code>colleagueOf</code> property would force the reasoner to traverse every path in the graph for every query. This is why the naruto-ontology-starter.ttl has a comment explicitly documenting the decision NOT to declare transitivity. Transitivity should always be a deliberate, scope-bounded decision.</p>
+  </div>
+</section>
+
+<!-- 04 -->
+<section id="materialization">
+  <div class="section-label">04 · Materialization tradeoffs</div>
+  <h2>Compute once vs compute always.</h2>
+
+  <p>Two strategies for making inferred triples available to SPARQL queries:</p>
+
+  <ul class="spaced">
+    <li>
+      <strong>Query-time reasoning.</strong> Configure the triplestore with an OWL reasoner. Every SPARQL query runs against the full derived graph. Always fresh; potentially slow. Fine for small ontologies and development. Problematic at scale — a 50ms query can become a 5-second query once the reasoner activates.
+    </li>
+    <li>
+      <strong>Materialization.</strong> Run the reasoner offline (in Protégé, or with Jena's command-line tools), produce the full inferred graph, load the inferred triples into the store alongside the asserted ones. Queries are fast because they hit a flat store. Problem: the materialized triples become stale whenever the ontology or data changes. Refresh requires re-running the reasoner.
+    </li>
+  </ul>
+
+  <p>Most production systems use materialization for OWL DL inferences and query-time reasoning for lightweight RDFS rules. The boundary is set by performance requirements and data change frequency. There is no universal right answer.</p>
+
+  <p>SPARQL CONSTRUCT is the manual version of materialization — you write the inference rule explicitly in SPARQL and INSERT the results. It gives full control at the cost of maintaining the rule yourself rather than declaring it in the ontology. The query lab below includes a CONSTRUCT-as-materialization example.</p>
+</section>
+
+<!-- 05 PROTÉGÉ -->
+<section id="protege">
+  <div class="section-label">05 · Protégé walkthrough</div>
+  <h2>Watch the inference cascade live — Exercise 3.1.</h2>
+
+  <details class="protege-section">
+    <summary>Exercise 3.1 walkthrough — open to expand all steps</summary>
+    <div class="protege-body">
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">1</span>
+          <span class="step-title">Load the Naruto ontology and add new property declarations</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p>Open <code>naruto-ontology-starter.ttl</code> in Protégé (or your extended version from Module 2). Do not start the reasoner yet.</p>
+          <p>In the <strong>Object Properties</strong> tab, create two new object properties:</p>
+          <ol>
+            <li>Create <code>naruto:colleagueOf</code>: click the Add Object Property button (⊕), name it <code>colleagueOf</code>. In the Description panel, add the characteristic <strong>Symmetric</strong>. Set domain and range: <code>naruto:Ninja</code>.</li>
+            <li>Select the existing <code>naruto:senseiOf</code> property. In the Description panel, add a <strong>Sub Property Of</strong> relationship pointing to <code>naruto:colleagueOf</code>.</li>
+          </ol>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> Object Properties tab showing naruto:senseiOf selected. Description panel shows "Sub Property Of: naruto:colleagueOf" in the SubPropertyOf section. Property hierarchy on the left shows colleagueOf with senseiOf nested under it.</div>
+        </div>
+      </details>
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">2</span>
+          <span class="step-title">Add a new individual with a senseiOf assertion</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p>In the <strong>Individuals by class</strong> tab, select <code>naruto:Ninja</code>. Add a new individual: <code>naruto:JiraiyaSannin</code>. Add:</p>
+          <ol>
+            <li>Data property: <code>naruto:canonicalName</code> = "Jiraiya"^^xsd:string</li>
+            <li>Object property assertion: <code>naruto:senseiOf naruto:NarutoUzumaki</code></li>
+            <li>Object property assertion: <code>naruto:memberOfVillage naruto:VillageHiddenLeaf</code></li>
+          </ol>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> Individuals tab, naruto:JiraiyaSannin selected. Property Assertions panel shows the two object property assertions and one data property assertion as asserted facts.</div>
+        </div>
+      </details>
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">3</span>
+          <span class="step-title">Run HermiT and observe the cascade</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p><strong>Reasoner → HermiT → Start Reasoner.</strong> Wait for the status bar to show "Synchronized."</p>
+          <p>Select <code>naruto:JiraiyaSannin</code>. In the inferred property assertions panel, look for:</p>
+          <ul style="padding-left:1.2rem;margin:.35rem 0;">
+            <li><code>naruto:colleagueOf naruto:NarutoUzumaki</code> — derived from subPropertyOf</li>
+          </ul>
+          <p>Now select <code>naruto:NarutoUzumaki</code>. In the inferred panel, look for:</p>
+          <ul style="padding-left:1.2rem;margin:.35rem 0;">
+            <li><code>naruto:colleagueOf naruto:JiraiyaSannin</code> — derived from symmetry of colleagueOf</li>
+            <li><code>naruto:studentOf naruto:JiraiyaSannin</code> — derived from inverseOf(senseiOf)</li>
+          </ul>
+          <p>Crucially, <code>naruto:senseiOf naruto:JiraiyaSannin</code> does NOT appear for Naruto — senseiOf is not symmetric, and the reasoner correctly does not derive the reverse.</p>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> Individuals tab, naruto:NarutoUzumaki selected with reasoner active. Inferred property assertions show colleagueOf and studentOf; the asserted section shows only the original assertions from the TTL.</div>
+        </div>
+      </details>
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">4</span>
+          <span class="step-title">Add a contradiction and watch the reasoner complain</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p>Stop the reasoner. Select <code>naruto:senseiOf</code> in the Object Properties tab. Add the characteristic <strong>Asymmetric</strong>.</p>
+          <p>Now also add a contradictory assertion in the Individuals tab: select <code>naruto:NarutoUzumaki</code> and add object property assertion <code>naruto:senseiOf naruto:JiraiyaSannin</code>.</p>
+          <p>Start HermiT again. Because senseiOf is now asymmetric (if A teaches B then B does NOT teach A), having both directions asserted is a logical contradiction. The reasoner will mark the ontology as <strong>inconsistent</strong> — you may see a red error banner or the class hierarchy collapse to show only owl:Nothing.</p>
+          <p>Undo: remove the asymmetric characteristic from senseiOf and remove the contradictory assertion. Restart the reasoner to restore consistency.</p>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> Protégé with the inconsistency active. Red highlighting on the ontology or class hierarchy showing owl:Nothing as a subclass of everything, indicating the reasoner found a logical contradiction.</div>
+        </div>
+      </details>
+
+      <details class="protege-step">
+        <summary class="protege-step-header">
+          <span class="step-num">5</span>
+          <span class="step-title">Export the inferred ontology</span>
+          <span class="step-expand">expand</span>
+        </summary>
+        <div class="step-body">
+          <p>With the reasoner active and no contradictions: <strong>Reasoner → Compute Inferences</strong>, then <strong>File → Save As</strong>. Save as <code>naruto-ontology-inferred.ttl</code> in the artifacts folder. This is the materialized graph — the full set of asserted + inferred triples in one file.</p>
+          <p>Compare the file size to the original starter TTL. The inferred version is larger: it contains all the derived triples that HermiT computed. Load both into Fuseki and compare query results for the same SPARQL query — plain SPARQL will return identical results from both, because the plain store doesn't know the difference between asserted and inferred triples once materialized.</p>
+          <div class="screenshot-placeholder"><strong>Screenshot:</strong> File save dialog or text editor showing naruto-ontology-inferred.ttl with noticeably more content than the starter — the extra lines are the materialized inference results.</div>
+        </div>
+      </details>
+
+    </div>
+  </details>
+</section>
+
+<!-- 06 QUERY LAB -->
+<section id="lab">
+  <div class="section-label">06 · Query lab</div>
+  <h2>Five queries — schema introspection and inference demonstration.</h2>
+  <p>Queries q01–q03 run against the starter ontology in Fuseki (simple entailment — no reasoner). They show what's explicitly in the store. q04–q05 show how SPARQL CONSTRUCT can manually materialize the inferences you observed in Protégé.</p>
+
+  <!-- q01 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q01</span>
+      <div class="query-meta">
+        <div class="query-q">Which properties have entailment-triggering characteristics declared?</div>
+        <div class="query-c">Pattern: introspecting OWL declarations · querying the schema to understand what a reasoner would fire</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q01"><span class="kw">PREFIX</span> rdfs:   &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+<span class="kw">PREFIX</span> owl:    &lt;http://www.w3.org/2002/07/owl#&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="kw">SELECT</span> ?property ?label ?characteristic <span class="kw">WHERE</span> {
+  ?property a owl:ObjectProperty ; rdfs:label ?label .
+  <span class="kw">VALUES</span> ?characteristic {
+    owl:SymmetricProperty owl:TransitiveProperty
+    owl:FunctionalProperty owl:AsymmetricProperty
+    owl:InverseFunctionalProperty owl:ReflexiveProperty
+    owl:IrreflexiveProperty
+  }
+  ?property a ?characteristic .
+  <span class="kw">FILTER</span> (<span class="kw">LANG</span>(?label) = "en" || <span class="kw">LANG</span>(?label) = "")
+}
+<span class="kw">ORDER BY</span> ?characteristic ?label</pre>
+      <button class="copy-btn" onclick="copyQuery('q01',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">2 rows · familyOf / owl:SymmetricProperty · rivalOf / owl:SymmetricProperty</div>
+          <p>These are the only two properties in the starter ontology with entailment-triggering characteristics. A reasoner will derive the reverse direction of every asserted familyOf and rivalOf triple. All other properties have no characteristics declared — plain SPARQL and OWL reasoning will return the same results for them.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. After the Protégé walkthrough adds colleagueOf as a symmetric property and senseiOf as its sub-property, reload the ontology in Fuseki. How many rows does this query return now?</p>
+          <p>2. Which of the OWL characteristics in the VALUES list would be most dangerous to add to senseiOf? Think through what each would derive and which would create a contradiction with the existing data.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q02 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q02</span>
+      <div class="query-meta">
+        <div class="query-q">What does plain SPARQL see for rivalOf — vs what a reasoner would derive?</div>
+        <div class="query-c">Pattern: documenting the plain vs reasoned gap · UNION for both directions</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q02"><span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="cm"># What plain SPARQL sees: only asserted direction</span>
+<span class="kw">SELECT</span> ?aName ?bName ("asserted" <span class="kw">AS</span> ?source) <span class="kw">WHERE</span> {
+  ?a naruto:rivalOf ?b ;
+     naruto:canonicalName ?aName .
+  ?b naruto:canonicalName ?bName .
+}
+<span class="kw">UNION</span>
+<span class="cm"># What a reasoner would add: the symmetric direction</span>
+{
+  ?b naruto:rivalOf ?a .
+  ?a naruto:canonicalName ?aName .
+  ?b naruto:canonicalName ?bName .
+  <span class="kw">FILTER NOT EXISTS</span> { ?a naruto:rivalOf ?b . }
+  <span class="kw">BIND</span>("reasoner-derived" <span class="kw">AS</span> ?source)
+}
+<span class="kw">ORDER BY</span> ?source ?aName</pre>
+      <button class="copy-btn" onclick="copyQuery('q02',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">4 rows · 2 "asserted" (Naruto/Sasuke, Gaara/Rock Lee) · 2 "reasoner-derived" (Sasuke/Naruto, Rock Lee/Gaara)</div>
+          <p>This query manually replicates what the reasoner would derive automatically. The UNION branches produce both the asserted and the inferred directions; FILTER NOT EXISTS prevents showing the same pair in both branches. The "source" column makes the derivation visible in results — useful for debugging entailment behavior before enabling a reasoner in production.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. If you load the materialized ontology (from Protégé step 5) into Fuseki, run this same query. How many rows does it return? Why do the "reasoner-derived" rows not appear?</p>
+          <p>2. Hinata's rivalOf Naruto — does Hinata appear in the "asserted" rows? Does Naruto appear in the "reasoner-derived" rows? Trace through the UNION logic manually.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q03 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q03</span>
+      <div class="query-meta">
+        <div class="query-q">What would RDFS entailment derive from the class hierarchy?</div>
+        <div class="query-c">Pattern: simulating RDFS entailment with property paths · subClassOf transitive closure</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q03"><span class="kw">PREFIX</span> rdfs:   &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+<span class="kw">PREFIX</span> schema: &lt;https://schema.org/&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="cm"># Every class that naruto:Ninja is a subclass of (transitively)</span>
+<span class="kw">SELECT DISTINCT</span> ?superclass <span class="kw">WHERE</span> {
+  naruto:Ninja rdfs:subClassOf+ ?superclass .
+}
+<span class="kw">ORDER BY</span> ?superclass</pre>
+      <button class="copy-btn" onclick="copyQuery('q03',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">2 rows · naruto:Character · schema:Person</div>
+          <p>The <code>rdfs:subClassOf+</code> property path traverses the subclass chain transitively: Ninja → Character → schema:Person. With RDFS entailment enabled, a reasoner would derive that every Ninja individual is also a Character AND a schema:Person. Plain SPARQL with the property path query here gives you the same information about the schema without enabling the reasoner — useful for auditing the class hierarchy before enabling entailment.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Run <code>SELECT (COUNT(?ninja) AS ?n) WHERE { ?ninja a naruto:Ninja }</code>. Then run the same COUNT but with <code>?ninja a schema:Person</code>. With simple entailment, how do the counts compare? What would happen with RDFS entailment enabled?</p>
+          <p>2. Add <code>naruto:Village rdfs:subClassOf+</code> instead of Ninja. What does Village eventually inherit from? Is schema:Organization in the chain?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q04 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q04</span>
+      <div class="query-meta">
+        <div class="query-q">CONSTRUCT: materialize the subPropertyOf inference (senseiOf → colleagueOf).</div>
+        <div class="query-c">Pattern: CONSTRUCT as manual entailment · subPropertyOf derivation without a reasoner</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q04"><span class="kw">PREFIX</span> rdfs:   &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="kw">CONSTRUCT</span> {
+  ?sensei naruto:colleagueOf ?student .
+  ?student naruto:colleagueOf ?sensei .
+}
+<span class="kw">WHERE</span> {
+  ?sensei naruto:senseiOf ?student .
+  <span class="cm"># senseiOf rdfs:subPropertyOf colleagueOf (declared in ontology)</span>
+  <span class="cm"># colleagueOf is symmetric (declared in ontology)</span>
+  <span class="cm"># This CONSTRUCT replicates what an RDFS+OWL reasoner would derive.</span>
+}</pre>
+      <button class="copy-btn" onclick="copyQuery('q04',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">8 triples (Turtle) · both directions of colleagueOf for each sensei-student pair: Kakashi/Naruto, Kakashi/Sasuke, Kakashi/Sakura, Kurenai/Hinata — each pair in both directions</div>
+          <p>Switch Fuseki to Turtle result format. The CONSTRUCT template produces both the subPropertyOf derivation (senseiOf → colleagueOf) and the symmetric derivation (colleagueOf in reverse) in a single query. This is equivalent to running the reasoner for these two rules only — a targeted, predictable form of entailment without activating the full OWL engine.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. If you INSERT the CONSTRUCT output into Fuseki and then run the query again, how many triples does it produce? (The inserteed triples are now asserted, so the WHERE clause still matches them — but the CONSTRUCT output is now a subset of what's already there.)</p>
+          <p>2. What would you need to add to the CONSTRUCT template to also capture the studentOf inverse? Write the extended template.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- q05 -->
+  <div class="query-card">
+    <div class="query-header">
+      <span class="query-num">q05</span>
+      <div class="query-meta">
+        <div class="query-q">What does the naruto-ontology-inferred.ttl contain that the starter doesn't?</div>
+        <div class="query-c">Pattern: comparing asserted vs materialized · counting additional triples by type</div>
+      </div>
+      <a class="btn-fuseki" href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener" onclick="openFuseki(event,this)">Open Fuseki ↗</a>
+    </div>
+    <div class="query-body">
+      <pre id="q05"><span class="kw">PREFIX</span> owl:    &lt;http://www.w3.org/2002/07/owl#&gt;
+<span class="kw">PREFIX</span> rdf:    &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+<span class="kw">PREFIX</span> naruto: &lt;https://sensemaking-ai.com/ns/naruto#&gt;
+
+<span class="cm"># Load naruto-ontology-inferred.ttl into a second Fuseki dataset,
+# then compare triple counts by predicate type between the two datasets.
+# This query runs against the INFERRED dataset to show what was added.</span>
+
+<span class="kw">SELECT</span> ?predicate (<span class="kw">COUNT</span>(*) <span class="kw">AS</span> ?tripleCount) <span class="kw">WHERE</span> {
+  ?s ?predicate ?o .
+  <span class="kw">FILTER</span> (<span class="kw">STRSTARTS</span>(<span class="kw">STR</span>(?predicate),
+         "https://sensemaking-ai.com/ns/naruto#"))
+}
+<span class="kw">GROUP BY</span> ?predicate
+<span class="kw">ORDER BY</span> <span class="kw">DESC</span>(?tripleCount)</pre>
+      <button class="copy-btn" onclick="copyQuery('q05',this)">Copy</button>
+    </div>
+    <div class="query-footer">
+      <details class="panel">
+        <summary>Expected output</summary>
+        <div class="panel-body">
+          <div class="expected-out">Depends on which inferred triples HermiT materialized. memberOfVillage, senseiOf, hasJutsu, hasRank, rivalOf should all appear with the same counts as the starter. Additional triples (studentOf, colleagueOf if those were added in the walkthrough) would show higher counts in the inferred file.</div>
+          <p>This is a diagnostic query — it tells you what the reasoner added by comparing predicate-level triple counts. The pedagogical point: the reasoner adds triples, not rows in a table. The additions are graph-level, and they are subject to the same SPARQL queries as asserted triples once materialized.</p>
+        </div>
+      </details>
+      <details class="panel">
+        <summary>Think about this</summary>
+        <div class="panel-body">
+          <p>1. Run the same query against the starter (non-inferred) dataset. Which predicates have higher counts in the inferred version? Are any counts lower?</p>
+          <p>2. If you add Jiraiya from the Protégé walkthrough and re-export the inferred ontology, which predicates gain triples? Which ones gain the most?</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<!-- 07 -->
+<section id="resources">
+  <div class="section-label">07 · Resources</div>
+  <h2>Reading and next steps.</h2>
+
+  <div class="resource-grid">
+    <article class="resource-card">
+      <h4>Primary reading</h4>
+      <h5>Allemang et al. — Ch 9–10</h5>
+      <p>Chapter 9 covers OWL reasoning in depth; Chapter 10 covers inference rules and their interaction with open-world semantics. Front-load this in Week 7 before the Protégé walkthrough.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Reference</h4>
+      <h5><a href="https://www.w3.org/TR/owl2-profiles/">W3C OWL 2 Profiles</a></h5>
+      <p>Each profile's introduction explains what is gained and lost relative to OWL Full. Read EL and DL introductions side by side to understand why HermiT (which implements DL) is more expressive but slower than EL reasoners.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Background</h4>
+      <h5><a href="https://kgbook.org/">Knowledge Graphs, Section 6</a></h5>
+      <p>Hogan et al. — deductive knowledge. The clearest single-source explanation of the relationship between OWL, entailment, and what a triplestore can claim to know. Free at kgbook.org.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Starter data</h4>
+      <h5><a href="../../02-modeling/artifacts/naruto-ontology/naruto-ontology-starter.ttl">Naruto ontology starter</a></h5>
+      <p>The Module 2 artifact used in this workbook. Load into Protégé for the Exercise 3.1 walkthrough. The property characteristics already declared (symmetric, inverseOf) are what triggers the cascade observed in Step 3.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Next submodule</h4>
+      <h5><a href="3-2-reification.html">Submodule 3.2 — Reification</a></h5>
+      <p>The four approaches for annotating individual triples with provenance. Itachi's backstory is the canonical teaching example — contested canon with multiple sources is exactly where reification earns its complexity cost.</p>
+    </article>
+    <article class="resource-card">
+      <h4>Cheatsheet</h4>
+      <h5>Module 3 reasoning quick-reference <span class="coming-soon">(coming soon)</span></h5>
+      <p>OWL property characteristics, entailment regimes, inference cascade examples, and the materialization decision tree — one page. Available when Module 3 materials are complete.</p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Submodule 3.1 workbook · Sensemaking Semantic Web curriculum</p>
+  <p>By <a href="https://www.linkedin.com/in/dagny/">Barbara Hidalgo-Sotelo</a> · <a href="https://sensemaking-ai.com">Sensemaking AI</a> · <a href="https://barbhs.com">barbhs.com</a></p>
+  <p>Written content: CC BY 4.0 · Reuse, adapt, remix — attribution welcome.</p>
+</footer>
+
+<script>
+(function checkFuseki(){var b=document.getElementById('fuseki-banner');if(!window.fetch){b.className='fuseki-banner checking';b.innerHTML='<span class="dot"></span>Check Fuseki manually: <a href="http://localhost:3030/" target="_blank" rel="noopener">localhost:3030 ↗</a>';return;}fetch('http://localhost:3030/',{mode:'no-cors',cache:'no-store'}).then(function(){b.className='fuseki-banner connected';b.innerHTML='<span class="dot"></span>Fuseki running — <a href="http://localhost:3030/#/dataset/mythology/query" target="_blank" rel="noopener">open SPARQL editor ↗</a>';}).catch(function(){b.className='fuseki-banner offline';b.innerHTML='<span class="dot"></span>Fuseki offline — start: <code>fuseki-server --config=fuseki/config.ttl</code>';});})();
+function openFuseki(e,btn){e.preventDefault();var c=btn.closest('.query-card'),t=c.querySelector('pre[id]').textContent,u=btn.getAttribute('href');function o(){window.open(u,'_blank','noopener,noreferrer');}function f(){var x=btn.textContent;btn.textContent='Copied — paste in Fuseki ↗';btn.style.borderColor='var(--teal-mid)';setTimeout(function(){btn.textContent=x;btn.style.borderColor='';},2500);}navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(function(){f();o();}).catch(function(){lc(t,null);o();}):lc(t,null),o();}
+function copyQuery(id,btn){var t=document.getElementById(id).textContent;navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(function(){fb(btn);}).catch(function(){lc(t,btn);}):lc(t,btn);}
+function lc(t,btn){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';document.body.appendChild(a);a.focus();a.select();try{document.execCommand('copy');if(btn)fb(btn);}catch(e){}document.body.removeChild(a);}
+function fb(btn){var x=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=x;},1600);}
+</script>
+</body>
+</html>
