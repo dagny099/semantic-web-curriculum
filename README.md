@@ -12,7 +12,7 @@ This repository is the canonical record of a self-directed learning project: wor
 
 It's published openly under **Sensemaking AI**, an independent AI/ML consulting practice. Sensemaking AI is run by [Barbara Hidalgo-Sotelo](https://www.linkedin.com/in/barbara-hidalgo-sotelo/) — this curriculum is her work, published transparently under her consulting brand. No fake team, no corporate scaffolding. One practitioner working through the material in public, with the receipts in this repo.
 
-This is not a course you can enroll in. It's a learning journey published in public. You're welcome to follow along, fork the repo, run the exercises yourself, or use it as a roadmap for your own self-directed path.
+This is not a cohort course or paid enrollment. It's a learning journey published in public — the materials are designed to be usable, but there's no instructor, no cohort, and no support contract. You're welcome to follow along, fork the repo, run the exercises yourself, or use it as a roadmap for your own self-directed path.
 
 ---
 
@@ -20,7 +20,7 @@ This is not a course you can enroll in. It's a learning journey published in pub
 
 | Module | Theme | Weeks | Status |
 |---|---|---|---|
-| [1](./modules/01-foundations/) | Foundations: RDF, Turtle, basic SPARQL | 1-3 | Not started |
+| [1](./modules/01-foundations/) | Foundations: RDF, Turtle, basic SPARQL | 1-3 | In progress |
 | [2](./modules/02-modeling/) | Modeling: RDFS, OWL, ontology design | 4-6 | Not started |
 | [3](./modules/03-reasoning/) | Reasoning at the edge | 7-9 | Not started |
 | [4](./modules/04-shipping/) | Shipping semantic systems | 10-12 | Not started |
@@ -37,7 +37,7 @@ The curriculum has three kinds of readers and three matching paths through the m
   <img src="how-to-use-course-materials.svg" width="80%" style="padding: 20px;" align="right" />
 </a>
 
-**New readers** start at this README, read the SYLLABUS for the arc, then enter Module 1. The Module READMEs are the operational layer — they orchestrate three weeks of reading, exercises, and a project. Submodule HTML pages, linked from each Module README, are the synthesis essays: short reads that explain the conceptual moves in my voice rather than restating the canonical references. Exercises and notes produce the artifacts that prove the work happened.
+**New readers** start at this README, read the SYLLABUS for the arc, then go to the [Module 1 README](./modules/01-foundations/README.md) for the route selector — three paths through the module depending on whether you want the full conceptual foundation, a hands-on win first, or a portfolio artifact. Module READMEs are the operational layer: they orchestrate the readings, synthesis pages, workbooks, and project. Submodule HTML pages are synthesis essays that explain the conceptual moves in the author's voice rather than restating the canonical references.
 
 **Drive-by readers** typically arrive from LinkedIn at a single submodule page. That's by design — each submodule is meant to stand alone as a synthesis essay. If something there is worth more time, the "what to do next" section on each submodule is the bridge back into the broader curriculum.
 

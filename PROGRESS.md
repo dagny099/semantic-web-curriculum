@@ -2,10 +2,10 @@
 
 > Live tracker for the Sensemaking Semantic Web curriculum. Updated weekly. Most recent activity at top.
 
-**Currently:** Pre-week setup
-**Module:** Pre-launch
-**Next milestone:** Begin Module 1 — Foundations
-**Last updated:** _Not yet started_
+**Currently:** Module 1 — Foundations
+**Module:** Module 1
+**Next milestone:** Complete Submodule 1.1 exercises; begin primary project (Resume Graph RDF slice)
+**Last updated:** 2026-06-02
 
 ---
 
@@ -23,23 +23,38 @@ If you're catching up after a long absence, read the activity log top-down for t
 
 ## Activity log
 
-### Week 0 — Setup *(coming up)*
+### Module 1 launch — 2026-05-31
 
+Module 1 launched. All three submodule synthesis pages are written and published, along with five hands-on workbooks (1.1 and 1.2 Naruto and mythology variants, plus the 1.3 resume workbook), a reading companion for the Allemang/DuCharme chapters, and the Module 1 cheat sheet. The resume artifact (`resume-001.ttl`) is committed to the repo. Navigation between submodules is wired.
+
+Shipped materials:
+
+- `modules/01-foundations/submodules/1-1-rdf-vs-lpg.html` — RDF vs. LPG synthesis essay
+- `modules/01-foundations/submodules/1-1-workbook-naruto.html` — 1.1 Naruto workbook
+- `modules/01-foundations/submodules/1-1-workbook-mythology.html` — 1.1 mythology workbook
+- `modules/01-foundations/submodules/1-1-reading-companion.pdf` — Allemang/DuCharme reading companion
+- `modules/01-foundations/submodules/1-2-sparql-basics.html` — SPARQL query forms synthesis
+- `modules/01-foundations/submodules/1-2-workbook-naruto.html` — 1.2 Naruto workbook
+- `modules/01-foundations/submodules/1-2-workbook-mythology.html` — 1.2 mythology workbook
+- `modules/01-foundations/submodules/1-3-vocabulary-landscape.html` — vocabulary landscape synthesis
+- `modules/01-foundations/submodules/1-3-workbook-resume.html` — 1.3 resume workbook
+- `modules/01-foundations/artifacts/resume-graph/ttl/resume-001.ttl` — resume RDF data
+- `reference/cheatsheets/module-1-cheatsheet.html` — Module 1 cheat sheet
+
+### Week 0 — Setup *(complete as of 2026-05-31)*
+
+- [x] Repo initialized and pushed to GitHub
+- [x] Required reading materials acquired (Allemang/Hendler/Gandon, DuCharme bookmarks)
 - [ ] Apache Jena + Fuseki installed locally and verified running on `localhost:3030`
 - [ ] Protégé installed and opened once
-- [ ] Repo initialized and pushed to GitHub
-- [ ] Required reading materials acquired (Allemang/Hendler/Gandon, DuCharme bookmarks)
 - [ ] Hogan et al. introduction skimmed (sections 1-2 of kgbook.org)
-- [ ] Launch post drafted for LinkedIn
 - [ ] Calendar blocked for Module 1 reading and project time
-
-*Once Module 1 begins, weekly entries will appear above this one with date headers, summary of what was learned/built, and links to any artifacts that shipped.*
 
 ---
 
 ## Module 1 — Foundations *(Weeks 1-3)*
 
-**Status:** Not started
+**Status:** In progress
 
 ### Reading
 - [ ] Allemang Ch 1-3 (RDF foundations, RDFS)
@@ -164,9 +179,19 @@ If you're catching up after a long absence, read the activity log top-down for t
 
 ## Artifacts produced
 
-Will be populated as the work ships. Each entry links to the artifact, the date it was published, and the module it belongs to.
-
-_None yet — Module 1 has not begun._
+| Artifact | Date | Module |
+|---|---|---|
+| [1.1 RDF vs. LPG synthesis](./modules/01-foundations/submodules/1-1-rdf-vs-lpg.html) | 2026-05-31 | Module 1 |
+| [1.1 reading companion (PDF)](./modules/01-foundations/submodules/1-1-reading-companion.pdf) | 2026-05-31 | Module 1 |
+| [1.1 Naruto workbook](./modules/01-foundations/submodules/1-1-workbook-naruto.html) | 2026-05-31 | Module 1 |
+| [1.1 mythology workbook](./modules/01-foundations/submodules/1-1-workbook-mythology.html) | 2026-05-31 | Module 1 |
+| [1.2 SPARQL query forms synthesis](./modules/01-foundations/submodules/1-2-sparql-basics.html) | 2026-05-31 | Module 1 |
+| [1.2 Naruto workbook](./modules/01-foundations/submodules/1-2-workbook-naruto.html) | 2026-05-31 | Module 1 |
+| [1.2 mythology workbook](./modules/01-foundations/submodules/1-2-workbook-mythology.html) | 2026-05-31 | Module 1 |
+| [1.3 vocabulary landscape synthesis](./modules/01-foundations/submodules/1-3-vocabulary-landscape.html) | 2026-05-31 | Module 1 |
+| [1.3 resume workbook](./modules/01-foundations/submodules/1-3-workbook-resume.html) | 2026-05-31 | Module 1 |
+| [Module 1 cheat sheet](./reference/cheatsheets/module-1-cheatsheet.html) | 2026-05-31 | Module 1 |
+| [resume-001.ttl](./modules/01-foundations/artifacts/resume-graph/ttl/resume-001.ttl) | 2026-05-31 | Module 1 |
 
 ---
 
@@ -192,4 +217,4 @@ _None yet._
 
 If the curriculum gets paused (job offer, client engagement, life), this section documents why and for how long. Honesty about the path beats fake-perfect progress charts.
 
-_No pauses yet — pre-launch._
+_No pauses yet._

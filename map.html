@@ -205,6 +205,41 @@
     width: 24px; height: 0; border-top: 2px dashed var(--coral);
   }
 
+  /* ---------- Route cards ---------- */
+  .route-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  @media (max-width: 760px) { .route-cards { grid-template-columns: 1fr; } }
+  .route-card {
+    border: 1px solid var(--teal-rule);
+    border-radius: 6px;
+    padding: 1rem 1.1rem;
+    background: var(--teal-pale);
+  }
+  .route-card.recommended { border-color: var(--coral); background: var(--coral-tint); }
+  .route-card-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: 0.35rem;
+  }
+  .route-card.recommended .route-card-label { color: var(--coral); }
+  .route-card:not(.recommended) .route-card-label { color: var(--teal-mid); }
+  .route-card h3 { font-size: 0.95rem; font-weight: 600; margin: 0 0 0.4rem; color: var(--charcoal); }
+  .route-card p { font-size: 0.83rem; color: var(--slate); margin: 0 0 0.6rem; line-height: 1.5; }
+  .route-card a.route-link {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--teal-mid);
+    text-decoration: none;
+  }
+  .route-card a.route-link:hover { color: var(--coral); }
+
   /* ---------- Footer ---------- */
   footer {
     padding: 2rem 0 3rem;
@@ -290,7 +325,7 @@
   <div class="masthead-inner">
     <div class="brand">Sensemaking Semantic Web · Curriculum map</div>
     <h1>How the pieces fit together</h1>
-    <p class="lede">Five kinds of page, one reading path. Click any card to jump in. Keep the cheat sheet open the whole way.</p>
+    <p class="lede">Five kinds of material, three ways through. Click any card to jump in. Keep the cheat sheet open the whole way.</p>
   </div>
 </header>
 
@@ -303,6 +338,28 @@
     <button class="chip" data-module="2" role="tab" aria-selected="false" data-status="pending">02 · Modeling</button>
     <button class="chip" data-module="3" role="tab" aria-selected="false" data-status="pending">03 · Reasoning</button>
     <button class="chip" data-module="4" role="tab" aria-selected="false" data-status="pending">04 · Shipping</button>
+  </div>
+
+  <!-- ===================== Route cards ===================== -->
+  <div class="route-cards">
+    <div class="route-card recommended">
+      <div class="route-card-label">Path 1 · Recommended</div>
+      <h3>Full course path</h3>
+      <p>Read the canon → synthesis → workbook → receipt. Best for learners who want the full conceptual foundation before building.</p>
+      <a class="route-link" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md#path-1--full-course-path-recommended">See the steps →</a>
+    </div>
+    <div class="route-card">
+      <div class="route-card-label">Path 2</div>
+      <h3>Builder-first path</h3>
+      <p>Start Fuseki, run the workbooks, then go back to the readings. Best for learners who need a runnable win before the theory lands.</p>
+      <a class="route-link" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md#path-2--builder-first-path">See the steps →</a>
+    </div>
+    <div class="route-card">
+      <div class="route-card-label">Path 3</div>
+      <h3>Artifact path</h3>
+      <p>Read the synthesis, run queries to confirm intuitions, build the resume RDF slice, draft the blog post. Best for advanced learners or return visits.</p>
+      <a class="route-link" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md#path-3--artifact-path">See the steps →</a>
+    </div>
   </div>
 
   <!-- ===================== The Map ===================== -->
@@ -376,7 +433,7 @@
 
       <!-- Companion deck (subordinate) -->
       <line x1="458" y1="230" x2="474" y2="230" stroke="#C9DED9" stroke-width="1.2" stroke-dasharray="3,3"/>
-      <a id="link-companion" href="https://curriculum.barbhs.com/roadmap.html" class="card-link" role="link" tabindex="0">
+      <a id="link-companion" href="https://curriculum.barbhs.com/modules/01-foundations/submodules/1-1-reading-companion.pdf" class="card-link" role="link" tabindex="0">
         <rect class="card-rect-shadow" x="474" y="201" width="220" height="58" rx="6" filter="url(#cardHover)"/>
         <rect class="card-rect" x="474" y="201" width="220" height="58" rx="6" fill="#F4F8F7" stroke="#C9DED9" stroke-width="1"/>
         <text x="490" y="221" class="card-role role-mute">COMPANION</text>
@@ -485,7 +542,7 @@ const MODULE_DATA = {
     live: true,
     readme:     `${BASE}/modules/01-foundations/README.md`,
     reading:    `${BASE}/resources/reading-list.md`,
-    companion:  ROADMAP,  // TBD — companion deck location not yet decided
+    companion:  `${BASE}/modules/01-foundations/submodules/1-1-reading-companion.pdf`,
     synthesis:  `${BASE}/modules/01-foundations/submodules/1-1-rdf-vs-lpg.html`,
     exercise:   `${BASE}/modules/01-foundations/README.md#exercises`,
     cheatsheet: `${BASE}/reference/cheatsheets/module-1-cheatsheet.html`,

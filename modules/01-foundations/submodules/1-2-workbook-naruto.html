@@ -228,11 +228,11 @@ footer p { margin: 0 0 .4rem; max-width: none; }
   <div class="section-label">01 · Prerequisites</div>
   <h2>This picks up where 1.1 left off.</h2>
   <p class="lead">The five query patterns here — DESCRIBE, UNION, property paths, FILTER NOT EXISTS, VALUES — build on the SELECT, GROUP BY, ASK, OPTIONAL, and CONSTRUCT patterns in the 1.1 workbook. If those patterns still feel uncertain, work through the 1.1 workbook before continuing here.</p>
-  <p>The dataset is the same: <code>data/example.ttl</code> loaded into Fuseki's <code>mythology</code> dataset. Eight ninja, three teams, two villages, several jutsu, sensei–student and rival relationships. The <code>sensemaking:</code> prefix is bound to <code>https://sensemaking-ai.com/ns/example#</code>. If you are not sure what data is in the file, open it in a text editor before running queries — prediction before execution is the habit.</p>
+  <p>The dataset is the same as the 1.1 workbook: <code>data/example.ttl</code> — eight ninja, three teams, two villages, several jutsu, sensei–student and rival relationships. The <code>sensemaking:</code> prefix is bound to <code>https://sensemaking-ai.com/ns/example#</code>. If you are not sure what data is in the file, open it in a text editor before running queries — prediction before execution is the habit.</p>
 
   <div class="branch">
     <h4>Loading the Naruto data</h4>
-    <p>From the starter-kit root: <code>fuseki-server --config=fuseki/config.ttl</code>. In the Fuseki UI, ensure the <code>mythology</code> dataset is loaded with <code>data/example.ttl</code>. All five queries below use the <code>sensemaking:</code> prefix bound to <code>https://sensemaking-ai.com/ns/example#</code> — they will not return results against the mythology dataset.</p>
+    <p>From the starter-kit root: <code>fuseki-server --config=fuseki/config.ttl</code>. In the Fuseki UI, load <code>data/example.ttl</code> into the <code>mythology</code> dataset (that is the dataset name the starter kit creates — it serves both the Naruto and mythology workbooks depending on which file you load). All five queries below use the <code>sensemaking:</code> prefix bound to <code>https://sensemaking-ai.com/ns/example#</code>; they will not return results if the mythology domain data is loaded instead of <code>data/example.ttl</code>.</p>
   </div>
 </section>
 

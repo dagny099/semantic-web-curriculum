@@ -127,7 +127,7 @@ Use the [Wikidata Query Service](https://query.wikidata.org/) helper UI:
 - All people who studied at MIT with a Wikipedia article
 - All ESCO occupations whose label contains "data scientist"
 
-**Submodule materials:** *(not yet developed)*
+**Submodule materials:** `1-2-sparql-basics.html`, `1-2-workbook-naruto.html`, `1-2-workbook-mythology.html` *(exist)*
 
 ---
 
@@ -144,7 +144,7 @@ Use the [Wikidata Query Service](https://query.wikidata.org/) helper UI:
 **Exercise 1.4 — Naruto Graph Turtle slice (2-3 hours)**
 One arc (Chunin Exams) from the [Naruto Network Graph](https://docs.barbhs.com/naruto-network-graph/), ~20 character nodes plus canonical relationships in Turtle. Three SPARQL queries matching ones already run in Neo4j. Compare ergonomics.
 
-**Submodule materials:** *(not yet developed)*
+**Submodule materials:** `1-3-vocabulary-landscape.html`, `1-3-workbook-resume.html` *(exist)*
 
 ### The pain perspective
 
