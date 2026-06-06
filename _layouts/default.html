@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+{% if page.description %}<meta name="description" content="{{ page.description }}">{% endif %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ '/assets/css/docs.css' | relative_url }}">
+</head>
+<body>
+
+<div class="page">
+
+  <header class="site-header">
+    <a href="{{ '/' | relative_url }}" class="brand-mark"><span class="brand-dot"></span> Sensemaking AI</a>
+    <nav>
+      <a href="{{ '/' | relative_url }}">Home</a>
+      <a href="{{ '/map.html' | relative_url }}">Map</a>
+      <a href="{{ '/SYLLABUS.html' | relative_url }}">Syllabus</a>
+      <a href="{{ '/PROGRESS.html' | relative_url }}">Progress</a>
+      <a href="{{ '/glossary.html' | relative_url }}">Glossary</a>
+      <a href="{{ '/roadmap.html' | relative_url }}">Roadmap</a>
+    </nav>
+  </header>
+
+  <main class="doc">
+    {{ content }}
+  </main>
+
+  <footer>
+    <div>
+      <span class="footer-brand">Sensemaking AI</span>
+      &nbsp;·&nbsp; Austin, TX &nbsp;·&nbsp; Code MIT &nbsp;·&nbsp; Content CC BY 4.0
+    </div>
+    <div class="links">
+      <a href="{{ '/' | relative_url }}">Home</a>
+      <a href="https://github.com/dagny099/semantic-web-curriculum">GitHub</a>
+      <a href="https://www.linkedin.com/in/barbara-hidalgo-sotelo/">LinkedIn</a>
+      <a href="https://sensemaking-ai.com">sensemaking-ai.com</a>
+      <a href="https://barbhs.com">barbhs.com</a>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

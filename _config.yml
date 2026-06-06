@@ -1,0 +1,62 @@
+# ─────────────────────────────────────────────────────────────
+# Sensemaking Semantic Web — GitHub Pages / Jekyll configuration
+#
+# Why this file exists:
+#   GitHub Pages runs Jekyll automatically, but Jekyll only renders
+#   Markdown files that have YAML front matter. Ours don't — which is
+#   why .md links currently serve as raw text. The plugins below render
+#   plain Markdown into styled HTML and rewrite ./FILE.md links to the
+#   built pages, so everything renders on curriculum.barbhs.com.
+#
+#   The hand-built HTML pages (index, map, glossary, roadmap, and the
+#   submodule workbooks) have no front matter, so Jekyll copies them
+#   through untouched. Only Markdown gets the layout.
+# ─────────────────────────────────────────────────────────────
+
+title: Sensemaking Semantic Web
+description: A 12-week self-directed curriculum through RDF, OWL, SPARQL, and modern knowledge graphs — built in the open.
+url: https://curriculum.barbhs.com
+
+# ── Markdown engine ──
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# ── Plugins (all on the GitHub Pages allow-list) ──
+plugins:
+  - jekyll-optional-front-matter   # render .md files that have NO front matter
+  - jekyll-relative-links          # rewrite [text](./FILE.md) → built .html page
+  - jekyll-sitemap                 # generate sitemap.xml
+
+# Render Markdown that lacks front matter, and drop the raw .md from the
+# output so the source file is never served as plain text.
+optional_front_matter:
+  remove_originals: true
+
+# Rewrite in-repo relative Markdown links to their rendered .html targets.
+relative_links:
+  enabled: true
+  collections: false
+
+# Wrap every rendered Markdown page in the custom layout automatically,
+# so no per-file front matter is needed.
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+# ── Keep these out of the published site ──
+exclude:
+  - CLAUDE.md
+  - module-1-organization-checklist-and-agent-prompt.md
+  - memory/
+  - resources/Prompt-Content-Development-Planning.md
+  - resources/Prompt-glossary-and-starter-brief.md
+  - resources/submodule-planning.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - README-jekyll.md
+  - .github/

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sensemaking Semantic Web · A self-directed curriculum, worked in public</title>
-<meta name="description" content="A 12-week self-directed curriculum through RDF, OWL, SPARQL, and modern knowledge graphs. Published openly under Sensemaking AI by Barbara Hidalgo-Sotelo.">
+<title>Sensemaking Semantic Web · A 12-week curriculum, from first triple to deployed knowledge graph</title>
+<meta name="description" content="A 12-week self-directed curriculum through RDF, OWL, SPARQL, and modern knowledge graphs — built in the open under Sensemaking AI by Barbara Hidalgo-Sotelo. Module 1 underway.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -259,12 +259,15 @@ a.module-card { border: 1px solid var(--line); }
   border-top: 1px solid var(--line-soft);
 }
 .module-card.hard::after {
-  content: "★";
+  content: "deepest dive";
   position: absolute;
   top: 1rem;
   right: 1rem;
   color: var(--amber);
-  font-size: 0.875rem;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 @media (max-width: 900px) { .modules-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -559,7 +562,7 @@ footer a:hover { color: var(--ink); }
   <nav>
     <a href="/map.html">Map</a>
     <a href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">Syllabus</a>
-    <a href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md">Module 1</a>
+    <a href="#arc">Modules</a>
     <a href="/glossary.html">Glossary</a>
     <a href="/roadmap.html">Roadmap</a>
   </nav>
@@ -569,9 +572,10 @@ footer a:hover { color: var(--ink); }
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <section class="hero">
-  <div class="status-pill">Pre-launch · Module 1 begins soon</div> <!-- next: Module 1 · Week 1-->
-  <h1>A 12-week semantic web curriculum, <em>worked in public</em>.</h1>
-  <p class="lead">RDF, OWL, SPARQL, and modern knowledge graphs &mdash; from first principles to a deployed hybrid LLM + knowledge graph application. Every artifact, note, and stumbling point published openly.</p>
+  <div class="eyebrow">Semantic web curriculum · built in the open</div>
+  <h1>Twelve weeks, from first triple to deployed knowledge graph.</h1>
+  <p class="lead">RDF, OWL, SPARQL, and modern knowledge graphs &mdash; from first principles to a deployed hybrid LLM + knowledge graph application. Every artifact, note, and stumbling point published as I go.</p>
+  <div class="status-pill">Module 1 · in progress &mdash; launched May 31, 2026</div>
   <dl class="hero-meta">
     <div>
       <dt>Duration</dt>
@@ -592,41 +596,11 @@ footer a:hover { color: var(--ink); }
   </dl>
 </section>
 
-<!-- ═══════════════ PREMISE ═══════════════ -->
-<section id="premise">
-  <div class="section-inner two-col">
-    <div>
-      <div class="eyebrow">The premise</div>
-      <h2>Why publish<br>learning openly?</h2>
-    </div>
-    <div>
-      <p class="lead">Most learning artifacts describe finished states. This one shows the process. The redos, the failed exercises, and the wrong turns are part of the published value, not embarrassments to hide.</p>
-      <div class="premise-three">
-        <div class="card">
-          <span class="num">i.</span>
-          <h4>Forcing function</h4>
-          <p>Public commitments stall less. Knowing the work is visible turns &ldquo;I should write notes&rdquo; into &ldquo;I have to ship notes.&rdquo;</p>
-        </div>
-        <div class="card">
-          <span class="num">ii.</span>
-          <h4>Compounding portfolio</h4>
-          <p>Each module produces real artifacts: published ontologies, evaluation notebooks, deployed demos. The curriculum is the portfolio.</p>
-        </div>
-        <div class="card">
-          <span class="num">iii.</span>
-          <h4>Honest signal</h4>
-          <p>A real evaluation, including where graph augmentation hurts retrieval, is more useful than a polished case study that only shows the wins.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ═══════════════ THE ARC ═══════════════ -->
 <section id="arc">
   <div class="eyebrow">The arc</div>
   <h2>Four modules across twelve weeks.</h2>
-  <p>The curriculum builds from foundations (reading and writing the basic data model) to deployment (shipping a system that combines vector and graph retrieval). Module 3 is genuinely the hardest segment &mdash; planning slower pacing there matters. For how the reading, exercises, and synthesis pages fit together, see the <a href="/map.html">curriculum map</a>.</p>
+  <p>The curriculum builds from foundations (reading and writing the basic data model) to deployment (shipping a system that combines vector and graph retrieval). For how the reading, exercises, and synthesis pages fit together, see the <a href="/map.html">curriculum map</a>.</p>
 
   <div class="diagram-block">
     <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arc-title arc-desc">
@@ -639,43 +613,37 @@ footer a:hover { color: var(--ink); }
       <!-- Module 1 -->
       <circle cx="120" cy="200" r="6" fill="#B9722A"/>
       <text x="120" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">i.</text>
-      <text x="120" y="240" text-anchor="middle" class="svg-text" font-size="14" font-weight="500" fill="#1C1A17">Foundations</text>
-      <text x="120" y="260" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#6E6862">Weeks 1&ndash;3</text>
-      <text x="120" y="290" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#9B9489">RDF · Turtle · SPARQL</text>
+      <text x="120" y="240" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C1A17">Foundations</text>
+      <text x="120" y="261" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Weeks 1&ndash;3</text>
+      <text x="120" y="290" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">RDF · Turtle · SPARQL</text>
 
       <!-- Module 2 -->
       <circle cx="380" cy="190" r="6" fill="#B9722A"/>
       <text x="380" y="160" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">ii.</text>
-      <text x="380" y="230" text-anchor="middle" class="svg-text" font-size="14" font-weight="500" fill="#1C1A17">Modeling</text>
-      <text x="380" y="250" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#6E6862">Weeks 4&ndash;6</text>
-      <text x="380" y="280" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#9B9489">RDFS · OWL · design judgment</text>
+      <text x="380" y="230" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C1A17">Modeling</text>
+      <text x="380" y="251" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Weeks 4&ndash;6</text>
+      <text x="380" y="280" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">RDFS · OWL · design judgment</text>
 
-      <!-- Module 3 (the hard one) -->
+      <!-- Module 3 (deepest dive) -->
       <circle cx="620" cy="195" r="8" fill="#B9722A" stroke="#B9722A" stroke-width="2" fill-opacity="0.3"/>
       <circle cx="620" cy="195" r="4" fill="#B9722A"/>
-      <text x="620" y="165" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">iii. ★</text>
-      <text x="620" y="235" text-anchor="middle" class="svg-text" font-size="14" font-weight="500" fill="#1C1A17">Reasoning</text>
-      <text x="620" y="255" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#6E6862">Weeks 7&ndash;9</text>
-      <text x="620" y="285" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#9B9489">Inference · reification · SHACL</text>
+      <text x="620" y="165" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">iii.</text>
+      <text x="620" y="235" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C1A17">Reasoning</text>
+      <text x="620" y="256" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Weeks 7&ndash;9</text>
+      <text x="620" y="285" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Inference · reification · SHACL</text>
 
       <!-- Module 4 -->
       <circle cx="820" cy="200" r="6" fill="#B9722A"/>
       <text x="820" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">iv.</text>
-      <text x="820" y="240" text-anchor="middle" class="svg-text" font-size="14" font-weight="500" fill="#1C1A17">Shipping</text>
-      <text x="820" y="260" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#6E6862">Weeks 10&ndash;12</text>
-      <text x="820" y="290" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#9B9489">SPARQL UPDATE · LLM + KG</text>
+      <text x="820" y="240" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C1A17">Shipping</text>
+      <text x="820" y="261" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Weeks 10&ndash;12</text>
+      <text x="820" y="290" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">SPARQL UPDATE · LLM + KG</text>
 
       <!-- Top label -->
       <text x="450" y="50" text-anchor="middle" class="svg-text-serif" font-size="20" font-style="italic" fill="#1C1A17">From first principles → deployed system</text>
       <line x1="380" y1="65" x2="520" y2="65" stroke="#B9722A" stroke-width="0.5" opacity="0.4"/>
-
-      <!-- New ground indicator -->
-      <text x="120" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">LIGHT</text>
-      <text x="380" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">MEDIUM</text>
-      <text x="620" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#B9722A" letter-spacing="1">HEAVY</text>
-      <text x="820" y="115" text-anchor="middle" class="svg-text-soft" font-size="9" fill="#9B9489" letter-spacing="1">MIXED</text>
     </svg>
-    <p class="diagram-caption">The arc is reminiscent of marathon prep: base, build, peak, taper-and-race. Module 3 is the segment where most of the material is genuinely new ground for me, personally.</p>
+    <p class="diagram-caption">Think of it as a learning spiral: each module revisits the layer beneath it at greater depth. By the deepest dive &mdash; Module 3 &mdash; you&rsquo;re working ground you&rsquo;ve already walked twice.</p>
   </div>
 
   <div class="modules-grid">
@@ -683,25 +651,25 @@ footer a:hover { color: var(--ink); }
       <span class="num">i.</span>
       <h4>Foundations</h4>
       <p>RDF, Turtle, basic SPARQL. The conceptual core: knowledge as triples with global identifiers.</p>
-      <div class="weeks">Weeks 1&ndash;3 · Open module &rarr;</div>
+      <div class="weeks">Weeks 1&ndash;3 · In progress &rarr;</div>
     </a>
-    <a class="module-card" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">
+    <a class="module-card" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/02-modeling/module-02-README.md">
       <span class="num">ii.</span>
       <h4>Modeling</h4>
       <p>OWL ontology design. The shift from RDF as data format to ontology as design discipline.</p>
-      <div class="weeks">Weeks 4&ndash;6 · In the syllabus</div>
+      <div class="weeks">Weeks 4&ndash;6 · Materials drafted &rarr;</div>
     </a>
-    <a class="module-card hard" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">
+    <a class="module-card hard" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/03-reasoning/module-03-README.md">
       <span class="num">iii.</span>
       <h4>Reasoning</h4>
       <p>Inference, reification, vocabulary alignment, SHACL validation. The conceptually hardest segment.</p>
-      <div class="weeks">Weeks 7&ndash;9 · In the syllabus</div>
+      <div class="weeks">Weeks 7&ndash;9 · Materials drafted &rarr;</div>
     </a>
-    <a class="module-card" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">
+    <a class="module-card" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/04-shipping/module-04-README.md">
       <span class="num">iv.</span>
       <h4>Shipping</h4>
       <p>SPARQL UPDATE, deployment, hybrid LLM + knowledge graph capstone.</p>
-      <div class="weeks">Weeks 10&ndash;12 · In the syllabus</div>
+      <div class="weeks">Weeks 10&ndash;12 · Outlined &rarr;</div>
     </a>
   </div>
 </section>
@@ -757,7 +725,7 @@ footer a:hover { color: var(--ink); }
 <section id="projects">
   <div class="eyebrow">The anchoring projects</div>
   <h2>Two existing projects as canvases.</h2>
-  <p>The curriculum doesn&rsquo;t use toy examples. It uses two real projects that already have substantial work behind them. Each anchors specific parts of the curriculum where the technology shines for it.</p>
+  <p>Two projects I&rsquo;d already built turned out to be ideal canvases for this material &mdash; which is half the reason the curriculum exists. The first is a character network from an anime I love, Naruto: its ranks, villages, and contested fan canon make surprisingly rich ground for real ontology design. The second is a knowledge graph of my own resume and skills &mdash; practical, since I&rsquo;m consulting and job-hunting, and a sharp test case because its skill taxonomy already speaks SKOS.</p>
 
   <div class="projects-grid">
     <div class="project-card primary">
@@ -785,41 +753,74 @@ footer a:hover { color: var(--ink); }
     </div>
   </div>
 
-  <div class="diagram-block">
-    <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="eco-title eco-desc">
-      <title id="eco-title">Project ecosystem</title>
-      <desc id="eco-desc">The curriculum repo at the center, with three projects orbiting: Naruto Network Graph as primary canvas, Resume Graph Explorer as Module 1 anchor, and TwinKit as the capstone framework.</desc>
+  <p class="lead" style="max-width: 44rem; margin: 2.5rem 0 0;">The two projects are useful in opposite ways. Naruto's world is densely categorical — ranks, villages, jutsu types, contested fan canon — which is the raw material that ontology modeling and reasoning feed on, so it carries Modules 2 and 3. The Resume Graph is the other kind of useful: its skills already map to ESCO, a published vocabulary, so it makes the foundational case for linked data concrete instead of toy — which is why it anchors Module 1.</p>
+<div class="diagram-block">
+  <svg viewBox="0 0 780 370" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="eco-title eco-desc">
+    <title id="eco-title">Where each project connects</title>
+    <desc id="eco-desc">The curriculum at the center, with three projects connected to it: Naruto Network Graph as primary canvas, Resume Graph Explorer as the Module 1 anchor, and TwinKit as the capstone framework.</desc>
 
-      <!-- Center node -->
-      <circle cx="400" cy="160" r="58" fill="#FAF6EE" stroke="#B9722A" stroke-width="1.5"/>
-      <text x="400" y="155" text-anchor="middle" class="svg-text-serif" font-size="14" font-style="italic" fill="#1C1A17">Sensemaking</text>
-      <text x="400" y="175" text-anchor="middle" class="svg-text-serif" font-size="14" font-style="italic" fill="#1C1A17">Semantic Web</text>
+    <!-- Title -->
+    <text x="415" y="40" text-anchor="middle" class="svg-text-serif" font-size="26" fill="#1C1A17">Where each project connects</text>
 
-      <!-- Connections -->
-      <line x1="354" y1="125" x2="180" y2="80" stroke="#B9722A" stroke-width="1" stroke-dasharray="3 4" opacity="0.6"/>
-      <line x1="354" y1="195" x2="180" y2="240" stroke="#2C7A7A" stroke-width="1" stroke-dasharray="3 4" opacity="0.6"/>
-      <line x1="446" y1="160" x2="620" y2="160" stroke="#B9722A" stroke-width="1" stroke-dasharray="3 4" opacity="0.6"/>
+    <!-- Connections -->
+    <line x1="270" y1="126" x2="344" y2="169" stroke="#B9722A" stroke-width="1.25" stroke-dasharray="3 4" opacity="0.6"/>
+    <line x1="270" y1="300" x2="345" y2="253" stroke="#2C7A7A" stroke-width="1.25" stroke-dasharray="3 4" opacity="0.6"/>
+    <line x1="497" y1="210" x2="560" y2="210" stroke="#B9722A" stroke-width="1.25" stroke-dasharray="3 4" opacity="0.6"/>
 
-      <!-- Naruto node -->
-      <rect x="60" y="40" width="170" height="80" rx="8" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
-      <text x="145" y="68" text-anchor="middle" class="svg-text" font-size="13" font-weight="500" fill="#854F0B">Naruto Network Graph</text>
-      <text x="145" y="88" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#854F0B">Primary canvas</text>
-      <text x="145" y="105" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#854F0B" opacity="0.8">Modules 2, 3, 4</text>
+    <!-- Center hub -->
+    <circle cx="415" cy="210" r="82" fill="#FAF6EE" stroke="#B9722A" stroke-width="1.5"/>
+    <text x="415" y="204" text-anchor="middle" class="svg-text-serif" font-size="17" font-style="italic" fill="#1C1A17">Sensemaking</text>
+    <text x="415" y="227" text-anchor="middle" class="svg-text-serif" font-size="17" font-style="italic" fill="#1C1A17">Semantic Web</text>
 
-      <!-- Resume Graph node -->
-      <rect x="60" y="200" width="170" height="80" rx="8" fill="#FAF6EE" stroke="#2C7A7A" stroke-width="0.5"/>
-      <text x="145" y="228" text-anchor="middle" class="svg-text" font-size="13" font-weight="500" fill="#1C5959">Resume Graph Explorer</text>
-      <text x="145" y="248" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#1C5959">ESCO/SKOS anchor</text>
-      <text x="145" y="265" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#1C5959" opacity="0.8">Modules 1, 3</text>
+    <!-- Naruto node -->
+    <rect x="50" y="78" width="220" height="96" rx="10" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
+    <text x="160" y="110" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#854F0B">Naruto Network Graph</text>
+    <text x="160" y="131" text-anchor="middle" class="svg-text-soft" font-size="12.5" fill="#854F0B">Primary canvas</text>
+    <text x="160" y="151" text-anchor="middle" class="svg-text-soft" font-size="11.5" fill="#854F0B" opacity="0.8">Modules 2, 3, 4</text>
 
-      <!-- TwinKit node -->
-      <rect x="620" y="120" width="160" height="80" rx="8" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
-      <text x="700" y="148" text-anchor="middle" class="svg-text" font-size="13" font-weight="500" fill="#854F0B">TwinKit</text>
-      <text x="700" y="168" text-anchor="middle" class="svg-text-soft" font-size="11" fill="#854F0B">Capstone framework</text>
-      <text x="700" y="185" text-anchor="middle" class="svg-text-soft" font-size="10" fill="#854F0B" opacity="0.8">Module 4</text>
-    </svg>
-    <p class="diagram-caption">Each project enters where it adds the most learning value. Resume Graph for the LPG-vs-RDF case where ESCO makes RDF shine. Naruto for the rich modeling and reasoning work. TwinKit as the capstone framework where everything composes.</p>
+    <!-- Resume Graph node -->
+    <rect x="50" y="252" width="220" height="96" rx="10" fill="#FAF6EE" stroke="#2C7A7A" stroke-width="0.5"/>
+    <text x="160" y="284" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C5959">Resume Graph Explorer</text>
+    <text x="160" y="305" text-anchor="middle" class="svg-text-soft" font-size="12.5" fill="#1C5959">ESCO/SKOS anchor</text>
+    <text x="160" y="325" text-anchor="middle" class="svg-text-soft" font-size="11.5" fill="#1C5959" opacity="0.8">Modules 1, 3</text>
+
+    <!-- TwinKit node -->
+    <rect x="560" y="162" width="200" height="96" rx="10" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
+    <text x="660" y="194" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#854F0B">TwinKit</text>
+    <text x="660" y="215" text-anchor="middle" class="svg-text-soft" font-size="12.5" fill="#854F0B">Capstone framework</text>
+    <text x="660" y="235" text-anchor="middle" class="svg-text-soft" font-size="11.5" fill="#854F0B" opacity="0.8">Module 4</text>
+  </svg>
+  <p class="diagram-caption">By Module 4 it all converges in TwinKit &mdash; the capstone framework where modeling, reasoning, and querying compose into a knowledge graph you can deploy and actually ask questions of.</p>
+</div>
+</section>
+
+<!-- ═══════════════ WHERE THINGS STAND ═══════════════ -->
+<section id="status">
+  <div class="eyebrow">Where things stand</div>
+  <h2>Module 1 is underway.</h2>
+  <p>Launched May 31, 2026. Module 1&rsquo;s synthesis pages and hands-on workbooks are published; Modules 2&ndash;4 have their structure and materials drafted ahead. Right now the active work is submodule 1.1 &mdash; RDF as a data model. The full week-by-week tracker, including what stalled, lives in <a href="https://github.com/dagny099/semantic-web-curriculum/blob/main/PROGRESS.md">PROGRESS.md</a>.</p>
+
+  <div class="checklist">
+    <h3>Shipped so far <span class="time">Module 1</span></h3>
+    <ul>
+      <li class="done"><strong>1.1 &mdash; RDF as a data model.</strong> <a href="/modules/01-foundations/submodules/1-1-rdf-vs-lpg.html">RDF vs. LPG synthesis</a>, plus <a href="/modules/01-foundations/submodules/1-1-workbook-naruto.html">Naruto</a> and <a href="/modules/01-foundations/submodules/1-1-workbook-mythology.html">mythology</a> workbooks and a <a href="/modules/01-foundations/submodules/1-1-reading-companion.pdf">reading companion</a>.</li>
+      <li class="done"><strong>1.2 &mdash; SPARQL basics.</strong> <a href="/modules/01-foundations/submodules/1-2-sparql-basics.html">Query-forms synthesis</a>, with <a href="/modules/01-foundations/submodules/1-2-workbook-naruto.html">Naruto</a> and <a href="/modules/01-foundations/submodules/1-2-workbook-mythology.html">mythology</a> workbooks.</li>
+      <li class="done"><strong>1.3 &mdash; Vocabulary landscape.</strong> <a href="/modules/01-foundations/submodules/1-3-vocabulary-landscape.html">FOAF, Dublin Core, SKOS, schema.org synthesis</a> and the <a href="/modules/01-foundations/submodules/1-3-workbook-resume.html">resume workbook</a>.</li>
+      <li class="done"><strong>Reference layer.</strong> The <a href="/reference/cheatsheets/module-1-cheatsheet.html">Module 1 cheat sheet</a>, the <a href="/glossary.html">glossary</a>, and the first resume RDF slice (<code>resume-001.ttl</code>).</li>
+    </ul>
   </div>
+
+  <div class="checklist">
+    <h3>Active right now <span class="time">Submodule 1.1</span></h3>
+    <ul>
+      <li><strong>Work through the 1.1 exercises</strong> &mdash; Wikidata orientation and a hand-written FOAF graph.</li>
+      <li><strong>Begin the primary project</strong> &mdash; the Resume Graph RDF slice that anchors Module 1.</li>
+      <li><strong>Stand up the local stack</strong> &mdash; Apache Jena + Fuseki on <code>localhost:3030</code>, and Prot&eacute;g&eacute; opened once.</li>
+      <li><strong>Publish Week 1 synthesis notes</strong> in my own words, then the first LinkedIn momentum post.</li>
+    </ul>
+  </div>
+
+  <p style="margin-top: 2rem;">For how the readings, synthesis pages, workbooks, and projects fit together, see the <a href="/map.html">curriculum map</a>. For what ships next and when, the <a href="/roadmap.html">roadmap</a>.</p>
 </section>
 
 <!-- ═══════════════ THE REPO ═══════════════ -->
@@ -830,95 +831,29 @@ footer a:hover { color: var(--ink); }
 
   <div class="repo-tree">
     <a class="comment" href="https://github.com/dagny099/semantic-web-curriculum">// dagny099/semantic-web-curriculum</a>
-    ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/README.md">README.md</a>           <span class="comment">// repo front door</span>
-    ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">SYLLABUS.md</a>         <span class="comment">// full 12-week curriculum</span>
-    ├── <a class="file active" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/PROGRESS.md">PROGRESS.md</a>         <span class="comment">// live weekly tracker ← updated 2x/week</span>
-    ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/REFLECTIONS.md">REFLECTIONS.md</a>      <span class="comment">// cross-module learnings</span>
+    ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/README.md">README.md</a>            <span class="comment">// repo front door</span>
+    ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/SYLLABUS.md">SYLLABUS.md</a>          <span class="comment">// full 12-week curriculum</span>
+    ├── <a class="file active" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/PROGRESS.md">PROGRESS.md</a>          <span class="comment">// live weekly tracker ← start here</span>
+    ├── <span class="file">REFLECTIONS.md</span>       <span class="comment">// cross-module learnings (coming soon)</span>
     ├── <span class="dir">modules/</span>
-    │   ├── <a class="dir" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md">01-foundations/</a>
+    │   ├── <a class="dir" href="https://github.com/dagny099/semantic-web-curriculum/tree/main/modules/01-foundations">01-foundations/</a>   <span class="comment">// ← in progress</span>
+    │   │   ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/modules/01-foundations/README.md">README.md</a>      <span class="comment">// module hub</span>
+    │   │   └── <a class="dir" href="/modules/01-foundations/submodules/1-1-rdf-vs-lpg.html">submodules/</a>    <span class="comment">// synthesis pages + workbooks</span>
     │   ├── <a class="dir" href="https://github.com/dagny099/semantic-web-curriculum/tree/main/modules/02-modeling">02-modeling/</a>
     │   ├── <a class="dir" href="https://github.com/dagny099/semantic-web-curriculum/tree/main/modules/03-reasoning">03-reasoning/</a>
     │   └── <a class="dir" href="https://github.com/dagny099/semantic-web-curriculum/tree/main/modules/04-shipping">04-shipping/</a>
-    └── <span class="dir">resources/</span>
-        ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/resources/reading-list.md">reading-list.md</a>
-        ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/resources/tools.md">tools.md</a>
-        └── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/resources/public-kgs.md">public-kgs.md</a>
-  </div>
-</section>
-
-<!-- ═══════════════ PUBLISHING IN PUBLIC ═══════════════ -->
-<section id="publishing">
-  <div class="eyebrow">Publishing in public</div>
-  <h2>Four platforms, distinct roles.</h2>
-  <p>The work lives across multiple surfaces. Each has a different role and a different voice. GitHub is the canonical record. LinkedIn broadcasts progress. The two blogs handle longer-form thinking that doesn&rsquo;t belong in either.</p>
-
-  <div class="platforms">
-    <a class="platform" href="https://github.com/dagny099/semantic-web-curriculum" target="_blank" rel="noopener">
-      <div class="role">Canonical record</div>
-      <div class="name">GitHub repo</div>
-      <p class="desc">The official version. All commits dated. Watch the repo for new artifacts as they land.</p>
-    </a>
-    <a class="platform" href="https://www.linkedin.com/in/barbara-hidalgo-sotelo/" target="_blank" rel="noopener">
-      <div class="role">Broadcast · 2&times;/week</div>
-      <div class="name">LinkedIn</div>
-      <p class="desc">Monday progress + one weekly insight. Friday artifact or open question. Hooks first, white space heavy.</p>
-    </a>
-    <a class="platform" href="https://sensemaking-ai.com" target="_blank" rel="noopener">
-      <div class="role">Deep analysis · end of module</div>
-      <div class="name">sensemaking-ai.com</div>
-      <p class="desc">Long-form essays on the design decisions, the &ldquo;what I changed my mind about,&rdquo; the cog-sci-flavored reflections.</p>
-    </a>
-    <a class="platform" href="https://barbhs.com" target="_blank" rel="noopener">
-      <div class="role">Musings · occasional</div>
-      <div class="name">barbhs.com</div>
-      <p class="desc">The most personal layer. Working-notebook explorations that don&rsquo;t fit anywhere else.</p>
-    </a>
-  </div>
-</section>
-
-<!-- ═══════════════ NEXT TO LAST WEEKEND IN MAY ═══════════════ -->
-<section id="tomorrow">
-  <div class="eyebrow">When I get started</div>
-  <h2>This weekend: pre-week setup.</h2>
-  <p>The pre-week is roughly 2&ndash;3 hours of setup work spread across morning and afternoon. Front-loading these means Module 1&rsquo;s first day isn&rsquo;t lost to environment-fighting.</p>
-
-  <div class="checklist">
-    <h3>Morning <span class="time">~1.5 hours</span></h3>
-    <ul>
-      <li class="done"><strong>Push the initial repo files to GitHub.</strong> README, SYLLABUS, PROGRESS, CLAUDE.md, Module 1 README. The repo should look maintained from day one.</li>
-      <li><strong>Install Apache Jena + Fuseki locally.</strong> Verify it runs on <code>localhost:3030</code> and I can create a new dataset.</li>
-      <li><strong>Install Prot&eacute;g&eacute;</strong> and open it once. Don&rsquo;t do anything with it yet.</li>
-      <li><strong>Bookmark the W3C primer set.</strong> RDF 1.1, Turtle, SPARQL 1.1 Query &mdash; these are my spec references.</li>
-    </ul>
-  </div>
-
-  <div class="checklist">
-    <h3>Afternoon <span class="time">~1 hour</span></h3>
-    <ul>
-      <li><strong>Pick the LinkedIn launch post variant</strong> and schedule for Tuesday or Wednesday mid-morning Central time. Repo link goes in the first comment, not the post body.</li>
-      <li><strong>Block 12 Tuesday lunch slots</strong> as &ldquo;synthesis writing&rdquo; (30 minutes each). That single ritual carries the curriculum forward.</li>
-      <li><strong>Order or borrow Allemang, Hendler &amp; Gandon</strong> (3rd ed., 2020) if not already on the shelf.</li>
-      <li><strong>Skim Hogan et al. introduction</strong> (kgbook.org sections 1&ndash;2). Vocabulary calibration only &mdash; don&rsquo;t try to read the whole thing.</li>
-    </ul>
-  </div>
-
-  <div class="checklist">
-    <h3>This week (Module 1 begins) <span class="time">~6 hours</span></h3>
-    <ul>
-      <li><strong>Read Allemang chapters 1&ndash;3</strong> (RDF foundations, RDFS).</li>
-      <li><strong>Exercise 1.1: Wikidata orientation.</strong> Three queries through query.wikidata.org. Notes go in <code>modules/01-foundations/notes/week-01.md</code>.</li>
-      <li><strong>Exercise 1.2: Hand-write a FOAF graph</strong> of myself and three of my projects.</li>
-      <li><strong>Begin Exercise 1.3: Resume Graph RDF slice.</strong> The Module 1 primary project.</li>
-      <li><strong>Write Week 1 synthesis notes.</strong> One paragraph, in my own words, on what it felt like to cover the material.</li>
-      <li><strong>Post first Monday LinkedIn update.</strong> &ldquo;Week 1 of 12&rdquo; momentum check.</li>
-    </ul>
+    ├── <span class="dir">resources/</span>
+    │   ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/resources/reading-list.md">reading-list.md</a>
+    │   ├── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/resources/tools.md">tools.md</a>
+    │   └── <a class="file" href="https://github.com/dagny099/semantic-web-curriculum/blob/main/resources/public-kgs.md">public-kgs.md</a>
+    └── <span class="comment">// site pages: </span><a class="file" href="/map.html">map</a> · <a class="file" href="/glossary.html">glossary</a> · <a class="file" href="/roadmap.html">roadmap</a>
   </div>
 </section>
 
 <!-- ═══════════════ FUTURE CONTENT ═══════════════ -->
 <section id="future">
-  <div class="eyebrow">Coming as the work progresses</div>
-  <h2>Placeholders for richer content.</h2>
+  <div class="eyebrow">What&rsquo;s next</div>
+  <h2>Coming as each module lands.</h2>
   <p>These slots will fill in as each module produces its artifacts. Listed here so the structure is visible from day one and the work has clear targets. Track what&rsquo;s shipped and what&rsquo;s next on the <a href="/roadmap.html">roadmap</a>.</p>
 
   <div class="future-grid">
@@ -1013,7 +948,8 @@ footer a:hover { color: var(--ink); }
     <div>
       <p>This curriculum is published under Sensemaking AI, an independent AI and machine learning consulting practice. It&rsquo;s run solo by Barbara Hidalgo-Sotelo &mdash; cognitive scientist, AI/ML consultant, Toastmaster, marathon runner, beekeeper, and longtime builder of quirky-but-rigorous data projects.</p>
       <p>Two web homes, two different jobs. <a href="https://barbhs.com" target="_blank" rel="noopener">barbhs.com</a> is the technical portfolio &mdash; projects, experiments, the body of work. <a href="https://sensemaking-ai.com" target="_blank" rel="noopener">sensemaking-ai.com</a> is the practice &mdash; applied AI work for people and organizations who want to think clearly with AI, not just move faster because of it.</p>
-      <p>The curriculum sits between them. It&rsquo;s how the technical body of work gets developed in the open, and where the practice&rsquo;s intellectual commitments get tested against real material.</p>
+      <p>The curriculum sits between them. It&rsquo;s how the technical body of work gets developed in the open &mdash; redos, failed exercises, and wrong turns included, because the process is more useful than a polished finished state. More on why I work this way is in the <a href="https://barbhs.com">launch note</a>.</p>
+      <p>Follow along on <a href="https://github.com/dagny099/semantic-web-curriculum" target="_blank" rel="noopener">GitHub</a> for the canonical record and <a href="https://www.linkedin.com/in/barbara-hidalgo-sotelo/" target="_blank" rel="noopener">LinkedIn</a> for twice-weekly progress; longer essays land on <a href="https://sensemaking-ai.com" target="_blank" rel="noopener">sensemaking-ai.com</a>.</p>
       <p>Questions, corrections, and discussion welcome via the repository&rsquo;s issues. Pull requests on the curriculum itself aren&rsquo;t accepted &mdash; this is a personal learning project &mdash; but disagreements about design choices are always interesting.</p>
     </div>
     <div>
@@ -1031,10 +967,13 @@ footer a:hover { color: var(--ink); }
     &nbsp;·&nbsp; Code MIT &nbsp;·&nbsp; Content CC BY 4.0
   </div>
   <div class="links">
+    <a href="/map.html">Map</a>
+    <a href="/glossary.html">Glossary</a>
+    <a href="/roadmap.html">Roadmap</a>
+    <a href="https://github.com/dagny099/semantic-web-curriculum" target="_blank" rel="noopener">GitHub</a>
     <a href="https://www.linkedin.com/in/barbara-hidalgo-sotelo/" target="_blank" rel="noopener">LinkedIn</a>
     <a href="https://sensemaking-ai.com" target="_blank" rel="noopener">sensemaking-ai.com</a>
     <a href="https://barbhs.com" target="_blank" rel="noopener">barbhs.com</a>
-    <a href="https://docs.barbhs.com/naruto-network-graph/" target="_blank" rel="noopener">Naruto Graph</a>
   </div>
   © 2026 Barbara Hidalgo-Sotelo. All rights reserved.
 </footer>

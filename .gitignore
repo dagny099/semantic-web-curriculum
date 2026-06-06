@@ -30,3 +30,10 @@ npm-debug.log*
 # OS
 Thumbs.db
 ehthumbs.db
+
+# Jekyll / GitHub Pages
+_site/
+.jekyll-cache/
+.jekyll-metadata
+vendor/
+.bundle/
