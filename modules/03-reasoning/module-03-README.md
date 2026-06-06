@@ -232,4 +232,4 @@ If only one of Project A or Project B got done, that's fine — pick up the othe
 
 ## Module navigation
 
-⬅ [Module 2 — Modeling](../02-modeling/) · [Back to repo](../../README.md) · ➡ [Module 4 — Shipping](../04-shipping/)
+⬅ [Module 2 — Modeling](../02-modeling/module-02-README.html) · [Back to repo](../../README.md) · ➡ [Module 4 — Shipping](../04-shipping/module-04-README.html)

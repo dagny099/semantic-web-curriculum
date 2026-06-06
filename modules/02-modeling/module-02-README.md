@@ -195,4 +195,4 @@ If after 20+ hours the class hierarchy isn't stabilizing, the gap may be bigger 
 
 ## Module navigation
 
-⬅ [Module 1 — Foundations](../01-foundations/) · [Back to repo](../../README.md) · ➡ [Module 3 — Reasoning](../03-reasoning/)
+⬅ [Module 1 — Foundations](../01-foundations/README.html) · [Back to repo](../../README.md) · ➡ [Module 3 — Reasoning](../03-reasoning/module-03-README.html)

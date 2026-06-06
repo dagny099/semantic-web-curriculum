@@ -20,10 +20,10 @@ This is not a cohort course or paid enrollment. It's a learning journey publishe
 
 | Module | Theme | Weeks | Status |
 |---|---|---|---|
-| [1](./modules/01-foundations/) | Foundations: RDF, Turtle, basic SPARQL | 1-3 | In progress |
-| [2](./modules/02-modeling/) | Modeling: RDFS, OWL, ontology design | 4-6 | Not started |
-| [3](./modules/03-reasoning/) | Reasoning at the edge | 7-9 | Not started |
-| [4](./modules/04-shipping/) | Shipping semantic systems | 10-12 | Not started |
+| [1](./modules/01-foundations/README.html) | Foundations: RDF, Turtle, basic SPARQL | 1-3 | In progress |
+| [2](./modules/02-modeling/module-02-README.html) | Modeling: RDFS, OWL, ontology design | 4-6 | Not started |
+| [3](./modules/03-reasoning/module-03-README.html) | Reasoning at the edge | 7-9 | Not started |
+| [4](./modules/04-shipping/module-04-README.html) | Shipping semantic systems | 10-12 | Not started |
 
 Full details in **[SYLLABUS.md](./SYLLABUS.md)**. Live progress in **[PROGRESS.md](./PROGRESS.md)**.
 

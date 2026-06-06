@@ -229,4 +229,4 @@ If the Naruto KG Explorer didn't deploy, document the blocker honestly in `REFLE
 
 ## Final navigation
 
-⬅ [Module 3 — Reasoning](../03-reasoning/) · [Back to repo](../../README.md) · ➡ [Reflections](../../REFLECTIONS.md)
+⬅ [Module 3 — Reasoning](../03-reasoning/module-03-README.html) · [Back to repo](../../README.md) · ➡ Reflections (coming soon)

@@ -266,4 +266,4 @@ If the answer feels vague, redo Exercise 1.3 before moving on. The comparison wo
 
 ## Module navigation
 
-⬅ [Back to repo](../../README.md) · ➡ [Module 2 — Modeling](../02-modeling/) (not yet started)
+⬅ [Back to repo](../../README.md) · ➡ [Module 2 — Modeling](../02-modeling/module-02-README.html)
