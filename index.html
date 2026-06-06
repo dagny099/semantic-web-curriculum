@@ -8,33 +8,19 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/assets/css/meaning-layer.css">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/swirl/swirl-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/swirl/swirl-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/swirl/swirl-180.png">
 
 <style>
-:root {
-  --paper: #FAF6EE;
-  --paper-warm: #F5EFE2;
-  --ink: #1C1A17;
-  --ink-soft: #3D3A35;
-  --warm-gray: #6E6862;
-  --warm-gray-light: #9B9489;
-  --amber: #B9722A;
-  --amber-soft: #E8A85C;
-  --amber-tint: #F5E3C8;
-  --teal: #2C7A7A;
-  --teal-soft: #5BA8A8;
-  --line: rgba(28, 26, 23, 0.1);
-  --line-soft: rgba(28, 26, 23, 0.05);
-
-  --font-serif: 'Instrument Serif', Georgia, serif;
-  --font-sans: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
-
-  --unit: 4px;
-  --reading-width: 50rem;
-  --content-width: 62rem;
-  --wide-width: 76rem;
-}
+/* Design tokens (palette, fonts, layout) are defined once in
+   /assets/css/meaning-layer.css — the shared editorial system.
+   Legacy names used below (--amber, --paper-warm, --teal, …) are
+   aliased to the editorial palette there. */
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -103,25 +89,26 @@ section:first-of-type { border-top: none; }
   padding: 2rem 0 0;
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 }
 .brand-mark {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
-  letter-spacing: -0.005em;
   color: var(--ink);
   border-bottom: none;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.6rem;
 }
-.brand-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--amber);
-  border-radius: 50%;
-  display: inline-block;
+.brand-swirl { width: 34px; height: 34px; display: block; flex-shrink: 0; }
+.brand-text { display: flex; flex-direction: column; line-height: 1.05; }
+.brand-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
+.brand-name { font-family: var(--font-serif); font-size: 1.15rem; color: var(--ink); }
 .site-header nav {
   display: flex;
   gap: 2rem;
@@ -140,7 +127,15 @@ section:first-of-type { border-top: none; }
 
 .hero { padding: 5rem 0 4rem; border-top: none; }
 .hero h1 { max-width: 18ch; margin-bottom: 1.5rem; }
-.hero h1 em { color: var(--amber); }
+.hero h1 em { color: var(--coral); }
+
+.hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 3.5rem; align-items: center; }
+.hero-copy h1 { max-width: none; font-size: clamp(2.5rem, 4vw, 3.5rem); }
+.hero-art img { display: block; width: 100%; height: auto; border-radius: 12px; }
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .hero-art { order: -1; }
+}
 .hero .lead { font-size: 1.375rem; line-height: 1.4; margin-bottom: 2.5rem; color: var(--ink-soft); }
 .hero-meta {
   display: flex;
@@ -159,8 +154,8 @@ section:first-of-type { border-top: none; }
   align-items: center;
   gap: 0.5rem;
   padding: 0.375rem 0.875rem;
-  background: var(--amber-tint);
-  color: var(--amber);
+  background: var(--coral-tint);
+  color: var(--coral);
   border-radius: 100px;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -171,7 +166,7 @@ section:first-of-type { border-top: none; }
   content: "";
   width: 6px;
   height: 6px;
-  background: var(--amber);
+  background: var(--coral);
   border-radius: 50%;
   animation: pulse 2.5s ease-in-out infinite;
 }
@@ -263,7 +258,7 @@ a.module-card { border: 1px solid var(--line); }
   position: absolute;
   top: 1rem;
   right: 1rem;
-  color: var(--amber);
+  color: var(--coral);
   font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -294,8 +289,8 @@ a.module-card { border: 1px solid var(--line); }
   align-self: flex-start;
   margin-bottom: 1rem;
 }
-.project-card.primary .tag { background: var(--amber); color: var(--paper); }
-.project-card.secondary .tag { background: var(--teal); color: var(--paper); }
+.project-card.primary .tag { background: var(--teal); color: var(--paper); }
+.project-card.secondary .tag { background: var(--coral); color: var(--paper); }
 .project-card h3 { margin-bottom: 0.75rem; }
 .project-card p { font-size: 0.95rem; flex: 1; }
 .project-card .stats {
@@ -388,7 +383,7 @@ a.module-card { border: 1px solid var(--line); }
   background: var(--amber);
   border-color: var(--amber);
   /* checkmark drawn with a tiny inline SVG */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8L7 11.5L13 5' stroke='%23FAF6EE' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8L7 11.5L13 5' stroke='%23FBFAF6' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size: 12px;
   background-position: center;
   background-repeat: no-repeat;
@@ -558,7 +553,13 @@ footer a:hover { color: var(--ink); }
 <div class="page">
 
 <header class="site-header">
-  <a href="#top" class="brand-mark"><span class="brand-dot"></span> Sensemaking AI</a>
+  <a href="#top" class="brand-mark">
+    <img class="brand-swirl" src="/assets/swirl/swirl-mark-square.png" alt="" aria-hidden="true">
+    <span class="brand-text">
+      <span class="brand-eyebrow">a Sensemaking AI series</span>
+      <span class="brand-name">Sensemaking Semantic Web</span>
+    </span>
+  </a>
   <nav>
     <a href="/map.html">Map</a>
     <a href="/SYLLABUS.html">Syllabus</a>
@@ -572,28 +573,35 @@ footer a:hover { color: var(--ink); }
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <section class="hero">
-  <div class="eyebrow">Semantic web curriculum · built in the open</div>
-  <h1>Twelve weeks, from first triple to deployed knowledge graph.</h1>
-  <p class="lead">RDF, OWL, SPARQL, and modern knowledge graphs &mdash; from first principles to a deployed hybrid LLM + knowledge graph application. Every artifact, note, and stumbling point published as I go.</p>
-  <div class="status-pill">Module 1 · in progress &mdash; launched May 31, 2026</div>
-  <dl class="hero-meta">
-    <div>
-      <dt>Duration</dt>
-      <dd>12 weeks · 4 modules</dd>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">Semantic web curriculum · built in the open</div>
+      <h1>Twelve weeks, from first triple to deployed knowledge graph.</h1>
+      <p class="lead">RDF, OWL, SPARQL, and modern knowledge graphs &mdash; from first principles to a deployed hybrid LLM + knowledge graph application. Every artifact, note, and stumbling point published as I go.</p>
+      <div class="status-pill">Module 1 · in progress &mdash; launched May 31, 2026</div>
+      <dl class="hero-meta">
+        <div>
+          <dt>Duration</dt>
+          <dd>12 weeks · 4 modules</dd>
+        </div>
+        <div>
+          <dt>Effort</dt>
+          <dd>~5&ndash;7 hours / week</dd>
+        </div>
+        <div>
+          <dt>Author</dt>
+          <dd>Barbara Hidalgo-Sotelo</dd>
+        </div>
+        <div>
+          <dt>Brand</dt>
+          <dd>Sensemaking AI</dd>
+        </div>
+      </dl>
     </div>
-    <div>
-      <dt>Effort</dt>
-      <dd>~5&ndash;7 hours / week</dd>
+    <div class="hero-art">
+      <img src="/placeholder.png" alt="Abstract knowledge-graph illustration in cream, amber, and teal — nodes joined by dashed connections.">
     </div>
-    <div>
-      <dt>Author</dt>
-      <dd>Barbara Hidalgo-Sotelo</dd>
-    </div>
-    <div>
-      <dt>Brand</dt>
-      <dd>Sensemaking AI</dd>
-    </div>
-  </dl>
+  </div>
 </section>
 
 <!-- ═══════════════ THE ARC ═══════════════ -->
@@ -608,40 +616,40 @@ footer a:hover { color: var(--ink); }
       <desc id="arc-desc">Four modules arranged left to right: Foundations, Modeling, Reasoning, and Shipping. Each shows weeks and key concepts.</desc>
 
       <!-- Journey line -->
-      <path d="M 80 200 Q 280 180, 460 200 T 820 200" stroke="#B9722A" stroke-width="1.5" fill="none" stroke-dasharray="4 6" opacity="0.5"/>
+      <path d="M 80 200 Q 280 180, 460 200 T 820 200" stroke="#1B6B5E" stroke-width="1.5" fill="none" stroke-dasharray="4 6" opacity="0.5"/>
 
       <!-- Module 1 -->
-      <circle cx="120" cy="200" r="6" fill="#B9722A"/>
-      <text x="120" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">i.</text>
-      <text x="120" y="240" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C1A17">Foundations</text>
-      <text x="120" y="261" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Weeks 1&ndash;3</text>
-      <text x="120" y="290" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">RDF · Turtle · SPARQL</text>
+      <circle cx="120" cy="200" r="6" fill="#1B6B5E"/>
+      <text x="120" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">i.</text>
+      <text x="120" y="240" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Foundations</text>
+      <text x="120" y="261" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 1&ndash;3</text>
+      <text x="120" y="290" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">RDF · Turtle · SPARQL</text>
 
       <!-- Module 2 -->
-      <circle cx="380" cy="190" r="6" fill="#B9722A"/>
-      <text x="380" y="160" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">ii.</text>
-      <text x="380" y="230" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C1A17">Modeling</text>
-      <text x="380" y="251" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Weeks 4&ndash;6</text>
-      <text x="380" y="280" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">RDFS · OWL · design judgment</text>
+      <circle cx="380" cy="190" r="6" fill="#1B6B5E"/>
+      <text x="380" y="160" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">ii.</text>
+      <text x="380" y="230" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Modeling</text>
+      <text x="380" y="251" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 4&ndash;6</text>
+      <text x="380" y="280" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">RDFS · OWL · design judgment</text>
 
       <!-- Module 3 (deepest dive) -->
-      <circle cx="620" cy="195" r="8" fill="#B9722A" stroke="#B9722A" stroke-width="2" fill-opacity="0.3"/>
-      <circle cx="620" cy="195" r="4" fill="#B9722A"/>
-      <text x="620" y="165" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">iii.</text>
-      <text x="620" y="235" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C1A17">Reasoning</text>
-      <text x="620" y="256" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Weeks 7&ndash;9</text>
-      <text x="620" y="285" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Inference · reification · SHACL</text>
+      <circle cx="620" cy="195" r="8" fill="#1B6B5E" stroke="#1B6B5E" stroke-width="2" fill-opacity="0.3"/>
+      <circle cx="620" cy="195" r="4" fill="#1B6B5E"/>
+      <text x="620" y="165" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">iii.</text>
+      <text x="620" y="235" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Reasoning</text>
+      <text x="620" y="256" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 7&ndash;9</text>
+      <text x="620" y="285" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Inference · reification · SHACL</text>
 
       <!-- Module 4 -->
-      <circle cx="820" cy="200" r="6" fill="#B9722A"/>
-      <text x="820" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#B9722A">iv.</text>
-      <text x="820" y="240" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C1A17">Shipping</text>
-      <text x="820" y="261" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">Weeks 10&ndash;12</text>
-      <text x="820" y="290" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#6E6862">SPARQL UPDATE · LLM + KG</text>
+      <circle cx="820" cy="200" r="6" fill="#1B6B5E"/>
+      <text x="820" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">iv.</text>
+      <text x="820" y="240" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Shipping</text>
+      <text x="820" y="261" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 10&ndash;12</text>
+      <text x="820" y="290" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">SPARQL UPDATE · LLM + KG</text>
 
       <!-- Top label -->
-      <text x="450" y="50" text-anchor="middle" class="svg-text-serif" font-size="20" font-style="italic" fill="#1C1A17">From first principles → deployed system</text>
-      <line x1="380" y1="65" x2="520" y2="65" stroke="#B9722A" stroke-width="0.5" opacity="0.4"/>
+      <text x="450" y="50" text-anchor="middle" class="svg-text-serif" font-size="20" font-style="italic" fill="#1A1A1A">From first principles → deployed system</text>
+      <line x1="380" y1="65" x2="520" y2="65" stroke="#1B6B5E" stroke-width="0.5" opacity="0.4"/>
     </svg>
     <p class="diagram-caption">Think of it as a learning spiral: each module revisits the layer beneath it at greater depth. By the deepest dive &mdash; Module 3 &mdash; you&rsquo;re working ground you&rsquo;ve already walked twice.</p>
   </div>
@@ -689,32 +697,32 @@ footer a:hover { color: var(--ink); }
           <desc id="stack-desc">Layered diagram showing RDF at the bottom, then RDFS, OWL, SHACL, and Applications at the top, with SPARQL running vertically through all layers.</desc>
 
           <!-- Layers, bottom up -->
-          <rect x="60" y="290" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
-          <text x="100" y="320" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">RDF</text>
-          <text x="370" y="320" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">triples · URIs · the graph</text>
+          <rect x="60" y="290" width="320" height="50" rx="4" fill="#E3EFEC" stroke="#1B6B5E" stroke-width="0.5"/>
+          <text x="100" y="320" class="svg-text" font-size="14" font-weight="500" fill="#124B42">RDF</text>
+          <text x="370" y="320" text-anchor="end" class="svg-text-soft" font-size="11" fill="#124B42">triples · URIs · the graph</text>
 
-          <rect x="60" y="232" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5" opacity="0.85"/>
-          <text x="100" y="262" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">RDFS</text>
-          <text x="370" y="262" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">classes · subclasses · domain/range</text>
+          <rect x="60" y="232" width="320" height="50" rx="4" fill="#E3EFEC" stroke="#1B6B5E" stroke-width="0.5" opacity="0.85"/>
+          <text x="100" y="262" class="svg-text" font-size="14" font-weight="500" fill="#124B42">RDFS</text>
+          <text x="370" y="262" text-anchor="end" class="svg-text-soft" font-size="11" fill="#124B42">classes · subclasses · domain/range</text>
 
-          <rect x="60" y="174" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5" opacity="0.7"/>
-          <text x="100" y="204" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">OWL</text>
-          <text x="370" y="204" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">restrictions · equivalence · reasoning</text>
+          <rect x="60" y="174" width="320" height="50" rx="4" fill="#E3EFEC" stroke="#1B6B5E" stroke-width="0.5" opacity="0.7"/>
+          <text x="100" y="204" class="svg-text" font-size="14" font-weight="500" fill="#124B42">OWL</text>
+          <text x="370" y="204" text-anchor="end" class="svg-text-soft" font-size="11" fill="#124B42">restrictions · equivalence · reasoning</text>
 
-          <rect x="60" y="116" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5" opacity="0.55"/>
-          <text x="100" y="146" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">SHACL</text>
-          <text x="370" y="146" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">constraints · validation · shapes</text>
+          <rect x="60" y="116" width="320" height="50" rx="4" fill="#E3EFEC" stroke="#1B6B5E" stroke-width="0.5" opacity="0.55"/>
+          <text x="100" y="146" class="svg-text" font-size="14" font-weight="500" fill="#124B42">SHACL</text>
+          <text x="370" y="146" text-anchor="end" class="svg-text-soft" font-size="11" fill="#124B42">constraints · validation · shapes</text>
 
-          <rect x="60" y="58" width="320" height="50" rx="4" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5" opacity="0.4"/>
-          <text x="100" y="88" class="svg-text" font-size="14" font-weight="500" fill="#854F0B">Applications</text>
-          <text x="370" y="88" text-anchor="end" class="svg-text-soft" font-size="11" fill="#854F0B">hybrid retrieval · KG explorer</text>
+          <rect x="60" y="58" width="320" height="50" rx="4" fill="#E3EFEC" stroke="#1B6B5E" stroke-width="0.5" opacity="0.4"/>
+          <text x="100" y="88" class="svg-text" font-size="14" font-weight="500" fill="#124B42">Applications</text>
+          <text x="370" y="88" text-anchor="end" class="svg-text-soft" font-size="11" fill="#124B42">hybrid retrieval · KG explorer</text>
 
           <!-- SPARQL bar running vertically -->
-          <rect x="395" y="58" width="50" height="282" rx="4" fill="#2C7A7A" fill-opacity="0.12" stroke="#2C7A7A" stroke-width="0.5"/>
-          <text x="420" y="200" text-anchor="middle" class="svg-text" font-size="13" font-weight="500" fill="#2C7A7A" transform="rotate(-90 420 200)">SPARQL — queries through all layers</text>
+          <rect x="395" y="58" width="50" height="282" rx="4" fill="#DC6B4F" fill-opacity="0.12" stroke="#DC6B4F" stroke-width="0.5"/>
+          <text x="420" y="200" text-anchor="middle" class="svg-text" font-size="13" font-weight="500" fill="#DC6B4F" transform="rotate(-90 420 200)">SPARQL — queries through all layers</text>
 
           <!-- Top label -->
-          <text x="220" y="30" text-anchor="middle" class="svg-text-serif" font-size="16" font-style="italic" fill="#1C1A17">Built bottom up</text>
+          <text x="220" y="30" text-anchor="middle" class="svg-text-serif" font-size="16" font-style="italic" fill="#1A1A1A">Built bottom up</text>
         </svg>
       </div>
     </div>
@@ -760,35 +768,35 @@ footer a:hover { color: var(--ink); }
     <desc id="eco-desc">The curriculum at the center, with three projects connected to it: Naruto Network Graph as primary canvas, Resume Graph Explorer as the Module 1 anchor, and TwinKit as the capstone framework.</desc>
 
     <!-- Title -->
-    <text x="415" y="40" text-anchor="middle" class="svg-text-serif" font-size="26" fill="#1C1A17">Where each project connects</text>
+    <text x="415" y="40" text-anchor="middle" class="svg-text-serif" font-size="26" fill="#1A1A1A">Where each project connects</text>
 
     <!-- Connections -->
-    <line x1="270" y1="126" x2="344" y2="169" stroke="#B9722A" stroke-width="1.25" stroke-dasharray="3 4" opacity="0.6"/>
-    <line x1="270" y1="300" x2="345" y2="253" stroke="#2C7A7A" stroke-width="1.25" stroke-dasharray="3 4" opacity="0.6"/>
-    <line x1="497" y1="210" x2="560" y2="210" stroke="#B9722A" stroke-width="1.25" stroke-dasharray="3 4" opacity="0.6"/>
+    <line x1="270" y1="126" x2="344" y2="169" stroke="#1B6B5E" stroke-width="1.25" stroke-dasharray="3 4" opacity="0.6"/>
+    <line x1="270" y1="300" x2="345" y2="253" stroke="#DC6B4F" stroke-width="1.25" stroke-dasharray="3 4" opacity="0.6"/>
+    <line x1="497" y1="210" x2="560" y2="210" stroke="#1B6B5E" stroke-width="1.25" stroke-dasharray="3 4" opacity="0.6"/>
 
     <!-- Center hub -->
-    <circle cx="415" cy="210" r="82" fill="#FAF6EE" stroke="#B9722A" stroke-width="1.5"/>
-    <text x="415" y="204" text-anchor="middle" class="svg-text-serif" font-size="17" font-style="italic" fill="#1C1A17">Sensemaking</text>
-    <text x="415" y="227" text-anchor="middle" class="svg-text-serif" font-size="17" font-style="italic" fill="#1C1A17">Semantic Web</text>
+    <circle cx="415" cy="210" r="82" fill="#FBFAF6" stroke="#1B6B5E" stroke-width="1.5"/>
+    <text x="415" y="204" text-anchor="middle" class="svg-text-serif" font-size="17" font-style="italic" fill="#1A1A1A">Sensemaking</text>
+    <text x="415" y="227" text-anchor="middle" class="svg-text-serif" font-size="17" font-style="italic" fill="#1A1A1A">Semantic Web</text>
 
     <!-- Naruto node -->
-    <rect x="50" y="78" width="220" height="96" rx="10" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
-    <text x="160" y="110" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#854F0B">Naruto Network Graph</text>
-    <text x="160" y="131" text-anchor="middle" class="svg-text-soft" font-size="12.5" fill="#854F0B">Primary canvas</text>
-    <text x="160" y="151" text-anchor="middle" class="svg-text-soft" font-size="11.5" fill="#854F0B" opacity="0.8">Modules 2, 3, 4</text>
+    <rect x="50" y="78" width="220" height="96" rx="10" fill="#E3EFEC" stroke="#1B6B5E" stroke-width="0.5"/>
+    <text x="160" y="110" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#124B42">Naruto Network Graph</text>
+    <text x="160" y="131" text-anchor="middle" class="svg-text-soft" font-size="12.5" fill="#124B42">Primary canvas</text>
+    <text x="160" y="151" text-anchor="middle" class="svg-text-soft" font-size="11.5" fill="#124B42" opacity="0.8">Modules 2, 3, 4</text>
 
     <!-- Resume Graph node -->
-    <rect x="50" y="252" width="220" height="96" rx="10" fill="#FAF6EE" stroke="#2C7A7A" stroke-width="0.5"/>
-    <text x="160" y="284" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1C5959">Resume Graph Explorer</text>
-    <text x="160" y="305" text-anchor="middle" class="svg-text-soft" font-size="12.5" fill="#1C5959">ESCO/SKOS anchor</text>
-    <text x="160" y="325" text-anchor="middle" class="svg-text-soft" font-size="11.5" fill="#1C5959" opacity="0.8">Modules 1, 3</text>
+    <rect x="50" y="252" width="220" height="96" rx="10" fill="#FBFAF6" stroke="#DC6B4F" stroke-width="0.5"/>
+    <text x="160" y="284" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#9A3B22">Resume Graph Explorer</text>
+    <text x="160" y="305" text-anchor="middle" class="svg-text-soft" font-size="12.5" fill="#9A3B22">ESCO/SKOS anchor</text>
+    <text x="160" y="325" text-anchor="middle" class="svg-text-soft" font-size="11.5" fill="#9A3B22" opacity="0.8">Modules 1, 3</text>
 
     <!-- TwinKit node -->
-    <rect x="560" y="162" width="200" height="96" rx="10" fill="#F5E3C8" stroke="#B9722A" stroke-width="0.5"/>
-    <text x="660" y="194" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#854F0B">TwinKit</text>
-    <text x="660" y="215" text-anchor="middle" class="svg-text-soft" font-size="12.5" fill="#854F0B">Capstone framework</text>
-    <text x="660" y="235" text-anchor="middle" class="svg-text-soft" font-size="11.5" fill="#854F0B" opacity="0.8">Module 4</text>
+    <rect x="560" y="162" width="200" height="96" rx="10" fill="#E3EFEC" stroke="#1B6B5E" stroke-width="0.5"/>
+    <text x="660" y="194" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#124B42">TwinKit</text>
+    <text x="660" y="215" text-anchor="middle" class="svg-text-soft" font-size="12.5" fill="#124B42">Capstone framework</text>
+    <text x="660" y="235" text-anchor="middle" class="svg-text-soft" font-size="11.5" fill="#124B42" opacity="0.8">Module 4</text>
   </svg>
   <p class="diagram-caption">By Module 4 it all converges in TwinKit &mdash; the capstone framework where modeling, reasoning, and querying compose into a knowledge graph you can deploy and actually ask questions of.</p>
 </div>

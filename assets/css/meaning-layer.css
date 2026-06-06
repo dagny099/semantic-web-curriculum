@@ -1,0 +1,55 @@
+/* ─────────────────────────────────────────────────────────────
+   meaning-layer.css — canonical token sheet for The Meaning Layer
+   (the editorial system for every page of curriculum.barbhs.com).
+
+   Single source of truth for color + type tokens, transcribed from
+   meaning-layer-kit.md / style-guide-CURRICULUM.png. index.html and
+   the Jekyll markdown layout both link this file so tokens are defined
+   ONCE, never duplicated.
+
+   The "legacy aliases" block remaps the old warm token names the
+   homepage + docs stylesheet still reference (--amber, --paper-warm,
+   etc.) onto the editorial palette, so those files inherit the new
+   system without a find-and-replace on every rule.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* — Editorial palette (kit canonical) — */
+  --paper:        #FBFAF6;   /* warm off-white ground; never pure white */
+  --surface:      #F2EEE4;   /* slightly deeper paper for cards/fills   */
+  --ink:          #1A1A1A;   /* body copy                                */
+  --ink-soft:     #3A3A38;   /* secondary body                          */
+  --teal:         #1B6B5E;   /* editorial lead: headings, links         */
+  --teal-deep:    #124B42;   /* strong headings / weight                */
+  --teal-tint:    #E3EFEC;   /* light teal fill                         */
+  --coral:        #DC6B4F;   /* THE single accent — use sparingly       */
+  --coral-tint:   #F7E4DC;
+  --code-bg:      #14201E;   /* near-black, green-tinted                */
+  --paper-on-dark:#FBFAF6;   /* text on code-bg                         */
+  --muted:        #5A6671;   /* slate captions / meta                   */
+  --muted-light:  #8A929A;
+  --rule:         rgba(26, 26, 26, 0.12);
+  --rule-soft:    rgba(26, 26, 26, 0.06);
+
+  /* — Type — */
+  --font-serif: 'EB Garamond', Georgia, serif;        /* display / headings */
+  --font-sans:  'IBM Plex Sans', system-ui, sans-serif; /* body & UI        */
+  --font-mono:  'IBM Plex Mono', 'SF Mono', Monaco, monospace; /* code      */
+
+  /* — Layout — */
+  --reading-width: 50rem;
+  --content-width: 62rem;
+  --wide-width:    76rem;
+  --unit: 4px;
+
+  /* — Legacy aliases: old warm names → editorial palette — */
+  --paper-warm:      var(--surface);
+  --amber:           var(--teal);        /* old lead (orange) → teal lead   */
+  --amber-soft:      var(--teal-deep);
+  --amber-tint:      var(--teal-tint);
+  --teal-soft:       var(--coral);       /* old secondary → coral accent    */
+  --warm-gray:       var(--muted);
+  --warm-gray-light: var(--muted-light);
+  --line:            var(--rule);
+  --line-soft:       var(--rule-soft);
+}

@@ -6,27 +6,9 @@
    The hand-built HTML pages do not use this file.
    ───────────────────────────────────────────────────────────── */
 
-:root {
-  --paper: #FAF6EE;
-  --paper-warm: #F5EFE2;
-  --ink: #1C1A17;
-  --ink-soft: #3D3A35;
-  --warm-gray: #6E6862;
-  --warm-gray-light: #9B9489;
-  --amber: #B9722A;
-  --amber-soft: #E8A85C;
-  --amber-tint: #F5E3C8;
-  --teal: #2C7A7A;
-  --line: rgba(28, 26, 23, 0.1);
-  --line-soft: rgba(28, 26, 23, 0.05);
-
-  --font-serif: 'Instrument Serif', Georgia, serif;
-  --font-sans: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
-
-  --reading-width: 50rem;
-  --wide-width: 76rem;
-}
+/* Tokens (palette, fonts, layout) come from the shared editorial sheet,
+   /assets/css/meaning-layer.css, which is linked before this file.
+   Legacy names below (--amber, --paper-warm, …) are aliased there. */
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -58,15 +40,16 @@ a:hover { border-color: var(--amber); }
   gap: 1rem;
 }
 .brand-mark {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
   color: var(--ink);
   border-bottom: none;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.6rem;
 }
-.brand-dot { width: 8px; height: 8px; background: var(--amber); border-radius: 50%; display: inline-block; }
+.brand-swirl { width: 30px; height: 30px; display: block; flex-shrink: 0; }
+.brand-text { display: flex; flex-direction: column; line-height: 1.05; }
+.brand-eyebrow { font-family: var(--font-sans); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.brand-name { font-family: var(--font-serif); font-size: 1.1rem; color: var(--ink); }
 .site-header nav { display: flex; gap: 1.75rem; font-size: 0.875rem; flex-wrap: wrap; }
 .site-header nav a { color: var(--warm-gray); border-bottom: none; font-weight: 400; }
 .site-header nav a:hover { color: var(--ink); }
@@ -114,7 +97,7 @@ a:hover { border-color: var(--amber); }
   border: 1px solid var(--line-soft);
 }
 .doc pre {
-  background: var(--ink);
+  background: var(--code-bg);
   color: var(--paper);
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
