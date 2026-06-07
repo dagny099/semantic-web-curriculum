@@ -4,61 +4,33 @@
 
 **Weeks:** 1-3
 **Effort:** ~5-7 hours per week
-**New ground:** Light — you've touched most of this
 
 ---
 
-## Start here: choose your path through Module 1
+The idea at the center of this module is old, but it keeps becoming newly useful. Whenever software starts to do more than store and display information — whenever it needs to search, connect, reason, retrieve, or act — the same problem returns: meaning has to be represented in a form machines can follow.
 
-Module 1 is organized as three self-paced submodules. Pick the path that fits how you learn.
+![One idea, three waves: the semantic web idea resurfacing in 2001, 2012, and now](./module-1-timeline.png)
 
-### Path 1 — Full course path (recommended)
+The names change from wave to wave, but the underlying move is the same. Instead of treating knowledge as loose text, we give software a structure it can traverse: one thing connected to another by a named relationship. That structure has a smallest unit — the triple.
 
-Best for learners who want the full conceptual foundation before building.
+A triple is small enough to seem almost trivial: a subject, a predicate, and an object. But that tiny shape is the atomic unit underneath RDF, Turtle, SPARQL, linked data, vocabularies, and knowledge graphs. It's what lets meaning become something you can write down, connect, query, reuse, and trust across systems.
 
-1. Read the module overview below and keep the [cheat sheet](../../reference/cheatsheets/module-1-cheatsheet.html) open.
-2. For each submodule: do the canonical reading, read the Sensemaking synthesis page, run the workbook, save the receipt (see the table below).
-3. Finish by building the Resume Graph Explorer RDF slice (Submodule 1.3).
-4. Take the 30-second test: explain when you'd choose RDF over a labeled property graph, and when not to.
-
-### Path 2 — Builder-first path
-
-Best for learners who need a runnable win before the theory lands.
-
-1. Start Fuseki and open the [cheat sheet](../../reference/cheatsheets/module-1-cheatsheet.html).
-2. Run the [1.1 workbook](./submodules/1-1-workbook-naruto.html) (or the [mythology variant](./submodules/1-1-workbook-mythology.html)).
-3. Run the [1.2 workbook](./submodules/1-2-workbook-naruto.html) (or [mythology variant](./submodules/1-2-workbook-mythology.html)).
-4. Load `resume-001.ttl` and run the [1.3 resume workbook](./submodules/1-3-workbook-resume.html).
-5. Then go back to the canonical readings and synthesis pages to understand what you just built.
-
-### Path 3 — Artifact path
-
-Best for advanced learners, portfolio builders, or return visits.
-
-1. Read the [1.1 RDF vs. LPG synthesis](./submodules/1-1-rdf-vs-lpg.html).
-2. Run enough workbook queries to confirm your data model intuitions.
-3. Build your own resume RDF slice.
-4. Write the side-by-side query comparison (Cypher vs. SPARQL).
-5. Draft the end-of-module blog post or reflection.
-
----
+Module 1 starts there.
 
 ## What you'll come away with
 
-By the end of this module, you can:
+- Read and write Turtle → write down any fact as a connection a machine can follow
+- Run basic SPARQL → ask questions that follow chains across the data
+- Query local plus Wikidata → borrow the world's facts, not just your own
+- Articulate RDF vs JSON vs property graphs → tell a client which shape their problem actually needs
 
-- Read and write Turtle fluently
-- Run basic SPARQL queries against multiple endpoints (local Fuseki + public Wikidata)
-- Articulate clearly why RDF differs from JSON or a property graph — and when each fits
-- Recognize when a domain naturally wants global identifiers vs. local ones
-
-The **30-second test** for this module: explain to a working engineer why someone would choose RDF over a labeled property graph (or vice versa) without resorting to slogans. If you can do that confidently at the end of Week 3, the foundations have landed.
+By the end, you should be able to explain to a working engineer why someone would choose RDF over a labeled property graph (or vice versa) without resorting to slogans.
 
 ---
 
-## Canonical readings by submodule
+## The three submodules
 
-The rhythm for the full course path: read the canon → read the synthesis → run the workbook → save the receipt.
+The module moves up the stack in order: the data model first (1.1), then the query language that runs over it (1.2), then the vocabularies that make it interoperable (1.3). The rhythm for the full path is the same each week: **read the canon → read the synthesis → run the workbook → save the receipt.**
 
 | Submodule | Canonical reading | Synthesis material | Workbook | Receipt |
 |---|---|---|---|---|
@@ -68,23 +40,44 @@ The rhythm for the full course path: read the canon → read the synthesis → r
 
 The W3C Primer is surprisingly readable — don't skip it just because it's a spec. The Turtle spec is a reference; bookmark it and skim §1-3 for orientation.
 
+**Reference:** keep the [Module 1 cheat sheet](../../reference/cheatsheets/module-1-cheatsheet.html) open while you work. Terms are defined in the [glossary](../../glossary.html), and the [curriculum map](../../map.html) shows how the pieces fit together. (All best viewed on the live site, [curriculum.barbhs.com](https://curriculum.barbhs.com/map.html).)
+
 ---
 
-## Dataset paths
+## Choose your dataset
 
-The Module 1 workbooks support two narrative datasets plus one resume dataset.
+The workbooks come in two narrative flavors plus the resume dataset. Pick one and stay with it — the RDF, Turtle, and SPARQL patterns are identical across all three.
 
-**Naruto path.** Use the Naruto workbooks if you want continuity with the rest of the curriculum. The Naruto graph carries forward into Module 2 ontology design, Module 3 reification and provenance, and Module 4 deployment.
+- **Naruto** — choose this for continuity with the rest of the curriculum. The Naruto graph carries forward into Module 2 (ontology design), Module 3 (reification and provenance), and Module 4 (deployment).
+- **Greek mythology** — the same patterns in a domain that may feel more familiar or less anime-specific. A fully supported alternate path, not a lesser version.
+- **Resume** — the professional-data path, and the bridge into this module's primary artifact: a resume graph slice with RDF, SKOS, and ESCO-style interoperability (Submodule 1.3).
 
-**Greek mythology path.** Use the mythology workbooks if you want the same RDF, Turtle, and SPARQL patterns in a domain that may feel more familiar or less anime-specific. This is a fully supported alternate path, not a lesser version of the exercises.
+---
 
-**Resume path.** The 1.3 resume workbook is the professional-data path and the bridge into the module's primary artifact: a resume graph slice with RDF, SKOS, and ESCO-style interoperability.
+## How to work through it
 
-## What runs where
+Three ways in, depending on what you need.
 
-The synthesis pages, reading companion, and cheat sheet are standalone — no Fuseki required; open them in any browser.
+**If you want the concepts to land before you build** — the suggested path:
 
-The hands-on workbooks (1.1, 1.2, 1.3) require a running Fuseki instance plus the Naruto or mythology example data from the [starter kit](https://github.com/dagny099/semantic-web-curriculum) (data files not yet included in this repo). Exception: `1-3-workbook-resume.html` uses `artifacts/resume-graph/ttl/resume-001.ttl`, which lives in this repo.
+1. Keep the [cheat sheet](../../reference/cheatsheets/module-1-cheatsheet.html) open and skim the submodule table above.
+2. For each submodule: do the canonical reading, read the synthesis page, run the workbook, save the receipt.
+3. Finish by building the Resume Graph Explorer RDF slice (Submodule 1.3).
+4. Take the 30-second test: explain when you'd choose RDF over a labeled property graph, and when not to.
+
+**If you need a runnable win before the theory lands:**
+
+1. Start Fuseki and open the cheat sheet.
+2. Run the [1.1 workbook](./submodules/1-1-workbook-naruto.html), then the [1.2 workbook](./submodules/1-2-workbook-naruto.html) (mythology variants linked in the table).
+3. Load `resume-001.ttl` and run the [1.3 resume workbook](./submodules/1-3-workbook-resume.html).
+4. Then go back to the readings and synthesis pages to understand what you just built.
+
+**If you're already fluent (or returning to this material):**
+
+1. Read the [1.1 RDF vs. LPG synthesis](./submodules/1-1-rdf-vs-lpg.html).
+2. Run enough workbook queries to confirm your data-model intuitions.
+3. Build your own resume RDF slice and write the side-by-side query comparison (Cypher vs. SPARQL).
+4. Draft the end-of-module blog post or reflection.
 
 ---
 
@@ -126,43 +119,6 @@ Use:
 Load into Fuseki. Write three SPARQL queries that match queries already run in Neo4j on the same data. Compare query ergonomics — where does each language pull ahead?
 
 Commit as `exercises/1-4-naruto-slice/` with `data.ttl`, `queries/*.rq`, and a `notes.md` capturing the comparison.
-
----
-
-## Synthesis pages & reference
-
-The published HTML companions to the reading — synthesis essays in the author's voice, plus the back-pocket reference you keep open while working. (Best viewed on the live site, [curriculum.barbhs.com](https://curriculum.barbhs.com/map.html).)
-
-**Submodule 1.1 — RDF as a data model**
-
-| Page | What it is |
-|---|---|
-| [1.1 — RDF vs. LPG](./submodules/1-1-rdf-vs-lpg.html) | Synthesis essay: why you'd reach for RDF over a property graph, illustrated with resume data. |
-| [1.1 workbook — Naruto](./submodules/1-1-workbook-naruto.html) | Hands-on workbook: SELECT, ASK, CONSTRUCT on the Naruto graph. |
-| [1.1 workbook — Greek mythology](./submodules/1-1-workbook-mythology.html) | The same workbook on the mythology domain. |
-| [Reading companion (PDF)](./submodules/1-1-reading-companion.pdf) | Eases you into the denser Allemang and DuCharme chapters. |
-
-**Submodule 1.2 — SPARQL basics**
-
-| Page | What it is |
-|---|---|
-| [1.2 — SPARQL query forms](./submodules/1-2-sparql-basics.html) | Synthesis essay: the four query forms, querying Wikidata and local Fuseki. |
-| [1.2 workbook — Naruto](./submodules/1-2-workbook-naruto.html) | Five query patterns beyond the basics: DESCRIBE, UNION, property paths, FILTER NOT EXISTS, VALUES. |
-| [1.2 workbook — Greek mythology](./submodules/1-2-workbook-mythology.html) | The same five patterns on Greek mythology data. |
-
-**Submodule 1.3 — Vocabulary landscape**
-
-| Page | What it is |
-|---|---|
-| [1.3 — Vocabulary landscape](./submodules/1-3-vocabulary-landscape.html) | Synthesis essay: FOAF, Dublin Core, SKOS, schema.org — reuse before defining. |
-| [1.3 workbook — Resume Graph](./submodules/1-3-workbook-resume.html) | Primary project workbook: build a resume RDF slice with ESCO/SKOS interop. |
-
-**Reference**
-
-| Page | What it is |
-|---|---|
-| [Module 1 cheat sheet](../../reference/cheatsheets/module-1-cheatsheet.html) | Back-pocket Turtle + SPARQL syntax. Keep it open the whole module. |
-| [Glossary](../../glossary.html) · [Curriculum map](../../map.html) | Term definitions, and how all the pieces fit together. |
 
 ---
 
@@ -228,7 +184,7 @@ One paragraph per week, in your own words, capturing what landed and what didn't
 
 ---
 
-## Checklist
+## Activities checklist
 
 ### Reading
 - [ ] Allemang Ch 1-3
@@ -258,9 +214,11 @@ One paragraph per week, in your own words, capturing what landed and what didn't
 
 ## When you're done
 
-Take the 30-second test out loud: explain to a working engineer why someone would choose RDF over a labeled property graph (or vice versa). Record yourself if it helps. If the answer feels confident and concrete — with specific examples, not abstractions — the foundations have landed. Move to Module 2.
+This module opened with one claim: that under three waves of reinvention — the semantic web, the knowledge graph, the grounded agent — sits a single small unit, the triple. The test of whether that landed isn't reciting the claim back.
 
-If the answer feels vague, redo Exercise 1.3 before moving on. The comparison work is where the conceptual difference clicks; rushing past it makes Module 2's modeling work harder.
+It's the 30-second test, out loud: explain to a working engineer why someone would choose RDF over a labeled property graph, and when they shouldn't. If the answer is confident and concrete — specific examples, not abstractions — the foundations have landed. Move to Module 2.
+
+If it feels vague, redo Exercise 1.3 before moving on. The side-by-side comparison is where the difference clicks, and rushing past it makes Module 2's modeling work harder.
 
 ---
 
