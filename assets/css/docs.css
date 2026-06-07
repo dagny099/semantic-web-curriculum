@@ -16,7 +16,7 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-fo
 
 body {
   font-family: var(--font-sans);
-  font-size: 17px;
+  font-size: 19px;
   line-height: 1.65;
   color: var(--ink-soft);
   background: var(--paper);
@@ -51,8 +51,46 @@ a:hover { border-color: var(--amber); }
 .brand-eyebrow { font-family: var(--font-sans); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 .brand-name { font-family: var(--font-serif); font-size: 1.1rem; color: var(--ink); }
 .site-header nav { display: flex; gap: 1.75rem; font-size: 0.875rem; flex-wrap: wrap; }
-.site-header nav a { color: var(--warm-gray); border-bottom: none; font-weight: 400; }
+.site-header nav a { color: var(--warm-gray); border-bottom: 2px solid transparent; padding-bottom: 2px; font-weight: 400; }
 .site-header nav a:hover { color: var(--ink); }
+.site-header nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--teal); }
+
+/* ─── Sticky page section nav (auto-generated from H2s) ─── */
+.page-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line-soft);
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 -2rem;
+  padding: 0 2rem;
+}
+.page-nav::-webkit-scrollbar { display: none; }
+.page-nav a {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+  border-bottom: 2px solid transparent;
+  border-top: none;
+  padding: 0.75rem 1.25rem;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  text-decoration: none;
+}
+.page-nav a:hover,
+.page-nav a.active {
+  color: var(--ink);
+  border-bottom-color: var(--teal);
+}
+@media (max-width: 768px) {
+  .page-nav { margin: 0 -1.25rem; padding: 0 1.25rem; }
+}
 
 /* ─── Reading column ─── */
 

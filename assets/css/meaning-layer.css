@@ -37,9 +37,9 @@
   --font-mono:  'IBM Plex Mono', 'SF Mono', Monaco, monospace; /* code      */
 
   /* — Layout — */
-  --reading-width: 50rem;
-  --content-width: 62rem;
-  --wide-width:    76rem;
+  --reading-width: 60rem;
+  --content-width: 74rem;
+  --wide-width:    92rem;
   --unit: 4px;
 
   /* — Legacy aliases: old warm names → editorial palette — */
@@ -52,4 +52,8 @@
   --warm-gray-light: var(--muted-light);
   --line:            var(--rule);
   --line-soft:       var(--rule-soft);
+}
+
+body {
+  font-size: 19px;
 }

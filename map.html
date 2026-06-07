@@ -53,7 +53,7 @@
     background: var(--coral);
     margin-top: 1.25rem;
   }
-  .masthead-inner { max-width: 64rem; margin: 0 auto; }
+  .masthead-inner { max-width: 82rem; margin: 0 auto; }
   .brand {
     font-size: 0.7rem;
     letter-spacing: 0.22em;
@@ -74,13 +74,13 @@
   .lede {
     font-size: 1rem;
     color: var(--teal-light);
-    max-width: 38rem;
+    max-width: 50rem;
     margin: 0;
   }
 
   /* ---------- Container ---------- */
   .container {
-    max-width: 64rem;
+    max-width: 82rem;
     margin: 0 auto;
     padding: 2rem 2rem 1rem;
   }
@@ -300,17 +300,24 @@
   <div class="site-nav-inner">
     <a class="site-nav-brand" href="/">Sensemaking AI</a>
     <div class="site-nav-links">
-      <a href="/map.html" aria-current="page">Map</a>
       <a href="/SYLLABUS.html">Syllabus</a>
-      <a href="/#arc">Modules</a>
+      <div class="nav-dropdown">
+        <a href="/modules/01-foundations/">Modules <span aria-hidden="true">▾</span></a>
+        <div class="nav-dropdown-menu">
+          <a href="/modules/01-foundations/">01 · Foundations</a>
+          <a href="/modules/02-modeling/module-02-README.html">02 · Modeling</a>
+          <a href="/modules/03-reasoning/module-03-README.html">03 · Reasoning</a>
+          <a href="/modules/04-shipping/module-04-README.html">04 · Shipping</a>
+        </div>
+      </div>
       <a href="/glossary.html">Glossary</a>
-      <a href="/roadmap.html">Roadmap</a>
+      <a href="/map.html">Roadmap</a>
     </div>
   </div>
 </nav>
 <style>
   .site-nav { border-bottom: 1px solid rgba(31,42,46,0.1); background: #fff; }
-  .site-nav-inner { max-width: 64rem; margin: 0 auto; padding: 0.75rem 2rem;
+  .site-nav-inner { max-width: 82rem; margin: 0 auto; padding: 0.75rem 2rem;
     display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 1rem; }
   .site-nav-brand { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1rem;
     color: #1A1A1A; text-decoration: none; }
@@ -320,6 +327,28 @@
   .site-nav-links a:hover { color: #1A1A1A; }
   .site-nav-links a[aria-current="page"] { color: #DC6B4F; font-weight: 600; }
   @media print { .site-nav { display: none; } }
+  .nav-dropdown { position: relative; display: inline-flex; align-items: center; }
+  .site-nav-links .nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border: 1px solid rgba(31,42,46,0.1);
+    border-radius: 6px;
+    padding: 0.5rem 0 0.375rem;
+    min-width: 190px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    z-index: 100;
+  }
+  .site-nav-links .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+  .site-nav-links .nav-dropdown-menu a {
+    display: block;
+    padding: 0.45rem 1rem;
+    white-space: nowrap;
+  }
+  .site-nav-links .nav-dropdown-menu a:hover { background: #f9f6f0; color: #1A1A1A; }
 </style>
 
 <!-- ===================== Masthead ===================== -->
@@ -343,7 +372,7 @@
   </div>
 
   <!-- ===================== Route cards ===================== -->
-  <div class="route-cards">
+  <!-- div class="route-cards">
     <div class="route-card recommended">
       <div class="route-card-label">Path 1 · Recommended</div>
       <h3>Full course path</h3>
@@ -362,7 +391,7 @@
       <p>Read the synthesis, run queries to confirm intuitions, build the resume RDF slice, draft the blog post. Best for advanced learners or return visits.</p>
       <a class="route-link" href="https://curriculum.barbhs.com/modules/01-foundations/README.html#path-3--artifact-path">See the steps →</a>
     </div>
-  </div>
+  </div -->
 
   <!-- ===================== The Map ===================== -->
   <div class="map-wrap">

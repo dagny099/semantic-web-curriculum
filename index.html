@@ -28,7 +28,7 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-fo
 
 body {
   font-family: var(--font-sans);
-  font-size: 17px;
+  font-size: 19px;
   line-height: 1.65;
   color: var(--ink);
   background: var(--paper);
@@ -45,7 +45,7 @@ h4 { font-size: 1.125rem; font-family: var(--font-sans); font-weight: 500; lette
 
 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
 
-p { margin-bottom: 1.25rem; max-width: var(--reading-width); color: var(--ink-soft); }
+p { margin-bottom: 1.25rem; color: var(--ink-soft); }
 p.lead { font-size: 1.25rem; line-height: 1.5; color: var(--ink); max-width: 52rem; }
 
 a { color: var(--amber); text-decoration: none; border-bottom: 1px solid rgba(185, 114, 42, 0.3); transition: border-color 0.2s, color 0.2s; }
@@ -116,10 +116,12 @@ section:first-of-type { border-top: none; }
 }
 .site-header nav a {
   color: var(--warm-gray);
-  border-bottom: none;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 2px;
   font-weight: 400;
 }
 .site-header nav a:hover { color: var(--ink); }
+.site-header nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--teal); }
 
 @media (max-width: 640px) { .site-header nav { display: none; } }
 
@@ -153,14 +155,14 @@ section:first-of-type { border-top: none; }
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.375rem 0.875rem;
+  padding: 0.5rem 1.25rem;
   background: var(--coral-tint);
   color: var(--coral);
   border-radius: 100px;
   font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 .status-pill::before {
   content: "";
@@ -198,19 +200,19 @@ section:first-of-type { border-top: none; }
 .diagram-block {
   background: var(--paper-warm);
   border-radius: 12px;
-  padding: 3rem 2rem;
-  margin: 2.5rem 0;
+  padding: 1.25rem 2rem;
+  margin: 1.25rem 0;
   border: 1px solid var(--line-soft);
 }
 .diagram-block svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
 .diagram-caption {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 0.95rem;
+  font-size: 1em;
   color: var(--warm-gray);
   text-align: center;
-  margin-top: 1.5rem;
-  max-width: 36rem;
+  margin-top: 1rem;
+  max-width: 44rem;
   margin-left: auto;
   margin-right: auto;
 }
@@ -311,19 +313,19 @@ a.module-card { border: 1px solid var(--line); }
 .repo-tree {
   background: var(--ink);
   color: var(--paper);
-  /* padding: 2rem; */
+  padding: 2rem;
   border-radius: 8px;
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.8;
   overflow-x: auto;
-  /* margin-top: 1.5rem;*/
+  margin-top: 1.5rem;
   white-space: pre;
 }
 .repo-tree .comment { color: var(--warm-gray-light); }
-.repo-tree .dir { color: var(--amber-soft); }
+.repo-tree .dir { color: #5EC4AC; }
 .repo-tree .file { color: var(--paper); }
-.repo-tree .file.active { color: var(--amber-soft); font-weight: 500; }
+.repo-tree .file.active { color: #E8956A; font-weight: 500; }
 .repo-tree a { border-bottom: 1px solid transparent; color: inherit; transition: border-color 0.2s; }
 .repo-tree a:hover { border-bottom-color: currentColor; }
 
@@ -335,7 +337,9 @@ a.module-card { border: 1px solid var(--line); }
   padding: 2.5rem;
   margin-top: 2rem;
   border: 1px solid var(--line-soft);
+  max-width: 62rem;
 }
+#status p { max-width: 54rem; }
 .checklist h3 {
   font-family: var(--font-serif);
   font-style: italic;
@@ -359,13 +363,11 @@ a.module-card { border: 1px solid var(--line); }
 .checklist + .checklist { margin-top: 1.5rem; }
 .checklist ul { list-style: none; }
 .checklist li {
-  padding: 0.625rem 0;
+  padding: 0.625rem 0 0.625rem 2.25rem;
   font-size: 0.95rem;
   color: var(--ink-soft);
-  display: flex;
-  align-items: flex-start;
-  gap: 0.875rem;
   border-bottom: 1px solid var(--line-soft);
+  position: relative;
 }
 .checklist li:last-child { border-bottom: none; }
 .checklist li::before {
@@ -374,10 +376,16 @@ a.module-card { border: 1px solid var(--line); }
   height: 16px;
   border: 1.5px solid var(--warm-gray-light);
   border-radius: 3px;
-  margin-top: 4px;
-  flex-shrink: 0;
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
 }
-.checklist li strong { color: var(--ink); font-weight: 500; }
+.checklist li strong {
+  color: var(--ink);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.2rem;
+}
 
 .checklist li.done::before {
   background: var(--amber);
@@ -458,7 +466,7 @@ a.module-card { border: 1px solid var(--line); }
   margin-bottom: 0.75rem;
 }
 .future-card h4 { font-family: var(--font-serif); font-weight: 400; font-size: 1.125rem; margin-bottom: 0.5rem; }
-.future-card p { font-size: 0.85rem; color: var(--warm-gray); margin: 0; }
+.future-card p { font-size: 0.9em; color: var(--warm-gray); margin: 0; }
 
 @media (max-width: 900px) { .future-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .future-grid { grid-template-columns: 1fr; } }
@@ -482,7 +490,7 @@ a.module-card { border: 1px solid var(--line); }
   min-width: 2rem;
 }
 .resource-item .title { font-family: var(--font-serif); font-size: 1.125rem; color: var(--ink); display: block; }
-.resource-item .meta { font-size: 0.8125rem; color: var(--warm-gray); margin-top: 0.25rem; }
+.resource-item .meta { font-size: 0.875em; color: var(--warm-gray); margin-top: 0.25rem; }
 .resource-item .tag {
   font-size: 0.7rem;
   letter-spacing: 0.1em;
@@ -530,6 +538,38 @@ footer .links { display: flex; gap: 1.5rem; }
 footer a { color: var(--warm-gray); border-bottom: none; }
 footer a:hover { color: var(--ink); }
 
+/* ─── Sticky section nav ─── */
+
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line-soft);
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 -2rem;
+  padding: 0 2rem;
+}
+.section-nav::-webkit-scrollbar { display: none; }
+.section-nav a {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+  border-bottom: 2px solid transparent;
+  padding: 0.75rem 1.25rem;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+.section-nav a:hover { color: var(--ink); border-bottom-color: var(--teal); }
+@media (max-width: 640px) {
+  .section-nav { margin: 0 -1.25rem; padding: 0 1.25rem; }
+}
+
 /* ─── Scroll reveals ─── */
 
 .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
@@ -546,6 +586,30 @@ footer a:hover { color: var(--ink); }
 .svg-text-soft { font-family: var(--font-sans); fill: var(--warm-gray); }
 .svg-text-serif { font-family: var(--font-serif); fill: var(--ink); font-style: italic; }
 
+/* ─── Modules dropdown ─── */
+.nav-dropdown { position: relative; display: inline-flex; align-items: center; }
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  padding: 0.5rem 0 0.375rem;
+  min-width: 200px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  z-index: 100;
+}
+.nav-dropdown:hover .nav-dropdown-menu { display: block; }
+.site-header .nav-dropdown-menu a {
+  display: block;
+  padding: 0.45rem 1rem;
+  border-bottom: none;
+  white-space: nowrap;
+}
+.site-header .nav-dropdown-menu a:hover { background: var(--paper-warm); }
+
 </style>
 </head>
 <body>
@@ -561,11 +625,20 @@ footer a:hover { color: var(--ink); }
     </span>
   </a>
   <nav>
-    <a href="/map.html">Map</a>
+    <a href="/" aria-current="page">Home</a>
     <a href="/SYLLABUS.html">Syllabus</a>
-    <a href="#arc">Modules</a>
+    <div class="nav-dropdown">
+      <a href="/modules/01-foundations/">Modules <span aria-hidden="true">▾</span></a>
+      <div class="nav-dropdown-menu">
+        <a href="/modules/01-foundations/">01 · Foundations</a>
+        <a href="/modules/02-modeling/module-02-README.html">02 · Modeling</a>
+        <a href="/modules/03-reasoning/module-03-README.html">03 · Reasoning</a>
+        <a href="/modules/04-shipping/module-04-README.html">04 · Shipping</a>
+      </div>
+    </div>
+    <a href="/PROGRESS.html">Progress</a>
     <a href="/glossary.html">Glossary</a>
-    <a href="/roadmap.html">Roadmap</a>
+    <a href="/map.html">Roadmap</a>
   </nav>
 </header>
 
@@ -600,6 +673,16 @@ footer a:hover { color: var(--ink); }
   </div>
 </section>
 
+<!-- ═══════════════ SECTION NAV ═══════════════ -->
+<nav class="section-nav" aria-label="Page sections">
+  <a href="#arc">The arc</a>
+  <a href="#projects">Projects</a>
+  <a href="#status">Module 1</a>
+  <a href="#repo">Repository</a>
+  <a href="#future">What's next</a>
+  <a href="#resources">Reading</a>
+</nav>
+
 <!-- ═══════════════ THE ARC ═══════════════ -->
 <section id="arc">
   <div class="eyebrow">The arc</div>
@@ -607,45 +690,44 @@ footer a:hover { color: var(--ink); }
   <p>The curriculum builds from foundations (reading and writing the basic data model) to deployment (shipping a system that combines vector and graph retrieval). For how the reading, exercises, and synthesis pages fit together, see the <a href="/map.html">curriculum map</a>.</p>
 
   <div class="diagram-block">
-    <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arc-title arc-desc">
+    <svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arc-title arc-desc">
       <title id="arc-title">The 12-week curriculum arc</title>
       <desc id="arc-desc">Four modules arranged left to right: Foundations, Modeling, Reasoning, and Shipping. Each shows weeks and key concepts.</desc>
 
       <!-- Journey line -->
-      <path d="M 80 200 Q 280 180, 460 200 T 820 200" stroke="#1B6B5E" stroke-width="1.5" fill="none" stroke-dasharray="4 6" opacity="0.5"/>
+      <path d="M 80 150 Q 280 130, 460 150 T 820 150" stroke="#1B6B5E" stroke-width="1.5" fill="none" stroke-dasharray="4 6" opacity="0.5"/>
 
       <!-- Module 1 -->
-      <circle cx="120" cy="200" r="6" fill="#1B6B5E"/>
-      <text x="120" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">i.</text>
-      <text x="120" y="240" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Foundations</text>
-      <text x="120" y="261" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 1&ndash;3</text>
-      <text x="120" y="290" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">RDF · Turtle · SPARQL</text>
+      <circle cx="120" cy="150" r="6" fill="#1B6B5E"/>
+      <text x="120" y="120" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">i.</text>
+      <text x="120" y="190" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Foundations</text>
+      <text x="120" y="211" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 1&ndash;3</text>
+      <text x="120" y="240" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">RDF · Turtle · SPARQL</text>
 
       <!-- Module 2 -->
-      <circle cx="380" cy="190" r="6" fill="#1B6B5E"/>
-      <text x="380" y="160" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">ii.</text>
-      <text x="380" y="230" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Modeling</text>
-      <text x="380" y="251" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 4&ndash;6</text>
-      <text x="380" y="280" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">RDFS · OWL · design judgment</text>
+      <circle cx="380" cy="140" r="6" fill="#1B6B5E"/>
+      <text x="380" y="110" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">ii.</text>
+      <text x="380" y="180" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Modeling</text>
+      <text x="380" y="201" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 4&ndash;6</text>
+      <text x="380" y="230" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">RDFS · OWL · design judgment</text>
 
       <!-- Module 3 (deepest dive) -->
-      <circle cx="620" cy="195" r="8" fill="#1B6B5E" stroke="#1B6B5E" stroke-width="2" fill-opacity="0.3"/>
-      <circle cx="620" cy="195" r="4" fill="#1B6B5E"/>
-      <text x="620" y="165" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">iii.</text>
-      <text x="620" y="235" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Reasoning</text>
-      <text x="620" y="256" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 7&ndash;9</text>
-      <text x="620" y="285" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Inference · reification · SHACL</text>
+      <circle cx="620" cy="145" r="8" fill="#1B6B5E" stroke="#1B6B5E" stroke-width="2" fill-opacity="0.3"/>
+      <circle cx="620" cy="145" r="4" fill="#1B6B5E"/>
+      <text x="620" y="115" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">iii.</text>
+      <text x="620" y="185" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Reasoning</text>
+      <text x="620" y="206" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 7&ndash;9</text>
+      <text x="620" y="235" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Inference · reification · SHACL</text>
 
       <!-- Module 4 -->
-      <circle cx="820" cy="200" r="6" fill="#1B6B5E"/>
-      <text x="820" y="170" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">iv.</text>
-      <text x="820" y="240" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Shipping</text>
-      <text x="820" y="261" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 10&ndash;12</text>
-      <text x="820" y="290" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">SPARQL UPDATE · LLM + KG</text>
+      <circle cx="820" cy="150" r="6" fill="#1B6B5E"/>
+      <text x="820" y="120" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">iv.</text>
+      <text x="820" y="190" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Shipping</text>
+      <text x="820" y="211" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 10&ndash;12</text>
+      <text x="820" y="240" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">SPARQL UPDATE · LLM + KG</text>
 
       <!-- Top label -->
-      <text x="450" y="50" text-anchor="middle" class="svg-text-serif" font-size="20" font-style="italic" fill="#1A1A1A">From first principles → deployed system</text>
-      <line x1="380" y1="65" x2="520" y2="65" stroke="#1B6B5E" stroke-width="0.5" opacity="0.4"/>
+      <text x="450" y="45" text-anchor="middle" class="svg-text-serif" style="font-style: normal; font-weight: 500;" font-size="17" fill="#1A1A1A">Twelve weeks · foundations to deployment</text>
     </svg>
     <p class="diagram-caption">Think of it as a learning spiral: each module revisits the layer beneath it at greater depth. By the deepest dive &mdash; Module 3 &mdash; you&rsquo;re working ground you&rsquo;ve already walked twice.</p>
   </div>
@@ -755,8 +837,9 @@ footer a:hover { color: var(--ink); }
       </div>
       <p style="margin: 1rem 0 0; font-size: 0.875rem;"><a href="https://resume-graph-explorer.vercel.app/" target="_blank" rel="noopener">Open the Resume Graph Explorer &rarr;</a></p>
     </div>
-    <p>The two projects are useful in opposite ways. Naruto's world is densely categorical — ranks, villages, jutsu types, contested fan canon — which is the raw material that ontology modeling and reasoning feed on, so it carries Modules 2 and 3. The Resume Graph is the other kind of useful: its skills already map to ESCO, a published vocabulary, so it makes the foundational case for linked data concrete instead of toy — which is why it anchors Module 1.</p>
   </div>
+
+  <p style="margin-top: 2.5rem;">The two projects are useful in opposite ways. Naruto's world is densely categorical — ranks, villages, jutsu types, contested fan canon — which is the raw material that ontology modeling and reasoning feed on, so it carries Modules 2 and 3. The Resume Graph is the other kind of useful: its skills already map to ESCO, a published vocabulary, so it makes the foundational case for linked data concrete instead of toy — which is why it anchors Module 1.</p>
 
 </section>
 

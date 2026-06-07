@@ -14,6 +14,31 @@
 <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/swirl/swirl-32.png' | relative_url }}">
 <link rel="icon" type="image/png" sizes="512x512" href="{{ '/assets/swirl/swirl-512.png' | relative_url }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/swirl/swirl-180.png' | relative_url }}">
+<style>
+  .nav-dropdown { position: relative; display: inline-flex; align-items: center; }
+  .nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 0.5rem 0 0.375rem;
+    min-width: 200px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    z-index: 100;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+  .site-header .nav-dropdown-menu a {
+    display: block;
+    padding: 0.45rem 1rem;
+    border-bottom: none;
+    white-space: nowrap;
+  }
+  .site-header .nav-dropdown-menu a:hover { background: var(--paper-warm); }
+  .site-header nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--teal); }
+</style>
 </head>
 <body>
 
@@ -29,11 +54,19 @@
     </a>
     <nav>
       <a href="{{ '/' | relative_url }}">Home</a>
-      <a href="{{ '/map.html' | relative_url }}">Map</a>
-      <a href="{{ '/SYLLABUS.html' | relative_url }}">Syllabus</a>
-      <a href="{{ '/PROGRESS.html' | relative_url }}">Progress</a>
-      <a href="{{ '/glossary.html' | relative_url }}">Glossary</a>
-      <a href="{{ '/roadmap.html' | relative_url }}">Roadmap</a>
+      <a href="{{ '/SYLLABUS.html' | relative_url }}"{% if page.url contains 'SYLLABUS' %} aria-current="page"{% endif %}>Syllabus</a>
+      <div class="nav-dropdown">
+        <a href="{{ '/modules/01-foundations/' | relative_url }}"{% if page.url contains '/modules/' %} aria-current="page"{% endif %}>Modules <span aria-hidden="true">▾</span></a>
+        <div class="nav-dropdown-menu">
+          <a href="{{ '/modules/01-foundations/' | relative_url }}">01 · Foundations</a>
+          <a href="{{ '/modules/02-modeling/module-02-README.html' | relative_url }}">02 · Modeling</a>
+          <a href="{{ '/modules/03-reasoning/module-03-README.html' | relative_url }}">03 · Reasoning</a>
+          <a href="{{ '/modules/04-shipping/module-04-README.html' | relative_url }}">04 · Shipping</a>
+        </div>
+      </div>
+      <a href="{{ '/PROGRESS.html' | relative_url }}"{% if page.url contains 'PROGRESS' %} aria-current="page"{% endif %}>Progress</a>
+      <a href="{{ '/glossary.html' | relative_url }}"{% if page.url contains 'glossary' %} aria-current="page"{% endif %}>Glossary</a>
+      <a href="{{ '/map.html' | relative_url }}"{% if page.url contains 'map' %} aria-current="page"{% endif %}>Roadmap</a>
     </nav>
   </header>
 
@@ -57,5 +90,55 @@
 
 </div>
 
+
+<script>
+(function () {
+  const doc = document.querySelector('.doc');
+  if (!doc) return;
+
+  const headings = Array.from(doc.querySelectorAll('h2'));
+  if (headings.length < 4) return;
+
+  const nav = document.createElement('nav');
+  nav.className = 'page-nav';
+  nav.setAttribute('aria-label', 'Page sections');
+
+  headings.forEach(function (h) {
+    if (!h.id) {
+      h.id = h.textContent.trim().toLowerCase()
+        .replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-');
+    }
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent.trim();
+    nav.appendChild(a);
+  });
+
+  const header = document.querySelector('.site-header');
+  if (header) header.after(nav);
+
+  const links = Array.from(nav.querySelectorAll('a'));
+
+  function updateActive() {
+    const offset = nav.offsetHeight + 8;
+    const scrollY = window.scrollY + offset;
+    let active = null;
+    headings.forEach(function (h) {
+      if (h.offsetTop <= scrollY) active = h;
+    });
+    links.forEach(function (a) { a.classList.remove('active'); });
+    if (active) {
+      const activeLink = nav.querySelector('a[href="#' + active.id + '"]');
+      if (activeLink) {
+        activeLink.classList.add('active');
+        activeLink.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+})();
+</script>
 </body>
 </html>
