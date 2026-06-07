@@ -86,10 +86,13 @@ section:first-of-type { border-top: none; }
 /* ─── Header ─── */
 
 .site-header {
-  padding: 2rem 0 0;
+  padding: 2rem 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid rgba(26,26,26,0.06); 
+  flex-wrap: wrap; 
+  gap: 1rem; 
 }
 .brand-mark {
   color: var(--ink);
@@ -100,30 +103,24 @@ section:first-of-type { border-top: none; }
 }
 .brand-swirl { width: 34px; height: 34px; display: block; flex-shrink: 0; }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
-.brand-eyebrow {
-  font-family: var(--font-sans);
-  font-size: 0.625rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.brand-name { font-family: var(--font-serif); font-size: 1.15rem; color: var(--ink); }
-.site-header nav {
-  display: flex;
-  gap: 2rem;
-  font-size: 0.875rem;
-}
-.site-header nav a {
-  color: var(--warm-gray);
-  border-bottom: 2px solid transparent;
-  padding-bottom: 2px;
-  font-weight: 400;
-}
-.site-header nav a:hover { color: var(--ink); }
-.site-header nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--teal); }
-
-@media (max-width: 640px) { .site-header nav { display: none; } }
+.brand-eyebrow { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #5A6671; }
+  .brand-name { font-family: 'EB Garamond', Georgia, serif; font-size: 1.1rem; color: #1A1A1A; }
+  .site-header nav { display: flex; gap: 1.75rem; font-size: 0.875rem; flex-wrap: wrap; align-items: center; }
+  .site-header nav a { font-family: 'IBM Plex Sans', sans-serif; color: #5A6671; text-decoration: none; border-bottom: 2px solid transparent; padding-bottom: 2px; font-weight: 400; }
+  .site-header nav a:hover { color: #1A1A1A; }
+  .site-header nav a[aria-current="page"] { color: #1A1A1A; border-bottom-color: #1B6B5E; }
+  .nav-dropdown { position: relative; display: inline-flex; align-items: center; }
+  .nav-dropdown-menu {
+    display: none; position: absolute; top: 100%; right: 0;
+    background: #fff; border: 1px solid #E0DAD0; border-radius: 6px;
+    padding: 0.5rem 0 0.375rem; min-width: 200px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08); z-index: 100;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+  .site-header .nav-dropdown-menu a { display: block; padding: 0.45rem 1rem; border-bottom: none; white-space: nowrap; }
+  .site-header .nav-dropdown-menu a:hover { background: #F4F0E8; color: #1A1A1A; }
+  
+  @media (max-width: 640px) { .site-header nav { display: none; } }
 
 /* ─── Hero ─── */
 
@@ -615,13 +612,12 @@ footer a:hover { color: var(--ink); }
 <body>
 
 <div class="page">
-
 <header class="site-header">
-  <a href="#top" class="brand-mark">
+    <a href="/" class="brand-mark">
     <img class="brand-swirl" src="/assets/swirl/swirl-mark-square.png" alt="" aria-hidden="true">
     <span class="brand-text">
       <span class="brand-eyebrow">a Sensemaking AI series</span>
-      <span class="brand-name">Sensemaking Semantic Web</span>
+      <span class="brand-name">Semantic Web Course</span>
     </span>
   </a>
   <nav>
@@ -665,7 +661,7 @@ footer a:hover { color: var(--ink); }
           <dd>Barbara Hidalgo-Sotelo</dd>
         </div>
       </dl>
-      <div class="status-pill">Module 1 · in progress &mdash; launched May 31, 2026</div>
+      <div class="status-pill" style="margin-top: 1.2em; ">Module 1 · in progress &mdash; launched May 31, 2026</div>
     </div>
     <div class="hero-art">
       <img src="/placeholder.png" alt="Abstract knowledge-graph illustration in cream, amber, and teal — nodes joined by dashed connections.">

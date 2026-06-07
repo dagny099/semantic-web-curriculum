@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How the curriculum fits together — Sensemaking Semantic Web</title>
-<meta name="description" content="A navigable map of the Sensemaking Semantic Web curriculum: the reading path, the synthesis pages, the exercises, and how the cheat sheet runs alongside the whole thing.">
+<meta name="description" content="A navigable map of the Semantic Web Course curriculum: the reading path, the synthesis pages, the exercises, and how the cheat sheet runs alongside the whole thing.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -74,7 +74,7 @@
   .lede {
     font-size: 1rem;
     color: var(--teal-light);
-    max-width: 50rem;
+    max-width: 60rem;
     margin: 0;
   }
 
@@ -302,7 +302,7 @@
       <img class="brand-swirl" src="/assets/swirl/swirl-mark-square.png" alt="" aria-hidden="true">
       <span class="brand-text">
         <span class="brand-eyebrow">a Sensemaking AI series</span>
-        <span class="brand-name">Sensemaking Semantic Web</span>
+        <span class="brand-name">Semantic Web Course</span>
       </span>
     </a>
     <nav>
@@ -324,9 +324,9 @@
   </div>
 </header>
 <style>
-  .site-header { background: #fff; border-bottom: 1px solid #E0DAD0; }
+  .site-header { background: var(--cream); border-bottom: 1px solid rgba(26,26,26,0.06); }
   .site-header-inner {
-    max-width: 92rem; margin: 0 auto; padding: 1.25rem 2rem;
+    max-width: 92rem; margin: 0 auto; padding: 2rem 2rem;
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
   }
   .brand-mark { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: #1A1A1A; }
@@ -354,7 +354,7 @@
 <!-- ===================== Masthead ===================== -->
 <header class="masthead">
   <div class="masthead-inner">
-    <div class="brand">Sensemaking Semantic Web · Roadmap</div>
+    <div class="brand">Roadmap</div>
     <h1>Where this is, where it's going</h1>
     <p class="lede">A navigable map of the curriculum and an honest tracker of where things actually stand. Click any card to jump in.</p>
   </div>
@@ -481,11 +481,21 @@
         <text x="158" y="385" class="card-text desc">The deeper why, on real data — like sub-module 1.1.</text>
       </a>
 
+      <!-- Workbook (subordinate to Synthesis) -->
+      <line x1="458" y1="360" x2="474" y2="360" stroke="#C9DED9" stroke-width="1.2" stroke-dasharray="3,3"/>
+      <a id="link-workbook" href="https://curriculum.barbhs.com/modules/01-foundations/submodules/1-1-workbook-naruto.html" class="card-link" role="link" tabindex="0">
+        <rect class="card-rect-shadow" x="474" y="331" width="220" height="58" rx="6" filter="url(#cardHover)"/>
+        <rect class="card-rect" x="474" y="331" width="220" height="58" rx="6" fill="#F4F8F7" stroke="#C9DED9" stroke-width="1"/>
+        <text x="490" y="351" class="card-role role-mute">WORKBOOK</text>
+        <text x="490" y="368" class="card-text title-sm">Interactive workbook</text>
+        <text x="490" y="384" class="card-text desc-sm">Guided queries; work in the data.</text>
+      </a>
+
       <!-- you-are-here flag (controlled by JS) -->
-      <g id="here-flag" class="here-flag">
+      <!-- g id="here-flag" class="here-flag">
         <path d="M 474 350 L 568 350 L 568 372 L 474 372 L 464 361 Z" fill="#DC6B4F"/>
         <text x="523" y="365" class="flag" text-anchor="middle">this page</text>
-      </g>
+      </g -->
 
       <!-- =============== Card 4: Exercise =============== -->
       <a id="link-exercise" href="https://curriculum.barbhs.com/modules/01-foundations/README.html#exercises" class="card-link" role="link" tabindex="0">
@@ -558,10 +568,10 @@
    Cards have a single canonical href set in the SVG (for Module 1).
    When the user clicks a different module chip, we rewrite those hrefs.
 
-   Module 1: real URLs.
-   Modules 2-4: every card points to /roadmap.html and is visually greyed.
+   Each module defines liveCards[] — the cards that are active.
+   Unlisted cards are greyed out with a tooltip and point to ROADMAP.
 
-   Hand-maintained per the user's choice. TBD entries are flagged.
+   Update MODULE_DATA when a new module or resource ships.
    ===================================================================== */
 
 const BASE = 'https://curriculum.barbhs.com';
@@ -570,11 +580,12 @@ const ROADMAP = `${BASE}/map.html`;
 const MODULE_DATA = {
   1: {
     name: 'Foundations',
-    live: true,
+    liveCards: ['readme', 'reading', 'companion', 'synthesis', 'workbook', 'exercise', 'cheatsheet'],
     readme:     `${BASE}/modules/01-foundations/index`,
     reading:    `${BASE}/resources/reading-list.md`,
     companion:  `${BASE}/modules/01-foundations/submodules/1-1-reading-companion.pdf`,
     synthesis:  `${BASE}/modules/01-foundations/submodules/1-1-rdf-vs-lpg.html`,
+    workbook:   `${BASE}/modules/01-foundations/submodules/1-1-workbook-naruto.html`,
     exercise:   `${BASE}/modules/01-foundations/README.md#exercises`,
     cheatsheet: `${BASE}/reference/cheatsheets/module-1-cheatsheet.html`,
     cheatsheetFilename: 'module-1-cheatsheet.html',
@@ -582,27 +593,39 @@ const MODULE_DATA = {
   },
   2: {
     name: 'Modeling',
-    live: false,
-    readme:     ROADMAP, reading: ROADMAP, companion: ROADMAP,
-    synthesis:  ROADMAP, exercise: ROADMAP,
+    liveCards: ['readme', 'reading', 'workbook'],
+    readme:     `${BASE}/modules/02-modeling/module-02-README.html`,
+    reading:    `${BASE}/resources/reading-list.md`,
+    companion:  ROADMAP,
+    synthesis:  ROADMAP,
+    workbook:   `${BASE}/modules/02-modeling/submodules/2-1-rdfs-class-hierarchy.html`,
+    exercise:   ROADMAP,
     cheatsheet: ROADMAP,
     cheatsheetFilename: 'module-2-cheatsheet.html',
     showHereFlag: false,
   },
   3: {
     name: 'Reasoning',
-    live: false,
-    readme:     ROADMAP, reading: ROADMAP, companion: ROADMAP,
-    synthesis:  ROADMAP, exercise: ROADMAP,
+    liveCards: ['readme', 'reading', 'workbook'],
+    readme:     `${BASE}/modules/03-reasoning/module-03-README.html`,
+    reading:    `${BASE}/resources/reading-list.md`,
+    companion:  ROADMAP,
+    synthesis:  ROADMAP,
+    workbook:   `${BASE}/modules/03-reasoning/submodules/3-1-inferencing.html`,
+    exercise:   ROADMAP,
     cheatsheet: ROADMAP,
     cheatsheetFilename: 'module-3-cheatsheet.html',
     showHereFlag: false,
   },
   4: {
     name: 'Shipping',
-    live: false,
-    readme:     ROADMAP, reading: ROADMAP, companion: ROADMAP,
-    synthesis:  ROADMAP, exercise: ROADMAP,
+    liveCards: ['readme', 'reading', 'workbook'],
+    readme:     `${BASE}/modules/04-shipping/module-04-README.html`,
+    reading:    `${BASE}/resources/reading-list.md`,
+    companion:  ROADMAP,
+    synthesis:  ROADMAP,
+    workbook:   `${BASE}/modules/04-shipping/submodules/4-1-sparql-update.html`,
+    exercise:   ROADMAP,
     cheatsheet: ROADMAP,
     cheatsheetFilename: 'module-4-cheatsheet.html',
     showHereFlag: false,
@@ -612,8 +635,9 @@ const MODULE_DATA = {
 const TOOLTIP_MESSAGES = {
   readme:     m => `${m.name} README — not yet shipped. Click to see the roadmap.`,
   reading:    m => `Module ${m.name} reading list — coming when the module ships.`,
-  companion:  m => `Reading-companion deck — coming when the module ships.`,
+  companion:  m => `Reading-companion deck — written for Module 1 only.`,
   synthesis:  m => `Synthesis pages for Module ${m.name} — not yet written.`,
+  workbook:   m => `Module ${m.name} workbook — not yet shipped.`,
   exercise:   m => `Module ${m.name} exercises — defined once the module ships.`,
   cheatsheet: m => `Module ${m.name} cheat sheet — coming when the module ships.`,
 };
@@ -623,6 +647,7 @@ const cardIds = {
   reading:    'link-reading',
   companion:  'link-companion',
   synthesis:  'link-synthesis',
+  workbook:   'link-workbook',
   exercise:   'link-exercise',
   cheatsheet: 'link-cheatsheet',
 };
@@ -631,13 +656,15 @@ function setModule(num) {
   const data = MODULE_DATA[num];
   if (!data) return;
 
+  const live = new Set(data.liveCards || []);
+
   // Update each card link.
   for (const [key, id] of Object.entries(cardIds)) {
     const el = document.getElementById(id);
     if (!el) continue;
-    el.setAttribute('href', data[key]);
+    el.setAttribute('href', data[key] || ROADMAP);
 
-    if (data.live) {
+    if (live.has(key)) {
       el.classList.remove('card-greyed');
       el.removeAttribute('data-tooltip');
       el.setAttribute('aria-label', `${key} for Module ${num} (${data.name})`);
