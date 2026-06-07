@@ -8,15 +8,19 @@
 
 ---
 
+You've probably designed a schema that fought you for months without realizing the fight had already started. A table with too many nulls. A property that turned out to mean three different things. The model seemed fine when you built it; the wrongness compounded quietly.
+
+An ontology is the same problem made visible. Every class boundary, every reuse decision, every constraint you add or skip is a small modeling choice — and those choices compound, into clarity or into pain. What's different here is that the decisions are explicit and inspectable, written in a form you can reason over, share, and change deliberately. Categories are how minds carve the world into workable chunks. Ontology design is doing that carving in the open. Module 2 is where that becomes a skill you can exercise rather than a problem you run into.
+
 ## What you'll come away with
 
 By the end of this module, you can:
 
-- Design and publish a small OWL ontology with documented design decisions
-- Choose intentionally between defining new terms and reusing existing vocabularies (`foaf:`, `schema:`, `skos:`, `dcterms:`)
-- Express constraints using SHACL and validate real data against them
-- Know what the five OWL profiles (DL, EL, QL, RL, Full) are, why they exist, and how to choose between them
-- Recognize the modeling traps that look right and behave badly (transitivity cascades, punning confusion, `sameAs` collapses)
+- Design and publish a small OWL ontology → make class boundaries explicit in a form a reasoner can check
+- Choose between reusing and defining terms → borrow from `foaf:`, `schema:`, `skos:` where they fit; define your own where they don't, so the decision is intentional rather than accidental
+- Express SHACL constraints → close the open world where your application needs it, without dismantling the open-world semantics underneath
+- Know the five OWL profiles → match the profile to what the reasoning problem actually requires and name the tradeoff you're accepting
+- Recognize the classic modeling traps → catch transitivity cascades, punning confusion, and `sameAs` collapses before they become load-bearing problems
 
 The **artifact test** for this module: is the Naruto ontology published in this repo with a real README, REUSE.md, SHACL shapes, and example queries that demonstrate value over plain co-appearance edges? If yes, modeling landed.
 
@@ -185,7 +189,9 @@ One paragraph per week, in your own words. These become source material for the 
 
 ## When you're done
 
-Take the artifact test: is the Naruto ontology published with a real README, validated against real data, and queryable in ways that demonstrate value beyond what the property graph alone offers? If yes, modeling landed. Move to Module 3.
+This module opened with one claim: that modeling decisions compound quietly over time, and the skill here is making those decisions deliberately rather than discovering their consequences late. The test of whether that landed isn't naming the five OWL profiles.
+
+Take the artifact test: is the Naruto ontology published with a real README, validated against real data, and queryable in ways that demonstrate value beyond what the property graph alone offers? If yes, the compounding went the right direction. Move to Module 3.
 
 If the ontology is still in draft state after Week 6, take an extra week before Module 3 — reasoning work depends on having an ontology to reason over. Rushing forward with a half-finished ontology will compound difficulty. Better to slow down here than to struggle in Module 3.
 

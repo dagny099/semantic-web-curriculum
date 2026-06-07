@@ -8,15 +8,19 @@
 
 ---
 
+The distance between "it runs in my notebook" and "a stranger clicked it and got an answer" is where most knowledge-graph projects quietly die. Not from a single failure — from the accumulation of small gaps: no endpoint, no auth, no data refresh, no eval. The parts that felt solved in isolation stop composing cleanly when they have to run together under real conditions.
+
+This is also where the curriculum closes the loop. Module 1 opened with a timeline — the same idea surfacing across three waves of reinvention. Module 4 is the "now" wave made real: a grounded agent that can answer questions by traversing your ontology, not just retrieving chunks. Whether that's better than pure vector retrieval depends on the question. The honest eval — including the cases where the graph augmentation loses — is the artifact that matters here.
+
 ## What you'll come away with
 
 By the end of this module, you can:
 
-- Write SPARQL UPDATE queries with awareness of transactional limits
-- Deploy a triplestore to production infrastructure (alongside your existing EC2 services)
-- Build hybrid retrieval that combines vector similarity with graph traversal
-- Honestly evaluate where graph augmentation helps RAG and where it doesn't
-- Articulate the practical considerations of running a knowledge graph in an enterprise context
+- Write SPARQL UPDATE queries → modify live graph data with clear-eyed awareness of where transactional guarantees end
+- Deploy a triplestore to production → put a SPARQL endpoint on the public internet that stays up, alongside your existing EC2 services
+- Build hybrid retrieval → combine vector similarity with graph traversal so multi-hop questions get answers that pure vector search can't reach
+- Evaluate the hybrid honestly → measure where graph augmentation helps and where it doesn't, and write up both findings — the losses are as valuable as the wins
+- Articulate the practical production realities → advise a team on triplestore choice, versioning, federation tradeoffs, and the deployment market's rough edges
 
 The **deployment test** for this module: is the Naruto KG Explorer publicly accessible and queryable by anyone with a browser? Would you confidently take on a 4-week paid consulting engagement to advise a team on adopting knowledge graphs? Yes/no on both is your credential test for the whole curriculum.
 
@@ -212,6 +216,8 @@ One paragraph per week. The last week's note doubles as material for the final r
 ---
 
 ## When you're done
+
+Module 1 opened with a timeline: the same idea resurfacing across three waves. This module is where that timeline becomes a running system — the grounded agent that can traverse your ontology, cite its sources, and tell you when the graph augmentation didn't help.
 
 Take the deployment test:
 1. Is the Naruto KG Explorer deployed and queryable by anyone with a browser?

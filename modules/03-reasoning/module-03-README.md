@@ -10,15 +10,19 @@
 
 ---
 
+Your data already says more than you wrote down. That's not a metaphor — it's a property of formal systems. Given a set of asserted triples and a set of rules, a reasoner derives what follows: unstated class memberships, inferred relationships, logical consequences you didn't write but did imply. Sometimes it surfaces things you didn't mean at all.
+
+This is the hardest module in the curriculum, and it's worth being honest about that upfront. Two ideas arrive at once: inference (what the data implies) and provenance (who claims it, how sure, from what source). They land together because they're the same problem from different angles. In a world where AI-generated content is abundant and attribution is cheap to fake, the data structure that says *"this fact, from this source, with this confidence"* is genuinely scarce and valuable. Reification is that data structure. Itachi's retroactively-revealed backstory is the teaching example — a character whose entire meaning changed when new sources contradicted earlier ones — because it makes the problem concrete rather than abstract.
+
 ## What you'll come away with
 
 By the end of this module, you can:
 
-- Run an OWL reasoner against an ontology and predict (most of) what it will infer
-- Choose intentionally among the four reification approaches (classical, n-ary, named graphs, RDF-star) based on requirements
-- Use SHACL to express closed-world constraints over an open-world data model
-- Align overlapping vocabularies with the right level of equivalence (`owl:sameAs` vs `skos:exactMatch` vs `skos:closeMatch`)
-- Articulate where formal reasoning beats LLM reasoning and where it loses — useful both technically and as consulting positioning
+- Run an OWL reasoner against an ontology → predict what it will infer, and catch what it infers that you didn't intend
+- Choose among the four reification approaches → match the provenance structure to the problem, not just the one you first reached for
+- Use SHACL over an open-world model → enforce closed-world behavior where an application needs it, without breaking the semantics underneath
+- Align overlapping vocabularies → use `owl:sameAs`, `skos:exactMatch`, and `skos:closeMatch` precisely, so equivalence claims don't collapse distinctions you need
+- Articulate where formal reasoning beats LLM reasoning → make that case concretely, including the cases where it loses — that honesty is the consulting-positioning value
 
 The **conceptual test** for this module: can you explain the four reification approaches, give an example use case for each, and defend the tradeoffs? If yes, reasoning landed.
 
@@ -222,7 +226,9 @@ One paragraph per week, in your own words. Module 3 notes especially matter beca
 
 ## When you're done
 
-Take the conceptual test: can you explain the four reification approaches, give a use case for each, and defend the tradeoffs? If yes, reasoning landed. Move to Module 4.
+This module opened with two ideas arriving together: inference (what the data implies) and provenance (who claims it, with what confidence). The test of whether both landed is the same test.
+
+Can you explain the four reification approaches, give a use case for each, and defend the tradeoffs? If yes, reasoning landed. Move to Module 4.
 
 If the four reification approaches still feel interchangeable, do Exercise 3.2 again before moving on. The four approaches each exist because they solve different problems — if they feel the same, you've missed something important and Module 4's deployment work will be harder.
 
