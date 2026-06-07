@@ -103,6 +103,62 @@ footer p{margin:0 0 .4rem;max-width:none;}
 </style>
 </head>
 <body>
+<!-- ===================== Site header (shared across pages) ===================== -->
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="/" class="brand-mark">
+      <img class="brand-swirl" src="/assets/swirl/swirl-mark-square.png" alt="" aria-hidden="true">
+      <span class="brand-text">
+        <span class="brand-eyebrow">a Sensemaking AI series</span>
+        <span class="brand-name">Sensemaking Semantic Web</span>
+      </span>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/SYLLABUS.html">Syllabus</a>
+      <div class="nav-dropdown">
+        <a href="/modules/01-foundations/" aria-current="page">Modules <span aria-hidden="true">▾</span></a>
+        <div class="nav-dropdown-menu">
+          <a href="/modules/01-foundations/">01 · Foundations</a>
+          <a href="/modules/02-modeling/module-02-README.html">02 · Modeling</a>
+          <a href="/modules/03-reasoning/module-03-README.html">03 · Reasoning</a>
+          <a href="/modules/04-shipping/module-04-README.html">04 · Shipping</a>
+        </div>
+      </div>
+      <a href="/PROGRESS.html">Progress</a>
+      <a href="/glossary.html">Glossary</a>
+      <a href="/map.html">Roadmap</a>
+    </nav>
+  </div>
+</header>
+<style>
+  .site-header { background: #fff; border-bottom: 1px solid #E0DAD0; }
+  .site-header-inner {
+    max-width: 92rem; margin: 0 auto; padding: 1.25rem 2rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .brand-mark { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: #1A1A1A; }
+  .brand-swirl { width: 30px; height: 30px; display: block; flex-shrink: 0; }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
+  .brand-eyebrow { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #5A6671; }
+  .brand-name { font-family: 'EB Garamond', Georgia, serif; font-size: 1.1rem; color: #1A1A1A; }
+  .site-header nav { display: flex; gap: 1.75rem; font-size: 0.875rem; flex-wrap: wrap; align-items: center; }
+  .site-header nav a { font-family: 'IBM Plex Sans', sans-serif; color: #5A6671; text-decoration: none; border-bottom: 2px solid transparent; padding-bottom: 2px; font-weight: 400; }
+  .site-header nav a:hover { color: #1A1A1A; }
+  .site-header nav a[aria-current="page"] { color: #1A1A1A; border-bottom-color: #1B6B5E; }
+  .nav-dropdown { position: relative; display: inline-flex; align-items: center; }
+  .nav-dropdown-menu {
+    display: none; position: absolute; top: 100%; right: 0;
+    background: #fff; border: 1px solid #E0DAD0; border-radius: 6px;
+    padding: 0.5rem 0 0.375rem; min-width: 200px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08); z-index: 100;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+  .site-header .nav-dropdown-menu a { display: block; padding: 0.45rem 1rem; border-bottom: none; white-space: nowrap; }
+  .site-header .nav-dropdown-menu a:hover { background: #F4F0E8; color: #1A1A1A; }
+  @media print { .site-header { display: none; } }
+</style>
+
 
 <header class="masthead">
   <div class="masthead-inner">
