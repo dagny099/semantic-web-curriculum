@@ -606,6 +606,43 @@ footer a:hover { color: var(--ink); }
   white-space: nowrap;
 }
 .site-header .nav-dropdown-menu a:hover { background: var(--paper-warm); }
+/* ─── Arc overview image ─── */
+
+.arc-overview-block {
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  overflow: hidden;
+}
+
+.arc-overview {
+  margin: 0;
+}
+
+.arc-overview-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.arc-overview-img {
+  display: block;
+  width: 100%;
+  max-width: 1100px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+
+/* Keep the text legible on narrow screens rather than shrinking it to dust. */
+@media (max-width: 720px) {
+  .arc-overview-block {
+    padding: 0.75rem;
+  }
+
+  .arc-overview-img {
+    width: 880px;
+    max-width: none;
+  }
+}
 
 </style>
 </head>
@@ -671,8 +708,8 @@ footer a:hover { color: var(--ink); }
 <!-- ═══════════════ SECTION NAV ═══════════════ -->
 <nav class="section-nav" aria-label="Page sections">
   <a href="#arc">The arc</a>
+  <a href="#stack">The stack</a>
   <a href="#projects">Projects</a>
-  <a href="#status">Module 1</a>
   <a href="#repo">Repository</a>
   <a href="#future">What's next</a>
   <a href="#resources">Reading</a>
@@ -681,52 +718,25 @@ footer a:hover { color: var(--ink); }
 <!-- ═══════════════ THE ARC ═══════════════ -->
 <section id="arc">
   <div class="eyebrow">The arc</div>
-  <h2>Four modules across twelve weeks.</h2>
-  <p>The curriculum builds from foundations (reading and writing the basic data model) to deployment (shipping a system that combines vector and graph retrieval). For how the reading, exercises, and synthesis pages fit together, see the <a href="/map.html">curriculum map</a>.</p>
+  <h2>Four modules, one deeper arc.</h2>
+  <p>The curriculum moves through the semantic web stack, from RDF foundations to a deployed hybrid system. Along the way, each module sharpens a different act of sensemaking: naming things, organizing them into types, qualifying claims, and using structured knowledge in practice.</p>
+  <p>The modules move forward through the technical stack while returning to a familiar pattern: naming, categorizing, justifying, and knowing. </p>
 
-  <div class="diagram-block">
-    <svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arc-title arc-desc">
-      <title id="arc-title">The 12-week curriculum arc</title>
-      <desc id="arc-desc">Four modules arranged left to right: Foundations, Modeling, Reasoning, and Shipping. Each shows weeks and key concepts.</desc>
-
-      <!-- Journey line -->
-      <path d="M 80 150 Q 280 130, 460 150 T 820 150" stroke="#1B6B5E" stroke-width="1.5" fill="none" stroke-dasharray="4 6" opacity="0.5"/>
-
-      <!-- Module 1 -->
-      <circle cx="120" cy="150" r="6" fill="#1B6B5E"/>
-      <text x="120" y="120" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">i.</text>
-      <text x="120" y="190" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Foundations</text>
-      <text x="120" y="211" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 1&ndash;3</text>
-      <text x="120" y="240" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">RDF · Turtle · SPARQL</text>
-
-      <!-- Module 2 -->
-      <circle cx="380" cy="140" r="6" fill="#1B6B5E"/>
-      <text x="380" y="110" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">ii.</text>
-      <text x="380" y="180" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Modeling</text>
-      <text x="380" y="201" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 4&ndash;6</text>
-      <text x="380" y="230" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">RDFS · OWL · design judgment</text>
-
-      <!-- Module 3 (deepest dive) -->
-      <circle cx="620" cy="145" r="8" fill="#1B6B5E" stroke="#1B6B5E" stroke-width="2" fill-opacity="0.3"/>
-      <circle cx="620" cy="145" r="4" fill="#1B6B5E"/>
-      <text x="620" y="115" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">iii.</text>
-      <text x="620" y="185" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Reasoning</text>
-      <text x="620" y="206" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 7&ndash;9</text>
-      <text x="620" y="235" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Inference · reification · SHACL</text>
-
-      <!-- Module 4 -->
-      <circle cx="820" cy="150" r="6" fill="#1B6B5E"/>
-      <text x="820" y="120" text-anchor="middle" class="svg-text-serif" font-size="13" font-style="italic" fill="#1B6B5E">iv.</text>
-      <text x="820" y="190" text-anchor="middle" class="svg-text" font-size="15" font-weight="500" fill="#1A1A1A">Shipping</text>
-      <text x="820" y="211" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">Weeks 10&ndash;12</text>
-      <text x="820" y="240" text-anchor="middle" class="svg-text-soft" font-size="12" fill="#5A6671">SPARQL UPDATE · LLM + KG</text>
-
-      <!-- Top label -->
-      <text x="450" y="45" text-anchor="middle" class="svg-text-serif" style="font-style: normal; font-weight: 500;" font-size="17" fill="#1A1A1A">Twelve weeks · foundations to deployment</text>
-    </svg>
-    <p class="diagram-caption">Think of it as a learning spiral: each module revisits the layer beneath it at greater depth. By the deepest dive &mdash; Module 3 &mdash; you&rsquo;re working ground you&rsquo;ve already walked twice.</p>
+  <div class="diagram-block arc-overview-block">
+    <figure class="arc-overview">
+      <div class="arc-overview-scroll" tabindex="0" aria-label="Scrollable diagram showing the four-module curriculum arc from naming to knowing">
+        <img
+          class="arc-overview-img"
+          src="/assets/images/from-naming-to-knowing.png"
+          alt="Diagram titled From naming to knowing. Four modules move from Foundations to Modeling to Reasoning to Shipping. The conceptual arc is naming, categorizing, justifying, and knowing."
+          width="1672"
+          height="941"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+    </figure>
   </div>
-
   <div class="modules-grid">
     <a class="module-card" href="/modules/01-foundations/README.html">
       <span class="num">i.</span>
@@ -838,7 +848,7 @@ footer a:hover { color: var(--ink); }
 
 </section>
 
-<!-- ═══════════════ WHERE THINGS STAND ═══════════════ -->
+<!-- ═══════════════ WHERE THINGS STAND ═══════════════ 
 <section id="status">
   <div class="eyebrow">Where things stand</div>
   <h2>Module 1 is underway.</h2>
@@ -865,7 +875,7 @@ footer a:hover { color: var(--ink); }
   </div>
 
   <p style="margin-top: 2rem;">For how the readings, synthesis pages, workbooks, and projects fit together, see the <a href="/map.html">curriculum map</a>. For what ships next and when, the <a href="/roadmap.html">roadmap</a>.</p>
-</section>
+</section> -->
 
 <!-- ═══════════════ THE REPO ═══════════════ -->
 <section id="repo">

@@ -2,12 +2,6 @@
 
 > The full 12-week curriculum. This is the canonical reference document — modules, exercises, deliverables, and the honest pain perspective on each segment of the semantic web stack.
 
-**Author:** Barbara Hidalgo-Sotelo (Sensemaking AI)
-**Last updated:** Pre-launch, 5/23/26
-**Companion files:** [`README.md`](./README.md) · [`PROGRESS.md`](./PROGRESS.md) · [`CLAUDE.md`](./CLAUDE.md)
-
----
-
 ## Contents
 
 - [How this curriculum works](#how-this-curriculum-works)
